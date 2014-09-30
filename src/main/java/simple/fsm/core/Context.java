@@ -1,4 +1,4 @@
 package simple.fsm.core;
 
-public class Context {
+public interface Context {
 }

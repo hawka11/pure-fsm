@@ -1,10 +1,17 @@
 package simple.fsm.core.accessor;
 
+import simple.fsm.core.Context;
 import simple.fsm.core.StateMachine;
+import simple.fsm.core.state.State;
 
 import java.util.concurrent.TimeUnit;
 
 public class RedisStateMachineAccessor implements StateMachineAccessor {
+
+    @Override
+    public String create(State initialState, Context context) {
+        return null;
+    }
 
     @Override
     public StateMachine tryLock(String stateMachineId) {

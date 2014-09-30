@@ -6,7 +6,7 @@ import simple.fsm.core.state.State;
 
 public class RequestRechargeEvent extends BaseEvent<OptusEventVisitor> {
 
-    protected RequestRechargeEvent(Context context) {
+    public RequestRechargeEvent(Context context) {
         super(context);
     }
 

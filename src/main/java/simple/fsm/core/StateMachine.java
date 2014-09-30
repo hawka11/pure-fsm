@@ -10,7 +10,7 @@ import simple.fsm.core.state.State;
 public class StateMachine {
 
     private final static Logger LOG = LoggerFactory.getLogger(StateMachine.class);
-    private final State currentState;
+    private State currentState;
     private final Context context;
 
     public StateMachine(State currentState, Context context) {
@@ -18,7 +18,7 @@ public class StateMachine {
         this.context = context;
     }
 
-    public StateMachine handleEvent(Event event) {
+    public void handleEvent(Event event) {
         try {
             State newState = currentState.handle(context, event);
 
@@ -26,10 +26,10 @@ public class StateMachine {
 
             newState.onEntry(context, event, currentState);
 
-            return new StateMachine(newState, context);
+            currentState = newState;
         } catch (Exception e) {
             LOG.error("Error handling event [{}]", event);
-            return new StateMachine(new ErrorFinalState(e), context);
+            currentState = new ErrorFinalState(e);
         }
     }
 
