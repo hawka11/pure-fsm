@@ -13,9 +13,7 @@ public interface StateMachineAccessor {
 
     StateMachine getLatest(String stateMachineId);
 
-    StateMachine tryLock(String stateMachineId);
-
-    StateMachine tryLock(String stateMachineId, long waitFor, TimeUnit timeUnit);
+    StateMachine tryLock(String stateMachineId, long timeout, TimeUnit timeUnit);
 
     boolean unlock(String stateMachineId);
 

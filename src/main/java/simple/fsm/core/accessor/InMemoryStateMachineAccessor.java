@@ -42,12 +42,7 @@ public class InMemoryStateMachineAccessor implements StateMachineAccessor {
     }
 
     @Override
-    public StateMachine tryLock(String stateMachineId) {
-        return tryLock(stateMachineId, 1, SECONDS);
-    }
-
-    @Override
-    public StateMachine tryLock(String stateMachineId, long waitFor, TimeUnit timeUnit) {
+    public StateMachine tryLock(String stateMachineId, long timeout, TimeUnit timeUnit) {
         lockedStateMachineIds.add(stateMachineId);
         return stateMachineByStateMachineId.get(stateMachineId);
     }

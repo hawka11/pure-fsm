@@ -21,12 +21,7 @@ public class HazelcastStateMachineAccessor implements StateMachineAccessor {
     }
 
     @Override
-    public StateMachine tryLock(String stateMachineId) {
-        return null;
-    }
-
-    @Override
-    public StateMachine tryLock(String stateMachineId, long waitFor, TimeUnit timeUnit) {
+    public StateMachine tryLock(String stateMachineId, long timeout, TimeUnit timeUnit) {
         return null;
     }
 
