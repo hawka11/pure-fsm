@@ -9,7 +9,9 @@ public class InitialState extends BaseOptusState {
     @Override
     public State visit(OptusRechargeContext context, RequestRechargeEvent requestRechargeEvent) {
 
-        //optusClientRepository.startRechargeProcess();
+        System.out.println("In InitialState, processing RequestRechargeEvent event ");
+
+       //optusClientRepository.startRechargeProcess();
 
         return new RechargeRequestedState();
     }

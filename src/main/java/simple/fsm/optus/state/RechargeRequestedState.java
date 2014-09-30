@@ -11,6 +11,9 @@ public class RechargeRequestedState extends BaseOptusState {
 
     @Override
     public State visit(OptusRechargeContext context, CancelRechargeEvent cancelRechargeEvent) {
+
+        System.out.println("In RechargeRequestedState, processing CancelRechargeEvent event ");
+
         BigDecimal rechargeAmount = context.getAmount();
 
         //optusClientRepository.cancelRechargeProcess(rechargeAmount);
@@ -20,7 +23,10 @@ public class RechargeRequestedState extends BaseOptusState {
 
     @Override
     public State visit(OptusRechargeContext context, RechargeAcceptedEvent rechargeAcceptedEvent) {
+        System.out.println("In RechargeRequestedState, processing RechargeAcceptedEvent event ");
+
         //mark context as complete
+
         return new RechargedCompleteFinalState();
     }
 }

@@ -17,8 +17,7 @@ public class InMemoryStateMachineAccessor implements StateMachineAccessor {
     private final AtomicLong idGenerator = new AtomicLong(1000);
 
     private final Set<String> lockedStateMachineIds = newHashSet();
-    private final HashMap<String, StateMachine> stateMachineByStateMachineId =
-            new HashMap<String, StateMachine>();
+    private final HashMap<String, StateMachine> stateMachineByStateMachineId = new HashMap<>();
 
     @Override
     public String create(State initialState, Context context) {

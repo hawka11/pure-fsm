@@ -3,18 +3,17 @@ package simple.fsm.core.state;
 import simple.fsm.core.Context;
 import simple.fsm.core.event.Event;
 
-public class ErrorFinalState implements FinalState {
+public class TimedOutFinalState implements FinalState {
 
-    private final Exception e;
+    private final String msg;
 
-    public ErrorFinalState(Exception e) {
-        this.e = e;
+    public TimedOutFinalState(String msg) {
+        this.msg = msg;
     }
 
     @Override
     public State handle(Context context, Event event) {
-
-        throw new IllegalStateException("In Error Final State, cannot process any more events");
+        throw new IllegalStateException("In Timed Out Final State, cannot process any more events");
     }
 
     @Override
