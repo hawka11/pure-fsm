@@ -23,7 +23,8 @@ public class InMemoryStateMachineAccessor implements StateMachineAccessor {
     private final HashMap<String, StateMachine> stateMachineByStateMachineId = new HashMap<>();
 
     //TODO: correctly syncronize all these calls.
-    //TODO: cleanup of final state state machines in thread.
+
+    //TODO: cleanup of final state state machines thread ticker
 
     @Override
     @SuppressWarnings("unchecked")
