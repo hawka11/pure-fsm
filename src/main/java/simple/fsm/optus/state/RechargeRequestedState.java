@@ -14,9 +14,7 @@ public class RechargeRequestedState extends BaseOptusState {
 
         System.out.println("In RechargeRequestedState, processing CancelRechargeEvent event ");
 
-        BigDecimal rechargeAmount = context.getAmount();
-
-        //optusClientRepository.cancelRechargeProcess(rechargeAmount);
+        //optusClientRepository.cancelRechargeProcess();
 
         return new RechargedCanceledFinalState();
     }

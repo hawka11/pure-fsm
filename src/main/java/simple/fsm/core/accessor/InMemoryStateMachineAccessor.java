@@ -20,6 +20,7 @@ public class InMemoryStateMachineAccessor implements StateMachineAccessor {
     private final HashMap<String, StateMachine> stateMachineByStateMachineId = new HashMap<>();
 
     @Override
+    @SuppressWarnings("unchecked")
     public String create(State initialState, Context context) {
         long smId = idGenerator.getAndIncrement();
         StateMachine stateMachine = new StateMachine(initialState, context);

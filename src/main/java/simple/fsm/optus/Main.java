@@ -19,12 +19,12 @@ public class Main {
 
         final String stateMachineId = accessor.create(
                 new InitialState(),
-                new OptusRechargeContext(new BigDecimal("20.00")));
+                new OptusRechargeContext());
 
         new Thread(() -> template.tryInLock(stateMachineId, new BaseStateMachineCallback() {
             @Override
             public void doWith(StateMachine stateMachine) {
-                RequestRechargeEvent event = new RequestRechargeEvent();
+                RequestRechargeEvent event = new RequestRechargeEvent(new BigDecimal("20.00"));
                 stateMachine.handleEvent(event);
             }
         })).run();

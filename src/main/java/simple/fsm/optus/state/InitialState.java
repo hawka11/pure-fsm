@@ -4,6 +4,8 @@ import simple.fsm.core.state.State;
 import simple.fsm.optus.OptusRechargeContext;
 import simple.fsm.optus.event.RequestRechargeEvent;
 
+import java.math.BigDecimal;
+
 public class InitialState extends BaseOptusState {
 
     @Override
@@ -11,7 +13,9 @@ public class InitialState extends BaseOptusState {
 
         System.out.println("In InitialState, processing RequestRechargeEvent event ");
 
-       //optusClientRepository.startRechargeProcess();
+        BigDecimal rechargeAmount = requestRechargeEvent.getAmount();
+
+        //optusClientRepository.startRechargeProcess(rechargeAmount);
 
         return new RechargeRequestedState();
     }
