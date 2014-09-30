@@ -11,4 +11,8 @@ public class OptusRechargeContext implements Context {
     public OptusRechargeContext(BigDecimal amount) {
         this.amount = amount;
     }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
 }

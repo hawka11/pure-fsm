@@ -7,13 +7,13 @@ import simple.fsm.core.event.Event;
 import simple.fsm.core.state.ErrorFinalState;
 import simple.fsm.core.state.State;
 
-public class StateMachine {
+public class StateMachine<T extends Context> {
 
     private final static Logger LOG = LoggerFactory.getLogger(StateMachine.class);
     private State currentState;
-    private final Context context;
+    private final T context;
 
-    public StateMachine(State currentState, Context context) {
+    public StateMachine(State currentState, T context) {
         this.currentState = currentState;
         this.context = context;
     }
@@ -37,7 +37,7 @@ public class StateMachine {
         return currentState;
     }
 
-    public Context getContext() {
+    public T getContext() {
         return context;
     }
 }

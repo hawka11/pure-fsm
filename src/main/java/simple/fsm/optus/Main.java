@@ -24,7 +24,7 @@ public class Main {
             @Override
             public void doWith(StateMachine stateMachine) {
 
-                RequestRechargeEvent requestRechargeEvent = new RequestRechargeEvent(stateMachine.getContext());
+                RequestRechargeEvent requestRechargeEvent = new RequestRechargeEvent();
 
                 stateMachine.handleEvent(requestRechargeEvent);
             }

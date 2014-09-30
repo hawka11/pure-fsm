@@ -1,17 +1,13 @@
 package simple.fsm.optus.event;
 
-import simple.fsm.core.Context;
-import simple.fsm.core.event.BaseEvent;
+import simple.fsm.core.event.Event;
 import simple.fsm.core.state.State;
+import simple.fsm.optus.OptusRechargeContext;
 
-public class CancelRechargeEvent extends BaseEvent<OptusEventVisitor> {
-
-    protected CancelRechargeEvent(Context context) {
-        super(context);
-    }
+public class CancelRechargeEvent implements Event<OptusRechargeContext, OptusEventVisitor> {
 
     @Override
-    public State accept(OptusEventVisitor visitor) {
+    public State accept(OptusRechargeContext context, OptusEventVisitor visitor) {
         return visitor.visit(context, this);
     }
 }
