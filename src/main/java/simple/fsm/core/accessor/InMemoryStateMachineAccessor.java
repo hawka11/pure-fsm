@@ -5,15 +5,11 @@ import simple.fsm.core.StateMachine;
 import simple.fsm.core.state.State;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static com.google.common.collect.Sets.newHashSet;
-import static java.util.Map.Entry;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static java.util.stream.Collectors.toList;
 
 public class InMemoryStateMachineAccessor implements StateMachineAccessor {
 
@@ -36,7 +32,7 @@ public class InMemoryStateMachineAccessor implements StateMachineAccessor {
     }
 
     @Override
-    public StateMachine getLatest(String stateMachineId) {
+    public StateMachine get(String stateMachineId) {
 
         return stateMachineByStateMachineId.get(stateMachineId);
     }
@@ -54,11 +50,8 @@ public class InMemoryStateMachineAccessor implements StateMachineAccessor {
     }
 
     @Override
-    public List<StateMachine> getAllUnlocked() {
-        return stateMachineByStateMachineId.entrySet().stream()
-                .filter(e -> !lockedStateMachineIds.contains(e.getKey()))
-                .map(Entry::getValue)
-                .collect(toList());
+    public Set<String> getAllIds() {
+        return stateMachineByStateMachineId.keySet();
     }
 
     @Override

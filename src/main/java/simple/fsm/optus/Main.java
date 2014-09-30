@@ -47,6 +47,6 @@ public class Main {
 
 
         //This 'current' state could be inspected by anything, which could react as desired / or send their own event to sm etc...
-        System.out.println("Ending.... current state is: " + accessor.getLatest(stateMachineId).getCurrentState().getClass().getSimpleName());
+        System.out.println("Ending.... current state is: " + accessor.get(stateMachineId).getCurrentState().getClass().getSimpleName());
     }
 }

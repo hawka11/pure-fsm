@@ -4,7 +4,7 @@ import simple.fsm.core.Context;
 import simple.fsm.core.StateMachine;
 import simple.fsm.core.state.State;
 
-import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 //TODO...example
@@ -16,7 +16,7 @@ public class HazelcastStateMachineAccessor implements StateMachineAccessor {
     }
 
     @Override
-    public StateMachine getLatest(String stateMachineId) {
+    public StateMachine get(String stateMachineId) {
         return null;
     }
 
@@ -31,7 +31,7 @@ public class HazelcastStateMachineAccessor implements StateMachineAccessor {
     }
 
     @Override
-    public List<StateMachine> getAllUnlocked() {
+    public Set<String> getAllIds() {
         return null;
     }
 

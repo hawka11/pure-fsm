@@ -4,20 +4,20 @@ import simple.fsm.core.Context;
 import simple.fsm.core.StateMachine;
 import simple.fsm.core.state.State;
 
-import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public interface StateMachineAccessor {
 
-    public String create(State initialState, Context context);
+    String create(State initialState, Context context);
 
-    StateMachine getLatest(String stateMachineId);
+    StateMachine get(String stateMachineId);
 
     StateMachine tryLock(String stateMachineId, long timeout, TimeUnit timeUnit);
 
     boolean unlock(String stateMachineId);
 
-    List<StateMachine> getAllUnlocked();
+    Set<String> getAllIds();
 
     void update(String stateMachineId, StateMachine newStateMachine);
 }
