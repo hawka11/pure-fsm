@@ -1,6 +1,6 @@
-package simple.fsm.accessor;
+package simple.fsm.core.accessor;
 
-import simple.fsm.StateMachine;
+import simple.fsm.core.StateMachine;
 
 import java.util.concurrent.TimeUnit;
 

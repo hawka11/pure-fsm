@@ -1,4 +1,4 @@
-package simple.fsm.state;
+package simple.fsm.core.state;
 
 public interface FinalState extends State {
 }

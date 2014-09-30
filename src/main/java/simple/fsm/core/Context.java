@@ -1,4 +1,4 @@
-package simple.fsm;
+package simple.fsm.core;
 
 public class Context {
 }
