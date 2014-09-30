@@ -1,8 +1,8 @@
 package simple.fsm.optus;
 
-import simple.fsm.core.BaseStateMachineCallback;
+import simple.fsm.core.template.BaseStateMachineCallback;
 import simple.fsm.core.StateMachine;
-import simple.fsm.core.StateMachineTemplate;
+import simple.fsm.core.template.StateMachineTemplate;
 import simple.fsm.core.accessor.InMemoryStateMachineAccessor;
 import simple.fsm.core.accessor.StateMachineAccessor;
 import simple.fsm.optus.event.RechargeAcceptedEvent;
@@ -21,7 +21,7 @@ public class Main {
                 new InitialState(),
                 new OptusRechargeContext());
 
-        new Thread(() -> template.tryInLock(stateMachineId, new BaseStateMachineCallback() {
+        new Thread(() -> template.tryWithLock(stateMachineId, new BaseStateMachineCallback() {
             @Override
             public void doWith(StateMachine stateMachine) {
                 RequestRechargeEvent event = new RequestRechargeEvent(new BigDecimal("20.00"));
@@ -31,7 +31,7 @@ public class Main {
 
         Thread.sleep(2000);
 
-        new Thread(() -> template.tryInLock(stateMachineId, new BaseStateMachineCallback() {
+        new Thread(() -> template.tryWithLock(stateMachineId, new BaseStateMachineCallback() {
             @Override
             public void doWith(StateMachine stateMachine) {
                 RechargeAcceptedEvent event = new RechargeAcceptedEvent();

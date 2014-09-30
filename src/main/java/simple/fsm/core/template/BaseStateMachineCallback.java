@@ -1,4 +1,4 @@
-package simple.fsm.core;
+package simple.fsm.core.template;
 
 public abstract class BaseStateMachineCallback implements StateMachineCallback {
 

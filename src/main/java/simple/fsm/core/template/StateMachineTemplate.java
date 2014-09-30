@@ -1,7 +1,8 @@
-package simple.fsm.core;
+package simple.fsm.core.template;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import simple.fsm.core.StateMachine;
 import simple.fsm.core.accessor.StateMachineAccessor;
 
 public class StateMachineTemplate {
@@ -14,7 +15,7 @@ public class StateMachineTemplate {
         this.stateMachineAccessor = stateMachineAccessor;
     }
 
-    public void tryInLock(String stateMachineId, StateMachineCallback stateMachineCallback) {
+    public void tryWithLock(String stateMachineId, StateMachineCallback stateMachineCallback) {
         StateMachine sm = null;
         try {
             sm = stateMachineAccessor.tryLock(stateMachineId);

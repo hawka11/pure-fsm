@@ -1,10 +1,10 @@
 package simple.fsm.core.timeout;
 
 import simple.fsm.core.StateMachine;
-import simple.fsm.core.StateMachineCallback;
-import simple.fsm.core.StateMachineTemplate;
 import simple.fsm.core.accessor.StateMachineAccessor;
 import simple.fsm.core.event.TimeoutTickEvent;
+import simple.fsm.core.template.StateMachineCallback;
+import simple.fsm.core.template.StateMachineTemplate;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -37,7 +37,7 @@ public class TimeoutTicker {
         List<StateMachine> stateMachines = accessor.getAllUnlocked();
 
         stateMachines.forEach(sm -> {
-            template.tryInLock("", new StateMachineCallback() {
+            template.tryWithLock(sm.getStateMachineId(), new StateMachineCallback() {
                 @Override
                 public void doWith(StateMachine stateMachine) {
                     stateMachine.handleEvent(new TimeoutTickEvent());
