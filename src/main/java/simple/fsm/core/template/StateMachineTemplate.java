@@ -22,15 +22,23 @@ public class StateMachineTemplate {
      * This does not prevent multiple state machines being sent their own events concurrently
      */
     public void tryWithLock(String stateMachineId, StateMachineCallback stateMachineCallback) {
-        StateMachine sm = null;
+        StateMachine currentStateMachine = null;
         try {
-            sm = stateMachineAccessor.tryLock(stateMachineId);
-            stateMachineCallback.doWith(sm);
+            currentStateMachine = stateMachineAccessor.tryLock(stateMachineId);
         } catch (Exception e) {
-            LOG.error("Error with sm [{}]", stateMachineId);
-            stateMachineCallback.onError(e);
-        } finally {
-            if (sm != null) {
+            LOG.error("Error with currentStateMachine [{}]", stateMachineId);
+            stateMachineCallback.lockFailed(e);
+        }
+
+        if (currentStateMachine != null) {
+            try {
+                StateMachine newStateMachine = stateMachineCallback.doWith(currentStateMachine);
+                stateMachineAccessor.update(stateMachineId, newStateMachine);
+            } catch (Exception e) {
+                LOG.error("Error with currentStateMachine [{}]", stateMachineId);
+                StateMachine newStateMachine = stateMachineCallback.onError(currentStateMachine, e);
+                stateMachineAccessor.update(stateMachineId, newStateMachine);
+            } finally {
                 stateMachineAccessor.unlock(stateMachineId);
             }
         }

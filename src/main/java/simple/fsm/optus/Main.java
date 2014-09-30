@@ -25,9 +25,9 @@ public class Main {
         //One thread will send RequestRechargeEvent to sm
         new Thread(() -> template.tryWithLock(stateMachineId, new BaseStateMachineCallback() {
             @Override
-            public void doWith(StateMachine stateMachine) {
+            public StateMachine doWith(StateMachine stateMachine) {
                 RequestRechargeEvent event = new RequestRechargeEvent(new BigDecimal("20.00"));
-                stateMachine.handleEvent(event);
+                return stateMachine.handleEvent(event);
             }
         })).run();
 
@@ -37,16 +37,16 @@ public class Main {
         //Probably invoked by a callback via optus webservice
         new Thread(() -> template.tryWithLock(stateMachineId, new BaseStateMachineCallback() {
             @Override
-            public void doWith(StateMachine stateMachine) {
+            public StateMachine doWith(StateMachine stateMachine) {
                 RechargeAcceptedEvent event = new RechargeAcceptedEvent();
-                stateMachine.handleEvent(event);
+                return stateMachine.handleEvent(event);
             }
         })).run();
 
         Thread.sleep(2000);
 
 
-        //This 'current' state could be inspected by anything, which could react as desired / or send event to sm etc...
-        System.out.println("Ending.... current state is: " + accessor.getSnapshot(stateMachineId).getCurrentState().getClass().getSimpleName());
+        //This 'current' state could be inspected by anything, which could react as desired / or send their own event to sm etc...
+        System.out.println("Ending.... current state is: " + accessor.getLatest(stateMachineId).getCurrentState().getClass().getSimpleName());
     }
 }

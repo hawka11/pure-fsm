@@ -1,5 +1,7 @@
 package simple.fsm.core.timeout;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import simple.fsm.core.StateMachine;
 import simple.fsm.core.accessor.StateMachineAccessor;
 import simple.fsm.core.event.TimeoutTickEvent;
@@ -10,6 +12,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class TimeoutTicker {
+
+    private final static Logger LOG = LoggerFactory.getLogger(TimeoutTicker.class);
 
     private final StateMachineAccessor accessor;
     private final StateMachineTemplate template;
@@ -39,13 +43,20 @@ public class TimeoutTicker {
         stateMachines.forEach(sm -> {
             template.tryWithLock(sm.getStateMachineId(), new StateMachineCallback() {
                 @Override
-                public void doWith(StateMachine stateMachine) {
-                    stateMachine.handleEvent(new TimeoutTickEvent());
+                public StateMachine doWith(StateMachine stateMachine) {
+
+                    return stateMachine.handleEvent(new TimeoutTickEvent());
                 }
 
                 @Override
-                public void onError(Exception e) {
-                    //Ignore, will attempt in next tick
+                public StateMachine onError(StateMachine stateMachine, Exception e) {
+                    LOG.debug("onError received, ignoring");
+                    return stateMachine;
+                }
+
+                @Override
+                public void lockFailed(Exception e) {
+                    LOG.debug("onError received, ignoring");
                 }
             });
         });

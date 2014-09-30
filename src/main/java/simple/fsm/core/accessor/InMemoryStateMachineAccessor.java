@@ -36,7 +36,8 @@ public class InMemoryStateMachineAccessor implements StateMachineAccessor {
     }
 
     @Override
-    public StateMachine getSnapshot(String stateMachineId) {
+    public StateMachine getLatest(String stateMachineId) {
+
         return stateMachineByStateMachineId.get(stateMachineId);
     }
 
@@ -63,5 +64,10 @@ public class InMemoryStateMachineAccessor implements StateMachineAccessor {
                 .filter(e -> !lockedStateMachineIds.contains(e.getKey()))
                 .map(Entry::getValue)
                 .collect(toList());
+    }
+
+    @Override
+    public void update(String stateMachineId, StateMachine newStateMachine) {
+        stateMachineByStateMachineId.put(stateMachineId, newStateMachine);
     }
 }

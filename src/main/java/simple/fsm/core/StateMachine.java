@@ -11,7 +11,7 @@ public class StateMachine<T extends Context> {
 
     private final static Logger LOG = LoggerFactory.getLogger(StateMachine.class);
     private final String stateMachineId;
-    private State currentState;
+    private final State currentState;
     private final T context;
 
     public StateMachine(String stateMachineId, State currentState, T context) {
@@ -20,7 +20,8 @@ public class StateMachine<T extends Context> {
         this.context = context;
     }
 
-    public void handleEvent(Event event) {
+    @SuppressWarnings("unchecked")
+    public StateMachine<T> handleEvent(Event event) {
         try {
             State newState = currentState.handle(context, event);
 
@@ -28,10 +29,10 @@ public class StateMachine<T extends Context> {
 
             newState.onEntry(context, event, currentState);
 
-            currentState = newState;
+            return new StateMachine(stateMachineId, newState, context);
         } catch (Exception e) {
             LOG.error("Error handling event [{}]", event);
-            currentState = new ErrorFinalState(e);
+            return new StateMachine(stateMachineId, new ErrorFinalState(e), context);
         }
     }
 

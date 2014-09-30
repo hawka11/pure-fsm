@@ -3,7 +3,10 @@ package simple.fsm.core.template;
 import simple.fsm.core.StateMachine;
 
 public interface StateMachineCallback {
-    void doWith(StateMachine stateMachine);
 
-    void onError(Exception e);
+    StateMachine doWith(StateMachine stateMachine);
+
+    void lockFailed(Exception e);
+
+    StateMachine onError(StateMachine stateMachine, Exception e);
 }

@@ -11,7 +11,7 @@ public interface StateMachineAccessor {
 
     public String create(State initialState, Context context);
 
-    StateMachine getSnapshot(String stateMachineId);
+    StateMachine getLatest(String stateMachineId);
 
     StateMachine tryLock(String stateMachineId);
 
@@ -20,4 +20,6 @@ public interface StateMachineAccessor {
     boolean unlock(String stateMachineId);
 
     List<StateMachine> getAllUnlocked();
+
+    void update(String stateMachineId, StateMachine newStateMachine);
 }

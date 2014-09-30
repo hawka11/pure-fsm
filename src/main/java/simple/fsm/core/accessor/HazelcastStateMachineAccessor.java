@@ -16,7 +16,7 @@ public class HazelcastStateMachineAccessor implements StateMachineAccessor {
     }
 
     @Override
-    public StateMachine getSnapshot(String stateMachineId) {
+    public StateMachine getLatest(String stateMachineId) {
         return null;
     }
 
@@ -38,5 +38,10 @@ public class HazelcastStateMachineAccessor implements StateMachineAccessor {
     @Override
     public List<StateMachine> getAllUnlocked() {
         return null;
+    }
+
+    @Override
+    public void update(String stateMachineId, StateMachine newStateMachine) {
+
     }
 }
