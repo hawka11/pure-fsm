@@ -22,7 +22,7 @@ public class InMemoryStateMachineAccessor implements StateMachineAccessor {
     private final Set<String> lockedStateMachineIds = newHashSet();
     private final HashMap<String, StateMachine> stateMachineByStateMachineId = new HashMap<>();
 
-    //TODO: correctly syncronize all these calls.
+    //TODO: correctly synchronise all these calls.
 
     //TODO: cleanup of final state state machines thread ticker
 
@@ -42,7 +42,7 @@ public class InMemoryStateMachineAccessor implements StateMachineAccessor {
 
     @Override
     public StateMachine tryLock(String stateMachineId) {
-        return tryLock(stateMachineId, 2, SECONDS);
+        return tryLock(stateMachineId, 1, SECONDS);
     }
 
     @Override

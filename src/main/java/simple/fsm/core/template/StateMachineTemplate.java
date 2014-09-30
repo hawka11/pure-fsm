@@ -15,6 +15,12 @@ public class StateMachineTemplate {
         this.stateMachineAccessor = stateMachineAccessor;
     }
 
+    /**
+     * We only want one thread/event to be processed at a time for a given state machine,
+     * this method should be used to synchronise any event handling within a single state machine.
+     * <p>
+     * This does not prevent multiple state machines being sent their own events concurrently
+     */
     public void tryWithLock(String stateMachineId, StateMachineCallback stateMachineCallback) {
         StateMachine sm = null;
         try {
