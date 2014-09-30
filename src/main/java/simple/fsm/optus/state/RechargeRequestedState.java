@@ -5,8 +5,6 @@ import simple.fsm.optus.OptusRechargeContext;
 import simple.fsm.optus.event.CancelRechargeEvent;
 import simple.fsm.optus.event.RechargeAcceptedEvent;
 
-import java.math.BigDecimal;
-
 public class RechargeRequestedState extends BaseOptusState {
 
     @Override

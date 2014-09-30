@@ -4,12 +4,18 @@ import simple.fsm.core.Context;
 import simple.fsm.core.StateMachine;
 import simple.fsm.core.state.State;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class RedisStateMachineAccessor implements StateMachineAccessor {
 
     @Override
     public String create(State initialState, Context context) {
+        return null;
+    }
+
+    @Override
+    public StateMachine getSnapshot(String stateMachineId) {
         return null;
     }
 
@@ -26,5 +32,10 @@ public class RedisStateMachineAccessor implements StateMachineAccessor {
     @Override
     public boolean unlock(String stateMachineId) {
         return false;
+    }
+
+    @Override
+    public List<StateMachine> getAllUnlocked() {
+        return null;
     }
 }

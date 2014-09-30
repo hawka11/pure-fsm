@@ -40,5 +40,7 @@ public class Main {
         })).run();
 
         Thread.sleep(2000);
+
+        System.out.println("Ending.... current state is: " + accessor.getSnapshot(stateMachineId).getCurrentState().getClass().getSimpleName());
     }
 }
