@@ -11,7 +11,7 @@ import simple.fsm.optus.state.InitialState;
 
 import java.math.BigDecimal;
 
-public class Main {
+public class MainSuccessful {
 
     public static void main(String[] args) throws Exception {
         final StateMachineAccessor accessor = new InMemoryStateMachineAccessor();

@@ -22,6 +22,11 @@ public class BaseOptusState implements State, OptusEventVisitor {
     }
 
     @Override
+    public LocalDateTime getCreated() {
+        return createdDateTime;
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public State handle(Context context, Event event) {
         return event.accept(context, this);
@@ -55,12 +60,15 @@ public class BaseOptusState implements State, OptusEventVisitor {
     @Override
     public State visit(Context context, TimeoutTickEvent timeoutTickEvent) {
 
+        System.out.println("In " + getClass().getSimpleName() + ", processing TimeoutTickEvent event ");
+
         return isTimeout() ? new TimedOutFinalState("because") : this;
     }
 
     protected LocalDateTime getTimeoutDateTime() {
 
-        return createdDateTime.plusSeconds(50);
+        //example timeout is 5 seconds
+        return createdDateTime.plusSeconds(5);
     }
 
     protected boolean isTimeout() {

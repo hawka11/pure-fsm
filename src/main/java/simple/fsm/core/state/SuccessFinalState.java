@@ -3,14 +3,18 @@ package simple.fsm.core.state;
 import simple.fsm.core.Context;
 import simple.fsm.core.event.Event;
 
+import java.time.LocalDateTime;
+
 public class SuccessFinalState implements FinalState {
 
     private final String code;
     private final String message;
+    private final LocalDateTime createdDateTime;
 
     public SuccessFinalState(String code, String message) {
         this.code = code;
         this.message = message;
+        this.createdDateTime = LocalDateTime.now();
     }
 
     public static SuccessFinalState userCanceled() {
@@ -18,8 +22,14 @@ public class SuccessFinalState implements FinalState {
     }
 
     @Override
+    public LocalDateTime getCreated() {
+        return createdDateTime;
+    }
+
+    @Override
     public State handle(Context context, Event event) {
-        return null;
+
+        throw new IllegalStateException("In SuccessFinalState, cannot process any more events");
     }
 
     @Override

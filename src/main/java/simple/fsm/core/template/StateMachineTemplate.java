@@ -15,10 +15,10 @@ public class StateMachineTemplate {
 
     private final static Logger LOG = LoggerFactory.getLogger(StateMachineTemplate.class);
 
-    private final StateMachineAccessor stateMachineAccessor;
+    private final StateMachineAccessor accessor;
 
-    public StateMachineTemplate(StateMachineAccessor stateMachineAccessor) {
-        this.stateMachineAccessor = stateMachineAccessor;
+    public StateMachineTemplate(StateMachineAccessor accessor) {
+        this.accessor = accessor;
     }
 
     public void tryWithLock(String stateMachineId, StateMachineCallback stateMachineCallback) {
@@ -36,7 +36,7 @@ public class StateMachineTemplate {
         Optional<Lock> lock = Optional.empty();
 
         try {
-            lock = stateMachineAccessor.tryLock(stateMachineId, timeout, timeUnit);
+            lock = accessor.tryLock(stateMachineId, timeout, timeUnit);
         } catch (Exception e) {
             LOG.error("Error with currentStateMachine [{}]", stateMachineId);
             stateMachineCallback.onLockFailed(e);
