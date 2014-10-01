@@ -37,7 +37,7 @@ public class StateMachineTemplate {
             lock = stateMachineAccessor.tryLock(stateMachineId, timeout, timeUnit);
         } catch (Exception e) {
             LOG.error("Error with currentStateMachine [{}]", stateMachineId);
-            stateMachineCallback.lockFailed(e);
+            stateMachineCallback.onLockFailed(e);
         }
 
         if (lock.isPresent()) {

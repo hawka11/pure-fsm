@@ -60,7 +60,7 @@ public class BaseOptusState implements State, OptusEventVisitor {
 
     protected LocalDateTime getTimeoutDateTime() {
 
-        return createdDateTime.plusSeconds(50L);
+        return createdDateTime.plusSeconds(50);
     }
 
     protected boolean isTimeout() {

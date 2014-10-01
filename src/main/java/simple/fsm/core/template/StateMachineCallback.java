@@ -6,7 +6,7 @@ public interface StateMachineCallback {
 
     StateMachine doWith(StateMachine stateMachine);
 
-    void lockFailed(Exception e);
+    void onLockFailed(Exception e);
 
     StateMachine onError(StateMachine stateMachine, Exception e);
 }

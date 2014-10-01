@@ -13,7 +13,7 @@ public abstract class BaseStateMachineCallback implements StateMachineCallback {
     }
 
     @Override
-    public void lockFailed(Exception e) {
+    public void onLockFailed(Exception e) {
 
     }
 }

@@ -55,8 +55,8 @@ public class TimeoutTicker {
                 }
 
                 @Override
-                public void lockFailed(Exception e) {
-                    LOG.debug("onError received, ignoring");
+                public void onLockFailed(Exception e) {
+                    LOG.debug("onLockFailed received, ignoring");
                 }
             });
         });
