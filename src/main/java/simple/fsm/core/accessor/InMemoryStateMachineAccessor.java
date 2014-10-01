@@ -1,5 +1,6 @@
 package simple.fsm.core.accessor;
 
+import com.google.common.collect.ImmutableSet;
 import simple.fsm.core.Context;
 import simple.fsm.core.StateMachine;
 import simple.fsm.core.state.State;
@@ -66,6 +67,6 @@ public class InMemoryStateMachineAccessor implements StateMachineAccessor {
 
     @Override
     public Set<String> getAllIds() {
-        return stateMachineByStateMachineId.keySet();
+        return ImmutableSet.copyOf(stateMachineByStateMachineId.keySet());
     }
 }
