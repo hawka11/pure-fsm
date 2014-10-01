@@ -25,5 +25,7 @@ public interface StateMachineAccessor {
         void update(StateMachine newStateMachine);
 
         boolean unlock();
+
+        boolean unlockAndRemove();
     }
 }
