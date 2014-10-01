@@ -8,7 +8,6 @@ import simple.fsm.core.event.TimeoutTickEvent;
 import simple.fsm.core.template.StateMachineCallback;
 import simple.fsm.core.template.StateMachineTemplate;
 
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class TimeoutTicker {
@@ -29,36 +28,32 @@ public class TimeoutTicker {
         this.timeUnit = timeUnit;
     }
 
-    public void startTickSchedule() {
+    public void startTickScheduler() {
         //TODO
     }
 
-    public void endTickSchedule() {
+    public void endTickScheduler() {
         //TODO
     }
 
     public void sendTimeOutTickerEvents() {
-        Set<String> stateMachinesIds = accessor.getAllIds();
+        accessor.getAllIds().forEach(id -> template.tryWithLock(id, new StateMachineCallback() {
+            @Override
+            public StateMachine doWith(StateMachine stateMachine) {
 
-        stateMachinesIds.forEach(id -> {
-            template.tryWithLock(id, new StateMachineCallback() {
-                @Override
-                public StateMachine doWith(StateMachine stateMachine) {
+                return stateMachine.handleEvent(new TimeoutTickEvent());
+            }
 
-                    return stateMachine.handleEvent(new TimeoutTickEvent());
-                }
+            @Override
+            public StateMachine onError(StateMachine stateMachine, Exception e) {
+                LOG.debug("onError received, ignoring");
+                return stateMachine;
+            }
 
-                @Override
-                public StateMachine onError(StateMachine stateMachine, Exception e) {
-                    LOG.debug("onError received, ignoring");
-                    return stateMachine;
-                }
-
-                @Override
-                public void onLockFailed(Exception e) {
-                    LOG.debug("onLockFailed received, ignoring");
-                }
-            });
-        });
+            @Override
+            public void onLockFailed(Exception e) {
+                LOG.debug("onLockFailed received, ignoring");
+            }
+        }));
     }
 }

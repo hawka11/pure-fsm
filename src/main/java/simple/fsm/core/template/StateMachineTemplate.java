@@ -8,6 +8,7 @@ import simple.fsm.core.accessor.StateMachineAccessor;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static simple.fsm.core.accessor.StateMachineAccessor.Lock;
 
 public class StateMachineTemplate {
@@ -21,7 +22,8 @@ public class StateMachineTemplate {
     }
 
     public void tryWithLock(String stateMachineId, StateMachineCallback stateMachineCallback) {
-        tryWithLock(stateMachineId, stateMachineCallback, 1, TimeUnit.SECONDS);
+
+        tryWithLock(stateMachineId, stateMachineCallback, 1, SECONDS);
     }
 
     /**
