@@ -5,6 +5,7 @@ import simple.fsm.core.StateMachine;
 import simple.fsm.core.state.State;
 
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
@@ -38,24 +39,33 @@ public class InMemoryStateMachineAccessor implements StateMachineAccessor {
     }
 
     @Override
-    public StateMachine tryLock(String stateMachineId, long timeout, TimeUnit timeUnit) {
-        lockedStateMachineIds.add(stateMachineId);
-        return stateMachineByStateMachineId.get(stateMachineId);
-    }
+    public Optional<Lock> tryLock(String stateMachineId, long timeout, TimeUnit timeUnit) {
 
-    @Override
-    public boolean unlock(String stateMachineId) {
-        lockedStateMachineIds.remove(stateMachineId);
-        return true;
+        lockedStateMachineIds.add(stateMachineId);
+
+        Lock lock = new Lock() {
+            @Override
+            public StateMachine getStateMachine() {
+                return stateMachineByStateMachineId.get(stateMachineId);
+            }
+
+            @Override
+            public void update(StateMachine newStateMachine) {
+                stateMachineByStateMachineId.put(stateMachineId, newStateMachine);
+            }
+
+            @Override
+            public boolean unlock() {
+                lockedStateMachineIds.remove(stateMachineId);
+                return true;
+            }
+        };
+
+        return Optional.of(lock);
     }
 
     @Override
     public Set<String> getAllIds() {
         return stateMachineByStateMachineId.keySet();
-    }
-
-    @Override
-    public void update(String stateMachineId, StateMachine newStateMachine) {
-        stateMachineByStateMachineId.put(stateMachineId, newStateMachine);
     }
 }

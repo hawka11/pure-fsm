@@ -5,7 +5,10 @@ import org.slf4j.LoggerFactory;
 import simple.fsm.core.StateMachine;
 import simple.fsm.core.accessor.StateMachineAccessor;
 
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+
+import static simple.fsm.core.accessor.StateMachineAccessor.Lock;
 
 public class StateMachineTemplate {
 
@@ -28,24 +31,25 @@ public class StateMachineTemplate {
      * This does not prevent multiple state machines being sent their own events concurrently
      */
     public void tryWithLock(String stateMachineId, StateMachineCallback stateMachineCallback, long timeout, TimeUnit timeUnit) {
-        StateMachine currentStateMachine = null;
+        Optional<Lock> lock = Optional.empty();
+
         try {
-            currentStateMachine = stateMachineAccessor.tryLock(stateMachineId, timeout, timeUnit);
+            lock = stateMachineAccessor.tryLock(stateMachineId, timeout, timeUnit);
         } catch (Exception e) {
             LOG.error("Error with currentStateMachine [{}]", stateMachineId);
             stateMachineCallback.lockFailed(e);
         }
 
-        if (currentStateMachine != null) {
+        if (lock.isPresent()) {
             try {
-                StateMachine newStateMachine = stateMachineCallback.doWith(currentStateMachine);
-                stateMachineAccessor.update(stateMachineId, newStateMachine);
+                StateMachine newStateMachine = stateMachineCallback.doWith(lock.get().getStateMachine());
+                lock.get().update(newStateMachine);
             } catch (Exception e) {
                 LOG.error("Error with currentStateMachine [{}]", stateMachineId);
-                StateMachine newStateMachine = stateMachineCallback.onError(currentStateMachine, e);
-                stateMachineAccessor.update(stateMachineId, newStateMachine);
+                StateMachine newStateMachine = stateMachineCallback.onError(lock.get().getStateMachine(), e);
+                lock.get().update(newStateMachine);
             } finally {
-                stateMachineAccessor.unlock(stateMachineId);
+                lock.get().unlock();
             }
         }
     }
