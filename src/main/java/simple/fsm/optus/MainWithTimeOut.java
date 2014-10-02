@@ -40,7 +40,7 @@ public class MainWithTimeOut {
         //something should configure this to run periodically
         timeoutTicker.sendTimeOutTickerEvents();
 
-        Thread.sleep(1000);
+        Thread.sleep(2000);
 
         //This 'current' state could be inspected by anything, which could react as desired / or send their own event to sm etc...
         System.out.println("Ending.... current state is: " + accessor.get(stateMachineId).getCurrentState().getClass().getSimpleName());
