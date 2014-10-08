@@ -1,7 +1,7 @@
 package simple.fsm.accessor.hazelcast;
 
-import com.hazelcast.config.Config;
-import com.hazelcast.core.Hazelcast;
+import com.hazelcast.client.HazelcastClient;
+import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IAtomicLong;
 import com.hazelcast.core.IMap;
@@ -94,9 +94,10 @@ public class HazelcastStateMachineAccessor implements StateMachineAccessor {
     }
 
     private synchronized HazelcastInstance getHazel() {
-        if (hazelcastInstance != null) {
-            Config config = new Config();
-            hazelcastInstance = Hazelcast.newHazelcastInstance(config);
+        if (hazelcastInstance == null) {
+            ClientConfig clientConfig = new ClientConfig();
+            clientConfig.addAddress("127.0.0.1:5701");
+            hazelcastInstance = HazelcastClient.newHazelcastClient(clientConfig);
         }
         return hazelcastInstance;
     }
