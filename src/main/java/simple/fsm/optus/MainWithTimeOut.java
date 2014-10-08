@@ -6,7 +6,6 @@ import simple.fsm.core.accessor.StateMachineAccessor;
 import simple.fsm.core.template.BaseStateMachineCallback;
 import simple.fsm.core.template.StateMachineTemplate;
 import simple.fsm.core.timeout.TimeoutTicker;
-import simple.fsm.optus.event.RechargeAcceptedEvent;
 import simple.fsm.optus.event.RequestRechargeEvent;
 import simple.fsm.optus.state.InitialState;
 

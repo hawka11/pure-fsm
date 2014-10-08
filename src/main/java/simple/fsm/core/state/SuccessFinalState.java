@@ -5,7 +5,7 @@ import simple.fsm.core.event.Event;
 
 import java.time.LocalDateTime;
 
-public class SuccessFinalState implements FinalState {
+public class SuccessFinalState extends BaseFinalState {
 
     private final String code;
     private final String message;
@@ -30,13 +30,5 @@ public class SuccessFinalState implements FinalState {
     public State handle(Context context, Event event) {
 
         throw new IllegalStateException("In SuccessFinalState, cannot process any more events");
-    }
-
-    @Override
-    public void onExit(Context context, Event event) {
-    }
-
-    @Override
-    public void onEntry(Context context, Event event, State prevState) {
     }
 }

@@ -5,7 +5,7 @@ import simple.fsm.core.event.Event;
 
 import java.time.LocalDateTime;
 
-public class ErrorFinalState implements FinalState {
+public class ErrorFinalState extends BaseFinalState {
 
     private final Exception e;
     private final LocalDateTime createdDateTime;
@@ -24,15 +24,5 @@ public class ErrorFinalState implements FinalState {
     public State handle(Context context, Event event) {
 
         throw new IllegalStateException("In Error Final State, cannot process any more events");
-    }
-
-    @Override
-    public void onExit(Context context, Event event) {
-
-    }
-
-    @Override
-    public void onEntry(Context context, Event event, State prevState) {
-
     }
 }

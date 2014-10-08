@@ -37,6 +37,6 @@ public class MainWithCleanup {
         Thread.sleep(2000);
 
         //This 'current' state could be inspected by anything, which could react as desired / or send their own event to sm etc...
-        System.out.println("Ending.... current state is: " + accessor.get(stateMachineId));
+        System.out.println("Ending.... current state is: " + accessor.get(stateMachineId).getCurrentState().getClass().getSimpleName());
     }
 }
