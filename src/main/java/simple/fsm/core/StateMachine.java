@@ -44,9 +44,12 @@ public class StateMachine<T extends Context> {
             newState.onEntry(transitionedContext, event, currentState);
         } catch (Exception e) {
             LOG.error("Error handling event [{}]", event);
+
             transitionedContext = context.transition();
             transitionedContext.setException(e);
+
             newState = new ErrorFinalState();
+            newState.onEntry(transitionedContext, event, currentState);
         }
 
         return new StateMachine(stateMachineId, newState, transitionedContext, this);

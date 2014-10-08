@@ -23,12 +23,10 @@ public class BaseOptusState implements State, OptusEventVisitor {
 
     @Override
     public void onExit(Context context, Event event) {
-
     }
 
     @Override
     public void onEntry(Context context, Event event, State prevState) {
-
     }
 
     @Override
@@ -56,7 +54,6 @@ public class BaseOptusState implements State, OptusEventVisitor {
     }
 
     protected LocalDateTime getTimeoutDateTime(Context context) {
-
         //example timeout is 5 seconds
         return context.getCreated().plusSeconds(5);
     }
