@@ -55,14 +55,6 @@ public class HazelcastStateMachineAccessor implements StateMachineAccessor {
         }
     }
 
-    private synchronized HazelcastInstance getHazel() {
-        if (hazelcastInstance != null) {
-            Config config = new Config();
-            hazelcastInstance = Hazelcast.newHazelcastInstance(config);
-        }
-        return hazelcastInstance;
-    }
-
     @Override
     public Set<String> getAllIds() {
         return copyOf(getHolderMap().keySet());
@@ -99,5 +91,13 @@ public class HazelcastStateMachineAccessor implements StateMachineAccessor {
 
     private IMap<String, StateMachine> getHolderMap() {
         return getHazel().getMap("STATE_MACHINE_HOLDER");
+    }
+
+    private synchronized HazelcastInstance getHazel() {
+        if (hazelcastInstance != null) {
+            Config config = new Config();
+            hazelcastInstance = Hazelcast.newHazelcastInstance(config);
+        }
+        return hazelcastInstance;
     }
 }
