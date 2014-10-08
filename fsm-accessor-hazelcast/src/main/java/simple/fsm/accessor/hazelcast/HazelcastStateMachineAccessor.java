@@ -1,14 +1,14 @@
-package simple.fsm.core.accessor;
+package simple.fsm.accessor.hazelcast;
 
 import simple.fsm.core.Context;
 import simple.fsm.core.StateMachine;
+import simple.fsm.core.accessor.StateMachineAccessor;
 import simple.fsm.core.state.State;
 
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-//TODO...example
 public class HazelcastStateMachineAccessor implements StateMachineAccessor {
 
     @Override

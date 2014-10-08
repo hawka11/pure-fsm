@@ -2,3 +2,5 @@
 include 'fsm-core'
 include 'fsm-optus-example'
 
+include 'fsm-accessor-hazelcast'
+
