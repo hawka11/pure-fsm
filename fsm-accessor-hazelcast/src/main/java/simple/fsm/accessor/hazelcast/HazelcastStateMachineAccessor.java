@@ -12,15 +12,11 @@ import simple.fsm.core.StateMachine;
 import simple.fsm.core.accessor.StateMachineAccessor;
 import simple.fsm.core.state.State;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static com.google.common.collect.ImmutableSet.copyOf;
-import static java.lang.Boolean.TRUE;
-import static java.time.LocalDateTime.now;
 
 public class HazelcastStateMachineAccessor implements StateMachineAccessor {
 
@@ -31,12 +27,10 @@ public class HazelcastStateMachineAccessor implements StateMachineAccessor {
     @Override
     @SuppressWarnings("unchecked")
     public String create(State initialState, Context context) {
-
         IAtomicLong idAtomicLong = getHazel().getAtomicLong("STATE_MACHINE_ID_GENERATOR");
         String id = String.valueOf(idAtomicLong.getAndIncrement());
 
         StateMachine stateMachine = new StateMachine(id, initialState, context);
-
         getHolderMap().put(id, stateMachine);
 
         return id;
@@ -49,17 +43,15 @@ public class HazelcastStateMachineAccessor implements StateMachineAccessor {
 
     @Override
     public Optional<Lock> tryLock(String stateMachineId, long timeout, TimeUnit timeUnit) {
-        java.util.concurrent.locks.Lock lock = getHazel().getLock("STATE_MACHINE-" + stateMachineId);
+        java.util.concurrent.locks.Lock distributedLock = getHazel().getLock("STATE_MACHINE-" + stateMachineId);
 
         try {
-            lock.tryLock(timeout, timeUnit);
+            distributedLock.tryLock(timeout, timeUnit);
 
-            return attemptLock(stateMachineId, timeout, timeUnit);
+            return createLock(stateMachineId, distributedLock);
         } catch (InterruptedException e) {
-            LOG.warn("Could not get HZ distributed lock for state machine [" + stateMachineId + "]", e);
+            LOG.warn("Could not get HZ distributed distributedLock for state machine [" + stateMachineId + "]", e);
             return Optional.empty();
-        } finally {
-            lock.unlock();
         }
     }
 
@@ -76,28 +68,7 @@ public class HazelcastStateMachineAccessor implements StateMachineAccessor {
         return copyOf(getHolderMap().keySet());
     }
 
-    private Optional<Lock> attemptLock(String stateMachineId, long timeout, TimeUnit timeUnit) {
-        Optional<Lock> lock = Optional.empty();
-
-        try {
-            LocalDateTime startDateTime = now();
-
-            while (!lock.isPresent() && now().isBefore(startDateTime.plus(timeout, ChronoUnit.MILLIS))) {
-                if (!getLockMap().containsKey(stateMachineId)) {
-                    getLockMap().put(stateMachineId, TRUE);
-                    lock = createLock(stateMachineId);
-                }
-
-                Thread.sleep(200);
-            }
-        } catch (InterruptedException e) {
-            LOG.warn("Could not get lock for state machine [" + stateMachineId + "]", e);
-        }
-
-        return lock;
-    }
-
-    private Optional<Lock> createLock(String stateMachineId) {
+    private Optional<Lock> createLock(String stateMachineId, java.util.concurrent.locks.Lock distributedLock) {
         Lock lock = new Lock() {
             @Override
             public StateMachine getStateMachine() {
@@ -111,7 +82,7 @@ public class HazelcastStateMachineAccessor implements StateMachineAccessor {
 
             @Override
             public boolean unlock() {
-                getLockMap().remove(stateMachineId);
+                distributedLock.unlock();
                 return true;
             }
 
@@ -128,9 +99,5 @@ public class HazelcastStateMachineAccessor implements StateMachineAccessor {
 
     private IMap<String, StateMachine> getHolderMap() {
         return getHazel().getMap("STATE_MACHINE_HOLDER");
-    }
-
-    private IMap<String, Boolean> getLockMap() {
-        return getHazel().getMap("STATE_MACHINE_LOCK");
     }
 }
