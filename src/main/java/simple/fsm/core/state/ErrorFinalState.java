@@ -7,19 +7,6 @@ import java.time.LocalDateTime;
 
 public class ErrorFinalState extends BaseFinalState {
 
-    private final Exception e;
-    private final LocalDateTime createdDateTime;
-
-    public ErrorFinalState(Exception e) {
-        this.e = e;
-        this.createdDateTime = LocalDateTime.now();
-    }
-
-    @Override
-    public LocalDateTime getCreated() {
-        return createdDateTime;
-    }
-
     @Override
     public State handle(Context context, Event event) {
 

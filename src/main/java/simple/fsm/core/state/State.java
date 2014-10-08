@@ -7,8 +7,6 @@ import java.time.LocalDateTime;
 
 public interface State {
 
-    LocalDateTime getCreated();
-
     State handle(Context context, Event event);
 
     void onExit(Context context, Event event);

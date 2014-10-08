@@ -17,15 +17,16 @@ public class RechargeRequestedState extends BaseOptusState {
 
         //optusClientRepository.cancelRechargeProcess();
 
-        return userCanceled();
+        return userCanceled(context);
     }
 
     @Override
     public State visit(OptusRechargeContext context, RechargeAcceptedEvent rechargeAcceptedEvent) {
         System.out.println("In RechargeRequestedState, processing RechargeAcceptedEvent event ");
 
-        //mark context as complete
+        //TODO: mark context as complete
+        context.setMessage("RECHARGE_ACCEPTED");
 
-        return new SuccessFinalState("RECHARGE_ACCEPTED", "Optus recharged success");
+        return new SuccessFinalState();
     }
 }

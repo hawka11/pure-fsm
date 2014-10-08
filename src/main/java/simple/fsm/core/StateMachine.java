@@ -32,18 +32,24 @@ public class StateMachine<T extends Context> {
 
     @SuppressWarnings("unchecked")
     public StateMachine<T> handleEvent(Event event) {
+        State newState;
+        Context transitionedContext;
         try {
-            State newState = currentState.handle(context, event);
+            newState = currentState.handle(context, event);
 
             currentState.onExit(context, event);
 
-            newState.onEntry(context, event, currentState);
+            transitionedContext = context.transition();
 
-            return new StateMachine(stateMachineId, newState, context, this);
+            newState.onEntry(transitionedContext, event, currentState);
         } catch (Exception e) {
             LOG.error("Error handling event [{}]", event);
-            return new StateMachine(stateMachineId, new ErrorFinalState(e), context, this);
+            transitionedContext = context.transition();
+            transitionedContext.setException(e);
+            newState = new ErrorFinalState();
         }
+
+        return new StateMachine(stateMachineId, newState, transitionedContext, this);
     }
 
     public String getStateMachineId() {

@@ -1,23 +1,26 @@
 package simple.fsm.optus;
 
+import simple.fsm.core.BaseContext;
 import simple.fsm.core.Context;
 import simple.fsm.core.Resource;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import static com.google.common.collect.Sets.newHashSet;
 
-public class OptusRechargeContext implements Context {
+public class OptusRechargeContext extends BaseContext {
 
-    private final Set<Resource> resources = newHashSet();
+    private OptusRechargeContext(Set<Resource> resources, Exception e, String msg, LocalDateTime created) {
+        super(resources, e, msg, created);
+    }
 
-    @Override
-    public void addResource(Resource resource) {
-        resources.add(resource);
+    public OptusRechargeContext() {
+        super(newHashSet(), null, null, LocalDateTime.now());
     }
 
     @Override
-    public void unlockResources() {
-        resources.forEach(Resource::unlock);
+    public Context transition() {
+        return new OptusRechargeContext(getResources(), getException(), getMessage(), LocalDateTime.now());
     }
 }

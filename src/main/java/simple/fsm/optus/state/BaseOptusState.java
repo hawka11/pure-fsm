@@ -15,17 +15,6 @@ import java.time.LocalDateTime;
 
 public class BaseOptusState implements State, OptusEventVisitor {
 
-    protected final LocalDateTime createdDateTime;
-
-    public BaseOptusState() {
-        this.createdDateTime = LocalDateTime.now();
-    }
-
-    @Override
-    public LocalDateTime getCreated() {
-        return createdDateTime;
-    }
-
     @Override
     @SuppressWarnings("unchecked")
     public State handle(Context context, Event event) {
@@ -59,20 +48,21 @@ public class BaseOptusState implements State, OptusEventVisitor {
 
     @Override
     public State visit(Context context, TimeoutTickEvent timeoutTickEvent) {
-
         System.out.println("In " + getClass().getSimpleName() + ", processing TimeoutTickEvent event ");
 
-        return isTimeout() ? new TimedOutFinalState("because") : this;
+        context.setMessage("because timedout");
+
+        return isTimeout(context) ? new TimedOutFinalState() : this;
     }
 
-    protected LocalDateTime getTimeoutDateTime() {
+    protected LocalDateTime getTimeoutDateTime(Context context) {
 
         //example timeout is 5 seconds
-        return createdDateTime.plusSeconds(5);
+        return context.getCreated().plusSeconds(5);
     }
 
-    protected boolean isTimeout() {
+    protected boolean isTimeout(Context context) {
 
-        return LocalDateTime.now().isAfter(getTimeoutDateTime());
+        return LocalDateTime.now().isAfter(getTimeoutDateTime(context));
     }
 }

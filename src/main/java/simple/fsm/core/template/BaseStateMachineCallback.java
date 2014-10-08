@@ -13,7 +13,8 @@ public abstract class BaseStateMachineCallback implements StateMachineCallback {
     @SuppressWarnings("unchecked")
     public StateMachine onError(StateMachine stateMachine, Exception e) {
         LOG.error("On Error, returning state machine in error state.", e);
-        return new StateMachine(stateMachine.getStateMachineId(), new ErrorFinalState(e), stateMachine.getContext());
+        stateMachine.getContext().setException(e);
+        return new StateMachine(stateMachine.getStateMachineId(), new ErrorFinalState(), stateMachine.getContext());
     }
 
     @Override
