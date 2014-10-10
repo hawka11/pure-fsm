@@ -34,9 +34,12 @@ public class MainHazelcastSuccessful {
         final StateMachineTemplate template = new StateMachineTemplate(accessor);
 
         //create state machine
+        OptusRechargeContext context = new OptusRechargeContext();
+        context.setMessage("testmsg");
+        context.setException(new RuntimeException("testexception"));
         final String stateMachineId = accessor.create(
                 new InitialState(),
-                new OptusRechargeContext());
+                context);
 
         //One thread will send RequestRechargeEvent to sm
         new Thread(() -> template.tryWithLock(stateMachineId, new BaseStateMachineCallback() {
