@@ -11,7 +11,7 @@ import simple.fsm.core.accessor.StateMachineAccessor;
 import simple.fsm.core.template.BaseStateMachineCallback;
 import simple.fsm.core.template.StateMachineTemplate;
 import simple.fsm.hazelcast.accessor.HazelcastStateMachineAccessor;
-import simple.fsm.hazelcast.Serializer.StateMachineSerializer;
+import simple.fsm.hazelcast.serializer.StateMachineSerializer;
 import simple.fsm.optus.event.RechargeAcceptedEvent;
 import simple.fsm.optus.event.RequestRechargeEvent;
 import simple.fsm.optus.state.InitialState;
