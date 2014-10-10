@@ -5,11 +5,6 @@ import simple.fsm.core.event.Event;
 
 public class SuccessFinalState extends BaseFinalState {
 
-    public static SuccessFinalState userCanceled(Context context) {
-        context.setMessage("USER_CANCELED");
-        return new SuccessFinalState();
-    }
-
     @Override
     public State handle(Context context, Event event) {
 

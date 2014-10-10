@@ -15,6 +15,7 @@ import simple.fsm.hazelcast.serializer.StateMachineSerializer;
 import simple.fsm.optus.event.RechargeAcceptedEvent;
 import simple.fsm.optus.event.RequestRechargeEvent;
 import simple.fsm.optus.state.InitialState;
+import simple.fsm.optus.state.OptusStateFactory;
 
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -74,7 +75,7 @@ public class MainHazelcastSuccessful {
         clientConfig.addAddress("127.0.0.1:5701");
 
         Collection<SerializerConfig> serializerConfig = clientConfig.getSerializationConfig().getSerializerConfigs();
-        serializerConfig.add(new SerializerConfig().setTypeClass(StateMachine.class).setImplementation(new StateMachineSerializer()));
+        serializerConfig.add(new SerializerConfig().setTypeClass(StateMachine.class).setImplementation(new StateMachineSerializer(new OptusStateFactory())));
 
         return HazelcastClient.newHazelcastClient(clientConfig);
     }

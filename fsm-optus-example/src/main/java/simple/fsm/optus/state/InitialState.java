@@ -20,6 +20,6 @@ public class InitialState extends BaseOptusState {
         //lock pin in distributed lock set, and represent that as a locked pin resource.
         context.addResource(new LockedPinResource());
 
-        return new RechargeRequestedState();
+        return factory().internalGetStateByClass(RechargeRequestedState.class);
     }
 }

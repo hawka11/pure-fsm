@@ -10,6 +10,7 @@ import com.hazelcast.nio.serialization.StreamSerializer;
 import simple.fsm.core.Context;
 import simple.fsm.core.StateMachine;
 import simple.fsm.core.state.State;
+import simple.fsm.core.state.StateFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,8 +22,10 @@ import static com.google.common.collect.Maps.newHashMap;
 public class StateMachineSerializer implements StreamSerializer<StateMachine> {
 
     private final ObjectMapper mapper;
+    private final StateFactory stateFactory;
 
-    public StateMachineSerializer() {
+    public StateMachineSerializer(StateFactory stateFactory) {
+        this.stateFactory = stateFactory;
         mapper = new ObjectMapper(new SmileFactory());
         mapper.registerModule(new JSR310Module());
     }
@@ -89,7 +92,8 @@ public class StateMachineSerializer implements StreamSerializer<StateMachine> {
 
     private State readCurrentState(Map<String, Object> state) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
         String stateName = (String) state.get("currentState");
-        return (State) Class.forName(stateName).newInstance();
+        Class<? extends State> stateClass = (Class<? extends State>) Class.forName(stateName);
+        return stateFactory.getStateByClass(stateClass);
     }
 
     private Context readContext(Map<String, Object> state) throws ClassNotFoundException, IOException {

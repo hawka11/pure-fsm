@@ -1,12 +1,9 @@
 package simple.fsm.optus.state;
 
 import simple.fsm.core.state.State;
-import simple.fsm.core.state.SuccessFinalState;
 import simple.fsm.optus.OptusRechargeContext;
 import simple.fsm.optus.event.CancelRechargeEvent;
 import simple.fsm.optus.event.RechargeAcceptedEvent;
-
-import static simple.fsm.core.state.SuccessFinalState.userCanceled;
 
 public class RechargeRequestedState extends BaseOptusState {
 
@@ -17,7 +14,7 @@ public class RechargeRequestedState extends BaseOptusState {
 
         //optusClientRepository.cancelRechargeProcess();
 
-        return userCanceled(context);
+        return factory().userCanceled(context);
     }
 
     @Override
@@ -27,6 +24,6 @@ public class RechargeRequestedState extends BaseOptusState {
         //TODO: mark context as complete
         context.setMessage("RECHARGE_ACCEPTED");
 
-        return new SuccessFinalState();
+        return factory().successFinalState();
     }
 }
