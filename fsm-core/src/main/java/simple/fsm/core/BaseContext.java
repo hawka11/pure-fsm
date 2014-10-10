@@ -8,18 +8,18 @@ public abstract class BaseContext implements Context {
     private final Set<Resource> resources;
     private Exception e;
     private String msg;
-    private final LocalDateTime created;
+    private final LocalDateTime transitioned;
 
-    protected BaseContext(Set<Resource> resources, Exception e, String msg, LocalDateTime created) {
+    protected BaseContext(Set<Resource> resources, Exception e, String msg, LocalDateTime transitioned) {
         this.resources = resources;
         this.e = e;
         this.msg = msg;
-        this.created = created;
+        this.transitioned = transitioned;
     }
 
     @Override
-    public LocalDateTime getCreated() {
-        return created;
+    public LocalDateTime getTransitioned() {
+        return transitioned;
     }
 
     @Override

@@ -55,7 +55,7 @@ public class BaseOptusState implements State, OptusEventVisitor {
 
     protected LocalDateTime getTimeoutDateTime(Context context) {
         //example timeout is 5 seconds
-        return context.getCreated().plusSeconds(5);
+        return context.getTransitioned().plusSeconds(5);
     }
 
     protected boolean isTimeout(Context context) {

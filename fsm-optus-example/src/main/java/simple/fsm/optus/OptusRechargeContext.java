@@ -11,8 +11,8 @@ import static com.google.common.collect.Sets.newHashSet;
 
 public class OptusRechargeContext extends BaseContext {
 
-    private OptusRechargeContext(Set<Resource> resources, Exception e, String msg, LocalDateTime created) {
-        super(resources, e, msg, created);
+    private OptusRechargeContext(Set<Resource> resources, Exception e, String msg, LocalDateTime transitioned) {
+        super(resources, e, msg, transitioned);
     }
 
     public OptusRechargeContext() {

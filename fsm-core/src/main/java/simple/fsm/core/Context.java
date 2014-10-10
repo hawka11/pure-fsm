@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public interface Context {
 
-    LocalDateTime getCreated();
+    LocalDateTime getTransitioned();
 
     void addResource(Resource resource);
 
