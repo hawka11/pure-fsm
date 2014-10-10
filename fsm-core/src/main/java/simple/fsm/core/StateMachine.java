@@ -17,13 +17,13 @@ public class StateMachine<T extends Context> {
     private final String stateMachineId;
     private final State currentState;
     private final T context;
-    private final StateMachine previous;
+    private final StateMachine<T> previous;
 
     public StateMachine(String stateMachineId, State currentState, T context) {
         this(stateMachineId, currentState, context, null);
     }
 
-    private StateMachine(String stateMachineId, State currentState, T context, StateMachine previous) {
+    public StateMachine(String stateMachineId, State currentState, T context, StateMachine<T> previous) {
         this.stateMachineId = stateMachineId;
         this.currentState = currentState;
         this.context = context;
@@ -67,7 +67,7 @@ public class StateMachine<T extends Context> {
         return context;
     }
 
-    public Optional<StateMachine> previous() {
+    public Optional<StateMachine<T>> previous() {
         return ofNullable(previous);
     }
 }

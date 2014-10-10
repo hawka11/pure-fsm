@@ -10,8 +10,8 @@ import simple.fsm.core.StateMachine;
 import simple.fsm.core.accessor.StateMachineAccessor;
 import simple.fsm.core.template.BaseStateMachineCallback;
 import simple.fsm.core.template.StateMachineTemplate;
-import simple.fsm.hazelcast.Serializer.BaseJacksonSerializer;
 import simple.fsm.hazelcast.accessor.HazelcastStateMachineAccessor;
+import simple.fsm.hazelcast.serializer.StateMachineSerializer;
 import simple.fsm.optus.event.RechargeAcceptedEvent;
 import simple.fsm.optus.event.RequestRechargeEvent;
 import simple.fsm.optus.state.InitialState;
@@ -70,20 +70,9 @@ public class MainHazelcastSuccessful {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.addAddress("127.0.0.1:5701");
 
-       // Collection<SerializerConfig> serializerConfig = clientConfig.getSerializationConfig().getSerializerConfigs();
-        //serializerConfig.add(serializerConfig(1, StateMachine.class));
-        //serializerConfig.add(new SerializerConfig().setTypeClass(StateMachine.class).setImplementation(new SerializationFactory.StateMachineSerializer()));
-        //serializerConfig.add(new SerializerConfig().setTypeClass(InitialState.class).setImplementation(new SerializationFactory.InitialStateSerializer()));
+        Collection<SerializerConfig> serializerConfig = clientConfig.getSerializationConfig().getSerializerConfigs();
+        serializerConfig.add(new SerializerConfig().setTypeClass(StateMachine.class).setImplementation(new StateMachineSerializer()));
 
         return HazelcastClient.newHazelcastClient(clientConfig);
     }
-
-    /*private static SerializerConfig serializerConfig(int typeid, Class<?> klass) {
-        return new SerializerConfig().setTypeClass(klass).setImplementation(new BaseJacksonSerializer(klass) {
-            @Override
-            public int getTypeId() {
-                return typeid;
-            }
-        });
-    }*/
 }
