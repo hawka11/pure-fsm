@@ -22,7 +22,6 @@ public class MainWithTimeOut {
         Thread.sleep(1000);
 
         //This 'current' state could be inspected by anything, which could react as desired / or send their own event to sm etc...
-        System.out.println("Ending.... current state is: " +
-                operations.getStateMachine(stateMachineId).getCurrentState().getClass().getSimpleName());
+        operations.logCurrentState(stateMachineId);
     }
 }

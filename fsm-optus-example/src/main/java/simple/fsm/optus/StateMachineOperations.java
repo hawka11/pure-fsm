@@ -1,5 +1,7 @@
 package simple.fsm.optus;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import simple.fsm.core.StateMachine;
 import simple.fsm.core.accessor.CleanUpFinalisedStateMachines;
 import simple.fsm.core.accessor.InMemoryStateMachineAccessor;
@@ -16,6 +18,8 @@ import java.util.concurrent.TimeUnit;
 import static java.time.temporal.ChronoUnit.SECONDS;
 
 class StateMachineOperations {
+
+    private final static Logger LOG = LoggerFactory.getLogger(StateMachineOperations.class);
 
     final StateMachineAccessor accessor = new InMemoryStateMachineAccessor();
     final StateMachineTemplate template = new StateMachineTemplate(accessor);
@@ -40,6 +44,11 @@ class StateMachineOperations {
         return accessor.create(
                 stateFactory.getStateByClass(InitialState.class),
                 new OptusRechargeContext());
+    }
+
+    public void logCurrentState(String stateMachineId) {
+        LOG.info("Ending.... current state for [{}] is: [{}]", stateMachineId,
+                getStateMachine(stateMachineId).getCurrentState().getClass().getSimpleName());
     }
 
     public StateMachineAccessor getAccessor() {
