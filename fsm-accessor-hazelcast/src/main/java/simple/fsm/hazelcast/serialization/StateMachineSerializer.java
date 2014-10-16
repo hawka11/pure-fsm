@@ -1,6 +1,7 @@
-package simple.fsm.hazelcast.serializer;
+package simple.fsm.hazelcast.serialization;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.smile.SmileFactory;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
@@ -26,8 +27,13 @@ public class StateMachineSerializer implements StreamSerializer<StateMachine> {
 
     public StateMachineSerializer(StateFactory stateFactory) {
         this.stateFactory = stateFactory;
+
         mapper = new ObjectMapper(new SmileFactory());
         mapper.registerModule(new JSR310Module());
+    }
+
+    public void registerModule(Module module) {
+        mapper.registerModule(module);
     }
 
     @Override

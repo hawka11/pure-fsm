@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class BaseOptusState implements State, OptusEventVisitor {
 
     @Override
-    public OptusStateFactory factory() {
+    public StateFactory factory() {
         return new OptusStateFactory();
     }
 

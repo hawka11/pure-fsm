@@ -1,8 +1,9 @@
-package simple.fsm.optus;
+package simple.fsm.optushazelcast;
 
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.config.Config;
+import com.hazelcast.config.SerializationConfig;
 import com.hazelcast.config.SerializerConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
@@ -11,36 +12,41 @@ import simple.fsm.core.accessor.StateMachineAccessor;
 import simple.fsm.core.template.BaseStateMachineCallback;
 import simple.fsm.core.template.StateMachineTemplate;
 import simple.fsm.hazelcast.accessor.HazelcastStateMachineAccessor;
-import simple.fsm.hazelcast.serializer.StateMachineSerializer;
+import simple.fsm.hazelcast.resource.DistributedResourceFactory;
+import simple.fsm.hazelcast.serialization.DistributedLockModule;
+import simple.fsm.hazelcast.serialization.StateMachineSerializer;
+import simple.fsm.optus.OptusRechargeContext;
 import simple.fsm.optus.event.RechargeAcceptedEvent;
 import simple.fsm.optus.event.RequestRechargeEvent;
-import simple.fsm.optus.state.InitialState;
-import simple.fsm.optus.state.OptusStateFactory;
+import simple.fsm.optushazelcast.state.HzInitialState;
+import simple.fsm.optushazelcast.state.HzOptusStateFactory;
 
 import java.math.BigDecimal;
-import java.util.Collection;
 
 public class MainHazelcastSuccessful {
 
     public static void main(String[] args) throws Exception {
-        //Distributed HZ server cluster running somewhere
         new Thread(() -> {
+            //Distributed HZ server cluster running somewhere
             Config config = new Config();
             Hazelcast.newHazelcastInstance(config);
         }).run();
 
         Thread.sleep(2000);
 
-        final StateMachineAccessor accessor = new HazelcastStateMachineAccessor(createClientHz());
+        //Start Setup Beans
+        final DistributedResourceFactory distributedResourceFactory = new DistributedResourceFactory();
+        final HzOptusStateFactory stateFactory = new HzOptusStateFactory(distributedResourceFactory);
+
+        final HazelcastInstance hazelcastInstance = createClientHz(stateFactory);
+        distributedResourceFactory.setInstance(hazelcastInstance);
+
+        final StateMachineAccessor accessor = new HazelcastStateMachineAccessor(hazelcastInstance);
         final StateMachineTemplate template = new StateMachineTemplate(accessor);
+        //End Setup Beans
 
         //create state machine
-        OptusRechargeContext context = new OptusRechargeContext();
-        context.setMessage("testmsg");
-        context.setException(new RuntimeException("testexception"));
-        final String stateMachineId = accessor.create(
-                new InitialState(),
-                context);
+        final String stateMachineId = createStateMachineInInitialState(stateFactory, accessor);
 
         //One thread will send RequestRechargeEvent to sm
         new Thread(() -> template.tryWithLock(stateMachineId, new BaseStateMachineCallback() {
@@ -70,13 +76,27 @@ public class MainHazelcastSuccessful {
         System.out.println("Ending.... current state is: " + accessor.get(stateMachineId).getCurrentState().getClass().getSimpleName());
     }
 
-    private static HazelcastInstance createClientHz() {
+    private static String createStateMachineInInitialState(HzOptusStateFactory stateFactory, StateMachineAccessor accessor) {
+        OptusRechargeContext context = new OptusRechargeContext();
+        context.setMessage("testmsg");
+        return accessor.create(
+                stateFactory.getStateByClass(HzInitialState.class), context);
+    }
+
+    private static HazelcastInstance createClientHz(HzOptusStateFactory stateFactory) {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.addAddress("127.0.0.1:5701");
 
-        Collection<SerializerConfig> serializerConfig = clientConfig.getSerializationConfig().getSerializerConfigs();
-        serializerConfig.add(new SerializerConfig().setTypeClass(StateMachine.class).setImplementation(new StateMachineSerializer(new OptusStateFactory())));
+        final StateMachineSerializer stateMachineSerializer = new StateMachineSerializer(stateFactory);
 
-        return HazelcastClient.newHazelcastClient(clientConfig);
+        SerializationConfig serializationConfig = clientConfig.getSerializationConfig();
+        serializationConfig.getSerializerConfigs()
+                .add(new SerializerConfig().setTypeClass(StateMachine.class).setImplementation(stateMachineSerializer));
+
+        HazelcastInstance hazelcastInstance = HazelcastClient.newHazelcastClient(clientConfig);
+
+        stateMachineSerializer.registerModule(new DistributedLockModule(hazelcastInstance));
+
+        return hazelcastInstance;
     }
 }

@@ -8,6 +8,7 @@ import simple.fsm.core.template.StateMachineTemplate;
 import simple.fsm.core.timeout.TimeoutTicker;
 import simple.fsm.optus.event.RequestRechargeEvent;
 import simple.fsm.optus.state.InitialState;
+import simple.fsm.optus.state.OptusStateFactory;
 
 import java.math.BigDecimal;
 
@@ -19,10 +20,11 @@ public class MainWithTimeOut {
         final StateMachineAccessor accessor = new InMemoryStateMachineAccessor();
         final StateMachineTemplate template = new StateMachineTemplate(accessor);
         final TimeoutTicker timeoutTicker = new TimeoutTicker(accessor, template, 1, SECONDS);
+        final OptusStateFactory stateFactory = new OptusStateFactory();
 
         //create state machine
         final String stateMachineId = accessor.create(
-                new InitialState(),
+                stateFactory.getStateByClass(InitialState.class),
                 new OptusRechargeContext());
 
         //One thread will send RequestRechargeEvent to sm

@@ -32,7 +32,8 @@ public abstract class BaseContext implements Context {
         resources.forEach(Resource::unlock);
     }
 
-    protected Set<Resource> getResources() {
+    @Override
+    public Set<Resource> getResources() {
         return resources;
     }
 

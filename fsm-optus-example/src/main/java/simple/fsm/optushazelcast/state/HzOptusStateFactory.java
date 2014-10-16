@@ -1,19 +1,21 @@
-package simple.fsm.optus.state;
+package simple.fsm.optushazelcast.state;
 
 import simple.fsm.core.state.BaseStateFactory;
 import simple.fsm.core.state.State;
+import simple.fsm.hazelcast.resource.DistributedResourceFactory;
+import simple.fsm.optus.state.RechargeRequestedState;
 
 import java.util.Map;
 
 import static com.google.common.collect.Maps.newHashMap;
 
-public class OptusStateFactory extends BaseStateFactory {
+public class HzOptusStateFactory extends BaseStateFactory {
 
     private final Map<Class<? extends State>, State> stateByStateClass = newHashMap();
 
-    public OptusStateFactory() {
+    public HzOptusStateFactory(DistributedResourceFactory distributedResourceFactory) {
         super();
-        stateByStateClass.put(InitialState.class, new InitialState());
+        stateByStateClass.put(HzInitialState.class, new HzInitialState(distributedResourceFactory));
         stateByStateClass.put(RechargeRequestedState.class, new RechargeRequestedState());
     }
 
