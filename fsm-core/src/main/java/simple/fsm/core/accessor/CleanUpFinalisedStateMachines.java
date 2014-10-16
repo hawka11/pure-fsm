@@ -40,6 +40,9 @@ public class CleanUpFinalisedStateMachines {
                 try {
                     Optional<StateMachineAccessor.Lock> lock = accessor.tryLock(id, 1, SECONDS);
                     if (lock.isPresent() && shouldCleanup(lock.get().getStateMachine())) {
+                        LOG.info("unlocking and removing state machine [{}]",
+                                lock.get().getStateMachine().getStateMachineId());
+
                         lock.get().unlockAndRemove();
                     }
                 } catch (Exception e) {

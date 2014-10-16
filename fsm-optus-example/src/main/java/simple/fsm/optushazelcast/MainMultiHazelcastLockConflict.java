@@ -1,5 +1,6 @@
 package simple.fsm.optushazelcast;
 
+import simple.fsm.optus.event.RechargeAcceptedEvent;
 import simple.fsm.optus.event.RequestRechargeEvent;
 
 import java.math.BigDecimal;
@@ -16,13 +17,17 @@ public class MainMultiHazelcastLockConflict {
 
         final String stateMachineId1 = ops.createStateMachineInInitialState();
         final String stateMachineId2 = ops.createStateMachineInInitialState();
+        final String stateMachineId3 = ops.createStateMachineInInitialState();
 
-        //One thread will send RequestRechargeEvent to sm
         ops.scheduleEventOnThread(stateMachineId1, new RequestRechargeEvent(new BigDecimal("20.00")));
         ops.scheduleEventOnThread(stateMachineId2, new RequestRechargeEvent(new BigDecimal("20.00")));
-        Thread.sleep(2000);
+        Thread.sleep(500);
+
+        ops.scheduleEventOnThread(stateMachineId1, new RechargeAcceptedEvent());
+        ops.scheduleEventOnThread(stateMachineId3, new RequestRechargeEvent(new BigDecimal("20.00")));
 
         ops.logCurrentState(stateMachineId1);
         ops.logCurrentState(stateMachineId2);
+        ops.logCurrentState(stateMachineId3);
     }
 }
