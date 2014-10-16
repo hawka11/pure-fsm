@@ -12,17 +12,17 @@ public class MainMultiHazelcastLockConflict {
         startHzNodeOnThread();
         Thread.sleep(2000);
 
-        StateMachineOperations operations = new StateMachineOperations();
+        StateMachineOperations ops = new StateMachineOperations();
 
-        final String stateMachineId1 = operations.createStateMachineInInitialState();
-        final String stateMachineId2 = operations.createStateMachineInInitialState();
+        final String stateMachineId1 = ops.createStateMachineInInitialState();
+        final String stateMachineId2 = ops.createStateMachineInInitialState();
 
         //One thread will send RequestRechargeEvent to sm
-        operations.scheduleEventOnThread(stateMachineId1, new RequestRechargeEvent(new BigDecimal("20.00")));
-        operations.scheduleEventOnThread(stateMachineId2, new RequestRechargeEvent(new BigDecimal("20.00")));
+        ops.scheduleEventOnThread(stateMachineId1, new RequestRechargeEvent(new BigDecimal("20.00")));
+        ops.scheduleEventOnThread(stateMachineId2, new RequestRechargeEvent(new BigDecimal("20.00")));
         Thread.sleep(2000);
 
-        operations.logCurrentState(stateMachineId1);
-        operations.logCurrentState(stateMachineId2);
+        ops.logCurrentState(stateMachineId1);
+        ops.logCurrentState(stateMachineId2);
     }
 }

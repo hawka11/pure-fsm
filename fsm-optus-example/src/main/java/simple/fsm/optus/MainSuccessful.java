@@ -8,21 +8,21 @@ import java.math.BigDecimal;
 public class MainSuccessful {
 
     public static void main(String[] args) throws Exception {
-        StateMachineOperations operations = new StateMachineOperations();
+        StateMachineOperations ops = new StateMachineOperations();
 
         //create state machine
-        final String stateMachineId = operations.createStateMachineInInitialState();
+        final String stateMachineId = ops.createStateMachineInInitialState();
 
         //One thread will send RequestRechargeEvent to sm
-        operations.scheduleEventOnThread(stateMachineId, new RequestRechargeEvent(new BigDecimal("20.00")));
+        ops.scheduleEventOnThread(stateMachineId, new RequestRechargeEvent(new BigDecimal("20.00")));
         Thread.sleep(2000);
 
         //Sometime later, another thread will send RechargeAcceptedEvent to sm
         //Probably invoked by a callback via optus webservice
-        operations.scheduleEventOnThread(stateMachineId, new RechargeAcceptedEvent());
+        ops.scheduleEventOnThread(stateMachineId, new RechargeAcceptedEvent());
         Thread.sleep(2000);
 
         //This 'current' state could be inspected by anything, which could react as desired / or send their own event to sm etc...
-        operations.logCurrentState(stateMachineId);
+        ops.logCurrentState(stateMachineId);
     }
 }

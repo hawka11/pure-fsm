@@ -3,21 +3,21 @@ package simple.fsm.optus;
 public class MainWithCleanup {
 
     public static void main(String[] args) throws Exception {
-        StateMachineOperations operations = new StateMachineOperations();
+        StateMachineOperations ops = new StateMachineOperations();
 
         //create state machine
-        final String stateMachineId = operations.createStateMachineInInitialState();
+        final String stateMachineId = ops.createStateMachineInInitialState();
         Thread.sleep(6000);
 
         //something should configure this to run periodically
-        operations.getTimeoutTicker().sendTimeOutTickerEvents();
+        ops.getTimeoutTicker().sendTimeOutTickerEvents();
         Thread.sleep(2000);
 
         //something should configure this to run periodically
-        operations.getCleaner().checkForFinalizedStateMachinesAndCleanupIfRequired();
+        ops.getCleaner().checkForFinalizedStateMachinesAndCleanupIfRequired();
         Thread.sleep(2000);
 
         //This 'current' state could be inspected by anything, which could react as desired / or send their own event to sm etc...
-        operations.logCurrentState(stateMachineId);
+        ops.logCurrentState(stateMachineId);
     }
 }
