@@ -53,6 +53,8 @@ public class StateMachineTemplate {
             } finally {
                 lock.get().unlock();
             }
+        } else {
+            LOG.error("Could not get state machine lock for [{}]", stateMachineId);
         }
     }
 }

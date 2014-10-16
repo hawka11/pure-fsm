@@ -14,8 +14,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static java.lang.Boolean.TRUE;
-
 public class InMemoryStateMachineAccessor implements StateMachineAccessor {
 
     private final Logger LOG = LoggerFactory.getLogger(InMemoryStateMachineAccessor.class);
@@ -24,7 +22,6 @@ public class InMemoryStateMachineAccessor implements StateMachineAccessor {
 
     private final ConcurrentHashMap<String, StateMachine> stateMachineByStateMachineId = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, ReentrantLock> lockByStateMachineId = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, Boolean> lockedStateMachineIds = new ConcurrentHashMap<>();
 
     @Override
     @SuppressWarnings("unchecked")
@@ -45,42 +42,37 @@ public class InMemoryStateMachineAccessor implements StateMachineAccessor {
     @Override
     public Optional<Lock> tryLock(String stateMachineId, long timeout, TimeUnit timeUnit) {
         try {
-
             ReentrantLock reentrantLock = lockByStateMachineId.get(stateMachineId);
             if (reentrantLock != null && reentrantLock.tryLock(timeout, timeUnit)) {
+                Lock lock = new Lock() {
+                    @Override
+                    public StateMachine getStateMachine() {
+                        return stateMachineByStateMachineId.get(stateMachineId);
+                    }
 
-                if (lockedStateMachineIds.get(stateMachineId) == null) {
-                    lockedStateMachineIds.put(stateMachineId, TRUE);
+                    @Override
+                    public void update(StateMachine newStateMachine) {
+                        stateMachineByStateMachineId.put(stateMachineId, newStateMachine);
+                    }
 
-                    Lock lock = new Lock() {
-                        @Override
-                        public StateMachine getStateMachine() {
-                            return stateMachineByStateMachineId.get(stateMachineId);
-                        }
+                    @Override
+                    public boolean unlock() {
+                        lockByStateMachineId.get(stateMachineId).unlock();
+                        return true;
+                    }
 
-                        @Override
-                        public void update(StateMachine newStateMachine) {
-                            stateMachineByStateMachineId.put(stateMachineId, newStateMachine);
-                        }
+                    @Override
+                    public boolean unlockAndRemove() {
+                        unlock();
+                        stateMachineByStateMachineId.remove(stateMachineId);
+                        lockByStateMachineId.remove(stateMachineId);
+                        return true;
+                    }
+                };
 
-                        @Override
-                        public boolean unlock() {
-                            lockedStateMachineIds.remove(stateMachineId);
-                            return true;
-                        }
-
-                        @Override
-                        public boolean unlockAndRemove() {
-                            stateMachineByStateMachineId.remove(stateMachineId);
-                            lockedStateMachineIds.remove(stateMachineId);
-                            lockByStateMachineId.remove(stateMachineId);
-                            return true;
-                        }
-                    };
-
-                    return Optional.of(lock);
-                }
+                return Optional.of(lock);
             }
+
         } catch (Exception e) {
             LOG.info("Could not get lock for [{}]", stateMachineId);
         }

@@ -21,10 +21,11 @@ public class MainMultiHazelcastLockConflict {
 
         ops.scheduleEventOnThread(stateMachineId1, new RequestRechargeEvent(new BigDecimal("20.00")));
         ops.scheduleEventOnThread(stateMachineId2, new RequestRechargeEvent(new BigDecimal("20.00")));
-        Thread.sleep(500);
+        Thread.sleep(1000);
 
         ops.scheduleEventOnThread(stateMachineId1, new RechargeAcceptedEvent());
         ops.scheduleEventOnThread(stateMachineId3, new RequestRechargeEvent(new BigDecimal("20.00")));
+        Thread.sleep(500);
 
         ops.logCurrentState(stateMachineId1);
         ops.logCurrentState(stateMachineId2);

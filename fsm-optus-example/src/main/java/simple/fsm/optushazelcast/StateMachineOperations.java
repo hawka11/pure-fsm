@@ -46,7 +46,7 @@ class StateMachineOperations {
             public StateMachine doWith(StateMachine stateMachine) {
                 return stateMachine.handleEvent(event);
             }
-        })).run();
+        })).start();
     }
 
     public String createStateMachineInInitialState() {
