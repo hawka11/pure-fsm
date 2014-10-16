@@ -47,7 +47,7 @@ public class StateMachineTemplate {
                 StateMachine newStateMachine = stateMachineCallback.doWith(lock.get().getStateMachine());
                 lock.get().update(newStateMachine);
             } catch (Exception e) {
-                LOG.error("Error with currentStateMachine [{}]", stateMachineId);
+                LOG.error("Error with currentStateMachine [" + stateMachineId + "]", e);
                 StateMachine newStateMachine = stateMachineCallback.onError(lock.get().getStateMachine(), e);
                 lock.get().update(newStateMachine);
             } finally {

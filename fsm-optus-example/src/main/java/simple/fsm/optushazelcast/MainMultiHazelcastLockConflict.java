@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 import static simple.fsm.optushazelcast.HazelcastUtil.startHzNodeOnThread;
 
-public class MainMultiHazelcastSuccessful {
+public class MainMultiHazelcastLockConflict {
 
     public static void main(String[] args) throws Exception {
         startHzNodeOnThread();
