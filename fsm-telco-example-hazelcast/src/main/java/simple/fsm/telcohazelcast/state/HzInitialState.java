@@ -21,11 +21,12 @@ public class HzInitialState extends BaseHzTelcoState {
         System.out.println("In InitialState, processing RequestRechargeEvent event ");
 
         BigDecimal rechargeAmount = requestRechargeEvent.getAmount();
-        //telcoClientRepository.startRechargeProcess(rechargeAmount);
+        Set<String> pinsToLock = requestRechargeEvent.getPinsToLock();
 
         //lock pin in distributed lock set, and represent that as a locked pin resource.
-        Set<String> pinsToLock = requestRechargeEvent.getPinsToLock();
         context.addResource(getDistributedResourceFactory().tryLock("MyLockedPins", pinsToLock));
+
+        //telcoClientRepository.startRechargeProcess(rechargeAmount);
 
         return factory().getStateByClass(RechargeRequestedState.class);
     }

@@ -17,10 +17,10 @@ public class InitialState extends BaseTelcoState {
         BigDecimal rechargeAmount = requestRechargeEvent.getAmount();
         Set<String> pinsToLock = requestRechargeEvent.getPinsToLock();
 
-        //telcoClientRepository.startRechargeProcess(rechargeAmount);
-
         //lock pin in distributed lock set, and represent that as a locked pin resource.
         context.addResource(new LockedPinResource(pinsToLock));
+
+        //telcoClientRepository.startRechargeProcess(rechargeAmount);
 
         return factory().getStateByClass(RechargeRequestedState.class);
     }
