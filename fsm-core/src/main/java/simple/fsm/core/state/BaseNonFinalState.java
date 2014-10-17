@@ -33,6 +33,5 @@ public abstract class BaseNonFinalState implements State {
 
     @Override
     public void onEntry(Context context, Event event, State prevState) {
-        context.unlockResources();
     }
 }

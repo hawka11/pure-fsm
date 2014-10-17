@@ -20,12 +20,14 @@ public class MainMultiHazelcastLockConflict {
         final String stateMachineId3 = ops.createStateMachineInInitialState();
 
         ops.scheduleEventOnThread(stateMachineId1, new RequestRechargeEvent(new BigDecimal("20.00")));
+        Thread.sleep(100);
         ops.scheduleEventOnThread(stateMachineId2, new RequestRechargeEvent(new BigDecimal("20.00")));
-        Thread.sleep(1000);
+        Thread.sleep(100);
 
         ops.scheduleEventOnThread(stateMachineId1, new RechargeAcceptedEvent());
+        Thread.sleep(100);
         ops.scheduleEventOnThread(stateMachineId3, new RequestRechargeEvent(new BigDecimal("20.00")));
-        Thread.sleep(500);
+        Thread.sleep(100);
 
         ops.logCurrentState(stateMachineId1);
         ops.logCurrentState(stateMachineId2);

@@ -43,7 +43,7 @@ public class StateMachine<T extends Context> {
 
             newState.onEntry(transitionedContext, event, currentState);
         } catch (Exception e) {
-            LOG.error("Error handling event [" + event + "]", e);
+            LOG.error("SM [" + stateMachineId + "], Error handling event [" + event + "]", e);
 
             transitionedContext = context.transition();
             transitionedContext.setException(e);
