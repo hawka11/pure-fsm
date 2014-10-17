@@ -53,6 +53,7 @@ public class CleanUpFinalisedStateMachines {
     }
 
     protected boolean shouldCleanup(StateMachine stateMachine) {
+
         return stateMachine.getContext().getTransitioned().plus(cleanupTimeout, timeUnit).isBefore(LocalDateTime.now());
     }
 }

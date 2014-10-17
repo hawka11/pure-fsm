@@ -1,13 +1,29 @@
 package simple.fsm.core.state;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import simple.fsm.core.Context;
 import simple.fsm.core.event.Event;
 
 public abstract class BaseFinalState implements FinalState {
 
+    private final static Logger LOG = LoggerFactory.getLogger(BaseFinalState.class);
+
     @Override
     public StateFactory factory() {
         throw new IllegalStateException("In final state, probably shouldn't need to create another state");
+    }
+
+    protected State nonHandledEvent(Context context, Event event) {
+        LOG.warn("Final state [{}] received non handled event [{}], ignoring.",
+                getClass().getName(), event.getClass().getName());
+        return this;
+    }
+
+    @Override
+    public State handle(Context context, Event event) {
+
+        return nonHandledEvent(context, event);
     }
 
     @Override
