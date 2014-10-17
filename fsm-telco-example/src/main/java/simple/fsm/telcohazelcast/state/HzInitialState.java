@@ -7,6 +7,7 @@ import simple.fsm.telco.event.RequestRechargeEvent;
 import simple.fsm.telco.state.RechargeRequestedState;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 public class HzInitialState extends BaseHzTelcoState {
 
@@ -23,7 +24,8 @@ public class HzInitialState extends BaseHzTelcoState {
         //telcoClientRepository.startRechargeProcess(rechargeAmount);
 
         //lock pin in distributed lock set, and represent that as a locked pin resource.
-        context.addResource(getDistributedResourceFactory().tryLock("MyLockedPins", "555", "666"));
+        Set<String> pinsToLock = requestRechargeEvent.getPinsToLock();
+        context.addResource(getDistributedResourceFactory().tryLock("MyLockedPins", pinsToLock));
 
         return factory().getStateByClass(RechargeRequestedState.class);
     }

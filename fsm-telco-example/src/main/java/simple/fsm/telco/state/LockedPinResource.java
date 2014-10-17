@@ -2,12 +2,19 @@ package simple.fsm.telco.state;
 
 import simple.fsm.core.Resource;
 
+import java.util.Set;
+
 public class LockedPinResource implements Resource {
 
-    private String pin = "4444";
+    private final Set<String> pinsToLock;
 
-    public String getPin() {
-        return pin;
+    public LockedPinResource(Set<String> pinsToLock) {
+
+        this.pinsToLock = pinsToLock;
+    }
+
+    public Set<String> getPinsToLock() {
+        return pinsToLock;
     }
 
     @Override

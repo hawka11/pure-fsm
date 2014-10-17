@@ -1,8 +1,11 @@
 package simple.fsm.telco;
 
+import com.google.common.collect.Sets;
 import simple.fsm.telco.event.RequestRechargeEvent;
 
 import java.math.BigDecimal;
+
+import static com.google.common.collect.Sets.newHashSet;
 
 public class MainWithTimeOut {
 
@@ -13,7 +16,7 @@ public class MainWithTimeOut {
         final String stateMachineId = ops.createStateMachineInInitialState();
 
         //One thread will send RequestRechargeEvent to sm
-        ops.scheduleEventOnThread(stateMachineId, new RequestRechargeEvent(new BigDecimal("20.00")));
+        ops.scheduleEventOnThread(stateMachineId, new RequestRechargeEvent(new BigDecimal("20.00"), newHashSet("555")));
         Thread.sleep(6000);
 
         //something should configure this to run periodically
