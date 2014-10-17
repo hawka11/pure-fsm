@@ -3,3 +3,5 @@ include 'fsm-core'
 include 'fsm-accessor-hazelcast'
 include 'fsm-telco-example'
 
+include 'fsm-accessor-inmemory'
+

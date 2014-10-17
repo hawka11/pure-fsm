@@ -9,6 +9,7 @@ repositories {
 
 dependencies {
     compile project(":fsm-core")
+    compile project(":fsm-accessor-inmemory")
     compile project(":fsm-accessor-hazelcast")
 
     compile 'org.slf4j:slf4j-log4j12:1.7.7'

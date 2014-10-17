@@ -4,12 +4,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import simple.fsm.core.StateMachine;
 import simple.fsm.core.accessor.CleanUpFinalisedStateMachines;
-import simple.fsm.core.accessor.InMemoryStateMachineAccessor;
 import simple.fsm.core.accessor.StateMachineAccessor;
 import simple.fsm.core.event.Event;
 import simple.fsm.core.template.BaseStateMachineCallback;
 import simple.fsm.core.template.StateMachineTemplate;
 import simple.fsm.core.timeout.TimeoutTicker;
+import simple.fsm.inmemory.accessor.InMemoryStateMachineAccessor;
 import simple.fsm.telco.state.InitialState;
 import simple.fsm.telco.state.TelcoStateFactory;
 

@@ -1,10 +1,11 @@
-package simple.fsm.core.accessor;
+package simple.fsm.inmemory.accessor;
 
 import com.google.common.collect.ImmutableSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import simple.fsm.core.Context;
 import simple.fsm.core.StateMachine;
+import simple.fsm.core.accessor.StateMachineAccessor;
 import simple.fsm.core.state.State;
 
 import java.util.Optional;

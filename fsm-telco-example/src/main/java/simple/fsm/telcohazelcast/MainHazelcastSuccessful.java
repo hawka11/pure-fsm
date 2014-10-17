@@ -19,7 +19,7 @@ public class MainHazelcastSuccessful {
         final String stateMachineId = ops.createStateMachineInInitialState();
 
         //One thread will send RequestRechargeEvent to sm
-        ops.scheduleEventOnThread(stateMachineId, new RequestRechargeEvent(new BigDecimal("20.00"), newHashSet("555")));
+        ops.scheduleEventOnThread(stateMachineId, new RequestRechargeEvent(new BigDecimal("20.00"), newHashSet("555", "666")));
         Thread.sleep(2000);
 
         //Sometime later, another thread will send RechargeAcceptedEvent to sm
