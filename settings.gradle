@@ -1,6 +1,5 @@
 
 include 'fsm-core'
-include 'fsm-optus-example'
-
 include 'fsm-accessor-hazelcast'
+include 'fsm-telco-example'
 
