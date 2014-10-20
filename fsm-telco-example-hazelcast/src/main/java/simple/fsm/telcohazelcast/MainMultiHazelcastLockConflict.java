@@ -22,11 +22,16 @@ public class MainMultiHazelcastLockConflict {
 
         ops.scheduleEventOnThread(stateMachineId1, new RequestRechargeEvent(new BigDecimal("20.00"), newHashSet("555")));
         Thread.sleep(100);
+
+        //Processing this event will throw a IllegalStateException as key '555' is already locked...
         ops.scheduleEventOnThread(stateMachineId2, new RequestRechargeEvent(new BigDecimal("20.00"), newHashSet("555")));
         Thread.sleep(100);
 
+        //will essentially unlock key '555' so stateMachineId3 should able to lock it.
         ops.scheduleEventOnThread(stateMachineId1, new RechargeAcceptedEvent("555"));
         Thread.sleep(100);
+
+        //key '555' is now unlocked, successfully process event.
         ops.scheduleEventOnThread(stateMachineId3, new RequestRechargeEvent(new BigDecimal("20.00"), newHashSet("555")));
         Thread.sleep(100);
 

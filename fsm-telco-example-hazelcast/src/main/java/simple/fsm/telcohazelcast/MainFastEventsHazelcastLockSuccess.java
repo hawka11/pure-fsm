@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import static com.google.common.collect.Sets.newHashSet;
 import static simple.fsm.telcohazelcast.HazelcastUtil.startHzNodeOnThread;
 
-public class FastEventsHazelcastLockSuccess {
+public class MainFastEventsHazelcastLockSuccess {
 
     public static void main(String[] args) throws Exception {
         startHzNodeOnThread();
@@ -21,6 +21,7 @@ public class FastEventsHazelcastLockSuccess {
         ops.scheduleEventOnThread(stateMachineId, new RequestRechargeEvent(new BigDecimal("20.00"), newHashSet("555")));
         ops.scheduleEventOnThread(stateMachineId, new RechargeAcceptedEvent("555"));
 
+        Thread.sleep(100);
         ops.logCurrentState(stateMachineId);
     }
 }
