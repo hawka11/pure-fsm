@@ -2,6 +2,7 @@ package simple.fsm.telco.state;
 
 import simple.fsm.core.state.BaseStateFactory;
 import simple.fsm.core.state.State;
+import simple.fsm.telco.guard.AllPinsRechargedAcceptedGuard;
 
 import java.util.Map;
 
@@ -13,8 +14,11 @@ public class TelcoStateFactory extends BaseStateFactory {
 
     public TelcoStateFactory() {
         super();
+
+        AllPinsRechargedAcceptedGuard guard = new AllPinsRechargedAcceptedGuard();
+
         stateByStateClass.put(InitialState.class, new InitialState());
-        stateByStateClass.put(RechargeRequestedState.class, new RechargeRequestedState());
+        stateByStateClass.put(RechargeRequestedState.class, new RechargeRequestedState(guard));
     }
 
     @Override

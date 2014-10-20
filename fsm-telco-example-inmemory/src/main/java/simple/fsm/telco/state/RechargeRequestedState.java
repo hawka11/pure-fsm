@@ -4,8 +4,15 @@ import simple.fsm.core.state.State;
 import simple.fsm.telco.TelcoRechargeContext;
 import simple.fsm.telco.event.CancelRechargeEvent;
 import simple.fsm.telco.event.RechargeAcceptedEvent;
+import simple.fsm.telco.guard.AllPinsRechargedAcceptedGuard;
 
 public class RechargeRequestedState extends BaseTelcoState {
+
+    private final AllPinsRechargedAcceptedGuard guard;
+
+    public RechargeRequestedState(AllPinsRechargedAcceptedGuard guard) {
+        this.guard = guard;
+    }
 
     @Override
     public State visit(TelcoRechargeContext context, CancelRechargeEvent cancelRechargeEvent) {
@@ -21,9 +28,14 @@ public class RechargeRequestedState extends BaseTelcoState {
     public State visit(TelcoRechargeContext context, RechargeAcceptedEvent rechargeAcceptedEvent) {
         System.out.println("In RechargeRequestedState, processing RechargeAcceptedEvent event ");
 
-        //TODO: mark context as complete
-        context.setMessage("RECHARGE_ACCEPTED");
+        context.addAcceptedPin(rechargeAcceptedEvent.getAcceptedPin());
 
-        return factory().successFinalState();
+        if (guard.isSatisfied(context)) {
+            context.setMessage("RECHARGE_ACCEPTED");
+            return factory().successFinalState();
+        } else {
+            //stay in current state, until all RechargeAcceptedEvent's have been received
+            return factory().getStateByClass(getClass());
+        }
     }
 }

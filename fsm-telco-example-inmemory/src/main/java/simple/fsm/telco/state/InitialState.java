@@ -20,7 +20,9 @@ public class InitialState extends BaseTelcoState {
         //lock pin in distributed lock set, and represent that as a locked pin resource.
         context.addResource(new LockedPinResource(pinsToLock));
 
-        //telcoClientRepository.startRechargeProcess(rechargeAmount);
+        pinsToLock.stream().forEach(pin -> {
+            //telcoClientRepository.startRechargeProcess(rechargeAmount, pin);
+        });
 
         return factory().getStateByClass(RechargeRequestedState.class);
     }

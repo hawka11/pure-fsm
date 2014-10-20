@@ -24,7 +24,8 @@ public class MainHazelcastSuccessful {
 
         //Sometime later, another thread will send RechargeAcceptedEvent to sm
         //Probably invoked by a callback via telco webservice
-        ops.scheduleEventOnThread(stateMachineId, new RechargeAcceptedEvent());
+        ops.scheduleEventOnThread(stateMachineId, new RechargeAcceptedEvent("555"));
+        ops.scheduleEventOnThread(stateMachineId, new RechargeAcceptedEvent("666"));
         Thread.sleep(2000);
 
         ops.logCurrentState(stateMachineId);

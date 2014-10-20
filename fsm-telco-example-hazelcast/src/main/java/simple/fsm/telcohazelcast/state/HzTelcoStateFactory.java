@@ -3,6 +3,7 @@ package simple.fsm.telcohazelcast.state;
 import simple.fsm.core.state.BaseStateFactory;
 import simple.fsm.core.state.State;
 import simple.fsm.hazelcast.resource.DistributedResourceFactory;
+import simple.fsm.telco.guard.AllPinsRechargedAcceptedGuard;
 import simple.fsm.telco.state.RechargeRequestedState;
 
 import java.util.Map;
@@ -15,8 +16,11 @@ public class HzTelcoStateFactory extends BaseStateFactory {
 
     public HzTelcoStateFactory(DistributedResourceFactory distributedResourceFactory) {
         super();
+
+        AllPinsRechargedAcceptedGuard guard = new AllPinsRechargedAcceptedGuard();
+
         stateByStateClass.put(HzInitialState.class, new HzInitialState(distributedResourceFactory));
-        stateByStateClass.put(RechargeRequestedState.class, new RechargeRequestedState());
+        stateByStateClass.put(RechargeRequestedState.class, new RechargeRequestedState(guard));
     }
 
     @Override

@@ -50,7 +50,7 @@ class StateMachineOperations {
     }
 
     public String createStateMachineInInitialState() {
-        TelcoRechargeContext context = new TelcoRechargeContext();
+        HzTelcoRechargeContext context = new HzTelcoRechargeContext();
         context.setMessage("testmsg");
         return accessor.create(
                 stateFactory.getStateByClass(HzInitialState.class), context);
