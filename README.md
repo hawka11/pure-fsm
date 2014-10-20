@@ -20,6 +20,6 @@ Basic concepts that exist are:
  - State, do something when event 'e' arrives
  - StateMachine, *should* be the only stateful object. holds current state, context, previous state etc...
  - Context, *should* be the only stateful object. Holds any data required between 2 or more states
- - Resource, held within the context; they are any external resources that you wish to maintain a lock whilst the state machine is active until they are unlocked in the 'onEnter' call of any final state.
+ - Resource, held within the context; if there are any external resources that you wish to maintain a lock whilst the state machine is active, until they are unlocked in the 'onEnter' call of a final state.
 
 TODO: write tests.
