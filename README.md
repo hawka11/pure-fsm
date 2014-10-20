@@ -10,7 +10,7 @@ The intention of this project is more a simplistic FSM, with influences from AKK
 The intentions are:
  - Pure Java
  - Stateless States / Events etc... (except state machine and state machine context)
- - State machine context is serializable to support distributed state machine processing (i.e. horizaontally scalable)
+ - State machine context is serializable to support distributed state machine processing (i.e. horizontally scalable)
  - A single state machine can only process a single event at a time
  - A State machine that has transitioned into a Final State (either success / failure) cannot be restarted.
  - Each state can have its own timeout
