@@ -5,7 +5,7 @@ Pure as in pure Java, no xml or gui to configure.
 
 There are more advanced FSM / BPM frameworks out there but sometimes they can be seen as too heavyweight for certain applications.
 
-The intention of this project is more a simplistic FSM, with influences from AKKA FSM and past experience.
+The intention of this project is more a simplistic FSM, with influences from AKKA FSM.
 
 The intentions are:
  - Pure Java
