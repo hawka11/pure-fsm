@@ -2,12 +2,14 @@ package pure.fsm.core.timeout;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pure.fsm.core.StateMachine;
 import pure.fsm.core.accessor.StateMachineAccessor;
 import pure.fsm.core.event.TimeoutTickEvent;
 import pure.fsm.core.template.StateMachineCallback;
 import pure.fsm.core.template.StateMachineTemplate;
-import pure.fsm.core.StateMachine;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class TimeoutTicker {
@@ -18,6 +20,7 @@ public class TimeoutTicker {
     private final StateMachineTemplate template;
     private final long howOften;
     private final TimeUnit timeUnit;
+    private final ScheduledExecutorService scheduledExecutorService;
 
     public TimeoutTicker(StateMachineAccessor accessor,
                          StateMachineTemplate template,
@@ -26,14 +29,16 @@ public class TimeoutTicker {
         this.template = template;
         this.howOften = howOften;
         this.timeUnit = timeUnit;
+
+        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
     }
 
     public void startTickScheduler() {
-        //TODO
+        scheduledExecutorService.schedule(this::sendTimeOutTickerEvents, howOften, timeUnit);
     }
 
     public void endTickScheduler() {
-        //TODO
+        scheduledExecutorService.shutdown();
     }
 
     public void sendTimeOutTickerEvents() {

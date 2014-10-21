@@ -8,6 +8,9 @@ import pure.fsm.core.state.FinalState;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -18,19 +21,25 @@ public class CleanUpFinalisedStateMachines {
     private final StateMachineAccessor accessor;
     private final long cleanupTimeout;
     private final ChronoUnit timeUnit;
+    private final ScheduledExecutorService scheduledExecutorService;
 
     public CleanUpFinalisedStateMachines(StateMachineAccessor accessor, long cleanupTimeout, ChronoUnit timeUnit) {
         this.accessor = accessor;
         this.cleanupTimeout = cleanupTimeout;
         this.timeUnit = timeUnit;
+
+        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
     }
 
     public void startScheduler() {
-
+        scheduledExecutorService.schedule(
+                this::checkForFinalizedStateMachinesAndCleanupIfRequired,
+                cleanupTimeout,
+                TimeUnit.SECONDS);
     }
 
     public void stopScheduler() {
-
+        scheduledExecutorService.shutdown();
     }
 
     public void checkForFinalizedStateMachinesAndCleanupIfRequired() {

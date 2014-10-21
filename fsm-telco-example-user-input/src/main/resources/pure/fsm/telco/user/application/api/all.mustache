@@ -1,0 +1,14 @@
+<html>
+<body>
+all
+
+<form name="input" action="/sm/create" method="POST">
+    <input type="submit" value="Create">
+</form>
+
+{{#allIds}}
+    <li><a href="/sm/{{.}}">{{.}}</a></li>
+{{/allIds}}
+
+</body>
+</html>
