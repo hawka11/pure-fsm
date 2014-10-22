@@ -32,9 +32,9 @@ public class CleanUpFinalisedStateMachines {
     }
 
     public void startScheduler() {
-        scheduledExecutorService.schedule(
+        scheduledExecutorService.scheduleWithFixedDelay(
                 this::checkForFinalizedStateMachinesAndCleanupIfRequired,
-                cleanupTimeout,
+                0, cleanupTimeout,
                 TimeUnit.SECONDS);
     }
 
@@ -43,6 +43,8 @@ public class CleanUpFinalisedStateMachines {
     }
 
     public void checkForFinalizedStateMachinesAndCleanupIfRequired() {
+        LOG.info("About to check for outdated finalized state machines.");
+
         accessor.getAllIds().forEach(id -> {
             StateMachine stateMachine = accessor.get(id);
             if (stateMachine.getCurrentState() instanceof FinalState) {

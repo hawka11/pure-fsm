@@ -34,7 +34,7 @@ public class TimeoutTicker {
     }
 
     public void startTickScheduler() {
-        scheduledExecutorService.schedule(this::sendTimeOutTickerEvents, howOften, timeUnit);
+        scheduledExecutorService.scheduleWithFixedDelay(this::sendTimeOutTickerEvents, 0, howOften, timeUnit);
     }
 
     public void endTickScheduler() {
@@ -42,6 +42,8 @@ public class TimeoutTicker {
     }
 
     public void sendTimeOutTickerEvents() {
+        LOG.info("About to send out time out ticker events.");
+
         accessor.getAllIds().forEach(id -> template.tryWithLock(id, new StateMachineCallback() {
             @Override
             public StateMachine doWith(StateMachine stateMachine) {
