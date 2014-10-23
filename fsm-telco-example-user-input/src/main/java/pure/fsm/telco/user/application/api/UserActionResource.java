@@ -6,6 +6,7 @@ import pure.fsm.core.accessor.StateMachineAccessor;
 import pure.fsm.core.template.BaseStateMachineCallback;
 import pure.fsm.core.template.StateMachineTemplate;
 import pure.fsm.telco.user.domain.TelcoRechargeContext;
+import pure.fsm.telco.user.domain.event.ConfirmPinEvent;
 import pure.fsm.telco.user.domain.event.RequestPinEvent;
 import pure.fsm.telco.user.domain.state.InitialState;
 import pure.fsm.telco.user.domain.state.TelcoStateFactory;
@@ -70,6 +71,23 @@ public class UserActionResource {
                         .collect(toList()));
 
                 return stateMachine.handleEvent(event);
+            }
+        });
+
+        return getStateBasedView(id);
+    }
+
+    @POST
+    @Path("{id}/pin/{pin}/confirm")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public View requestPins(@PathParam("id") String id,
+                            @PathParam("pin") String pin) {
+
+        template.tryWithLock(id, new BaseStateMachineCallback() {
+            @Override
+            public StateMachine doWith(StateMachine stateMachine) {
+
+                return stateMachine.handleEvent(new ConfirmPinEvent(pin));
             }
         });
 

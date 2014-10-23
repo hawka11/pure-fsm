@@ -1,6 +1,5 @@
 package pure.fsm.telco.user.domain;
 
-import com.google.common.collect.ImmutableSet;
 import pure.fsm.core.BaseContext;
 import pure.fsm.core.Context;
 import pure.fsm.core.Resource;
@@ -31,17 +30,24 @@ public class TelcoRechargeContext extends BaseContext {
         return new TelcoRechargeContext(getResources(), getException(), getMessage(), LocalDateTime.now(), acceptedPins);
     }
 
-    public void addAcceptedPin(String pin) {
+    public void addConfirmedPin(String pin) {
         acceptedPins.add(pin);
     }
 
-    public Set<String> getAcceptedPins() {
-        return ImmutableSet.copyOf(acceptedPins);
+    public Set<String> getConfirmedPins() {
+        //TODO: make this immutable but has serializing issues.
+        return acceptedPins;
     }
 
     public Set<String> getRequestedPins() {
         return getResources().stream()
                 .flatMap(r -> ((DistributedLockResource) r).getLockedKeys().stream())
                 .collect(toSet());
+    }
+
+    public boolean allPinsConfirmed() {
+        return getRequestedPins().stream()
+                .filter(pin -> !getConfirmedPins().contains(pin))
+                .count() == 0;
     }
 }

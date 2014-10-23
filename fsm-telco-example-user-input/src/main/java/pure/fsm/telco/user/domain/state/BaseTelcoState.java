@@ -9,6 +9,7 @@ import pure.fsm.core.state.StateFactory;
 import pure.fsm.core.state.TimedOutFinalState;
 import pure.fsm.hazelcast.resource.DistributedResourceFactory;
 import pure.fsm.telco.user.domain.TelcoRechargeContext;
+import pure.fsm.telco.user.domain.event.ConfirmPinEvent;
 import pure.fsm.telco.user.domain.event.RequestPinEvent;
 import pure.fsm.telco.user.domain.event.TelcoEventVisitor;
 
@@ -50,5 +51,10 @@ public class BaseTelcoState extends BaseNonFinalState implements TelcoEventVisit
     @Override
     public State accept(TelcoRechargeContext context, RequestPinEvent requestPinEvent) {
         return nonHandledEvent(context, requestPinEvent);
+    }
+
+    @Override
+    public State accept(TelcoRechargeContext context, ConfirmPinEvent confirmPinEvent) {
+        return nonHandledEvent(context, confirmPinEvent);
     }
 }

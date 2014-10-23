@@ -6,4 +6,6 @@ import pure.fsm.telco.user.domain.TelcoRechargeContext;
 
 public interface TelcoEventVisitor extends EventVisitor {
     State accept(TelcoRechargeContext context, RequestPinEvent requestPinEvent);
+
+    State accept(TelcoRechargeContext context, ConfirmPinEvent confirmPinEvent);
 }

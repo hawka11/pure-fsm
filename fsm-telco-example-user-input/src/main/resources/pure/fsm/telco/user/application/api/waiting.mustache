@@ -1,5 +1,18 @@
 <html>
 <body>
- waiting {{stateMachine.stateMachineId}}
+Waiting for pin confirmation for id: {{stateMachine.stateMachineId}}
+
+<h2>Waiting Confirmation</h2>
+{{#waitingPins}}
+    <form name="input" action="/sm/{{stateMachine.stateMachineId}}/pin/{{.}}/confirm" method="POST">
+        <input type="submit" value="Confirm {{.}}">
+    </form>
+{{/waitingPins}}
+
+<h2>Confirmed</h2>
+{{#confirmedPins}}
+    <li>{{.}}</li>
+{{/confirmedPins}}
+
 </body>
 </html>
