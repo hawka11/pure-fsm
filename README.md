@@ -1,4 +1,4 @@
-PureFSM --> TODO: rename github name
+PureFSM
 =========
 
 Pure as in pure Java, no xml or gui to configure.
