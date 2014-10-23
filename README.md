@@ -22,4 +22,6 @@ Basic concepts that exist are:
  - Context, *should* be the only stateful object. Holds any data required between 2 or more states
  - Resource, held within the context. Can be used if there are any external resources that you wish to maintain a lock whilst the state machine is active, until they are unlocked in the 'onEnter' call of a final state.
 
+Initial Example: https://github.com/hawka11/PureFSM/blob/master/fsm-telco-example-inmemory/src/main/java/pure/fsm/telco/MainSuccessful.java
+
 TODO: write tests.
