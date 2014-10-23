@@ -34,6 +34,7 @@ public class TimeoutTicker {
     }
 
     public void startTickScheduler() {
+
         scheduledExecutorService.scheduleWithFixedDelay(this::sendTimeOutTickerEvents, 0, howOften, timeUnit);
     }
 
