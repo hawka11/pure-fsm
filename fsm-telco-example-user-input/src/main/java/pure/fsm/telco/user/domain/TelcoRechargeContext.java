@@ -50,4 +50,10 @@ public class TelcoRechargeContext extends BaseContext {
                 .filter(pin -> !getConfirmedPins().contains(pin))
                 .count() == 0;
     }
+
+    public Set<String> getNonConfirmedPins() {
+        return getRequestedPins().stream()
+                .filter(pin -> !getConfirmedPins().contains(pin))
+                .collect(toSet());
+    }
 }

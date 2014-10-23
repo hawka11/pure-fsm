@@ -3,6 +3,7 @@ package pure.fsm.telco.user.application.api;
 import io.dropwizard.views.View;
 import pure.fsm.core.StateMachine;
 import pure.fsm.core.state.State;
+import pure.fsm.core.state.SuccessFinalState;
 import pure.fsm.telco.user.domain.TelcoRechargeContext;
 import pure.fsm.telco.user.domain.state.InitialState;
 import pure.fsm.telco.user.domain.state.WaitingForAcceptance;
@@ -12,7 +13,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import static com.google.common.collect.Maps.newHashMap;
-import static java.util.stream.Collectors.toSet;
 
 public class StateMachineViewFactory {
 
@@ -22,6 +22,7 @@ public class StateMachineViewFactory {
         viewByStateMachineState = newHashMap();
         viewByStateMachineState.put(InitialState.class, InitialView.class);
         viewByStateMachineState.put(WaitingForAcceptance.class, WatingView.class);
+        viewByStateMachineState.put(SuccessFinalState.class, SuccessView.class);
     }
 
     public Optional<View> getViewFor(StateMachine sm) {
@@ -55,27 +56,31 @@ public class StateMachineViewFactory {
         public StateMachine getStateMachine() {
             return stateMachine;
         }
-    }
-
-    static class WatingView extends StateMachineView {
-        protected WatingView() {
-            super("waiting.mustache");
-        }
 
         public Set<String> getConfirmedPins() {
             return ((TelcoRechargeContext) getStateMachine().getContext()).getConfirmedPins();
         }
 
         public Set<String> getWaitingPins() {
-            return ((TelcoRechargeContext) getStateMachine().getContext()).getRequestedPins().stream()
-                    .filter(pin -> !getConfirmedPins().contains(pin))
-                    .collect(toSet());
+            return ((TelcoRechargeContext) getStateMachine().getContext()).getNonConfirmedPins();
+        }
+    }
+
+    static class WatingView extends StateMachineView {
+        protected WatingView() {
+            super("waiting.mustache");
         }
     }
 
     static class InitialView extends StateMachineView {
         protected InitialView() {
             super("initial.mustache");
+        }
+    }
+
+    static class SuccessView extends StateMachineView {
+        protected SuccessView() {
+            super("success.mustache");
         }
     }
 }
