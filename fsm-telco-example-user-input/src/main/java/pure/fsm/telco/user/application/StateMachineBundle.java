@@ -22,8 +22,6 @@ import pure.fsm.telco.user.domain.state.TelcoStateFactory;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 
-import static java.time.temporal.ChronoUnit.SECONDS;
-
 public class StateMachineBundle implements Bundle {
 
     private StateMachineViewFactory stateMachineViewFactory;
@@ -94,7 +92,9 @@ public class StateMachineBundle implements Bundle {
         return new TimeoutTicker(getAccessor(), getTemplate(), howOften, timeUnit);
     }
 
-    public CleanUpFinalisedStateMachines getCleaner(long howOften, TimeUnit timeUnit) {
-        return new CleanUpFinalisedStateMachines(getAccessor(), howOften, SECONDS);
+    public CleanUpFinalisedStateMachines getCleaner(long scheduleFrequency, TimeUnit scheduleTimeUnit,
+                                                    long keepFinalised, ChronoUnit keepFinalisedTimeUnit) {
+
+        return new CleanUpFinalisedStateMachines(getAccessor(), scheduleFrequency, scheduleTimeUnit, keepFinalised, keepFinalisedTimeUnit);
     }
 }

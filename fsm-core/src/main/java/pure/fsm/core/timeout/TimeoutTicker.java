@@ -18,16 +18,16 @@ public class TimeoutTicker {
 
     private final StateMachineAccessor accessor;
     private final StateMachineTemplate template;
-    private final long howOften;
+    private final long scheduleFrequency;
     private final TimeUnit timeUnit;
     private final ScheduledExecutorService scheduledExecutorService;
 
     public TimeoutTicker(StateMachineAccessor accessor,
                          StateMachineTemplate template,
-                         long howOften, TimeUnit timeUnit) {
+                         long scheduleFrequency, TimeUnit timeUnit) {
         this.accessor = accessor;
         this.template = template;
-        this.howOften = howOften;
+        this.scheduleFrequency = scheduleFrequency;
         this.timeUnit = timeUnit;
 
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
@@ -35,7 +35,7 @@ public class TimeoutTicker {
 
     public void startTickScheduler() {
 
-        scheduledExecutorService.scheduleWithFixedDelay(this::sendTimeOutTickerEvents, 0, howOften, timeUnit);
+        scheduledExecutorService.scheduleWithFixedDelay(this::sendTimeOutTickerEvents, 0, scheduleFrequency, timeUnit);
     }
 
     public void endTickScheduler() {

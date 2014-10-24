@@ -19,14 +19,20 @@ public class CleanUpFinalisedStateMachines {
     private final static Logger LOG = LoggerFactory.getLogger(CleanUpFinalisedStateMachines.class);
 
     private final StateMachineAccessor accessor;
-    private final long cleanupTimeout;
-    private final ChronoUnit timeUnit;
+    private final long scheduleFrequency;
+    private final TimeUnit scheduleTimeUnit;
+    private final long keepFinalised;
+    private final ChronoUnit keepFinalisedTimeUnit;
     private final ScheduledExecutorService scheduledExecutorService;
 
-    public CleanUpFinalisedStateMachines(StateMachineAccessor accessor, long cleanupTimeout, ChronoUnit timeUnit) {
+    public CleanUpFinalisedStateMachines(StateMachineAccessor accessor,
+                                         long scheduleFrequency, TimeUnit scheduleTimeUnit,
+                                         long keepFinalised, ChronoUnit keepFinalisedTimeUnit) {
         this.accessor = accessor;
-        this.cleanupTimeout = cleanupTimeout;
-        this.timeUnit = timeUnit;
+        this.scheduleFrequency = scheduleFrequency;
+        this.scheduleTimeUnit = scheduleTimeUnit;
+        this.keepFinalised = keepFinalised;
+        this.keepFinalisedTimeUnit = keepFinalisedTimeUnit;
 
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
     }
@@ -34,8 +40,8 @@ public class CleanUpFinalisedStateMachines {
     public void startScheduler() {
         scheduledExecutorService.scheduleWithFixedDelay(
                 this::checkForFinalizedStateMachinesAndCleanupIfRequired,
-                0, cleanupTimeout,
-                TimeUnit.SECONDS);
+                0, scheduleFrequency,
+                scheduleTimeUnit);
     }
 
     public void stopScheduler() {
@@ -65,6 +71,6 @@ public class CleanUpFinalisedStateMachines {
 
     protected boolean shouldCleanup(StateMachine stateMachine) {
 
-        return stateMachine.getContext().getTransitioned().plus(cleanupTimeout, timeUnit).isBefore(LocalDateTime.now());
+        return stateMachine.getContext().getTransitioned().plus(keepFinalised, keepFinalisedTimeUnit).isBefore(LocalDateTime.now());
     }
 }

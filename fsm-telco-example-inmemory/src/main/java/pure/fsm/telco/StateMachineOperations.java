@@ -13,9 +13,9 @@ import pure.fsm.inmemory.accessor.InMemoryStateMachineAccessor;
 import pure.fsm.telco.state.InitialState;
 import pure.fsm.telco.state.TelcoStateFactory;
 
-import java.util.concurrent.TimeUnit;
+import java.time.temporal.ChronoUnit;
 
-import static java.time.temporal.ChronoUnit.SECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 class StateMachineOperations {
 
@@ -24,8 +24,8 @@ class StateMachineOperations {
     final StateMachineAccessor accessor = new InMemoryStateMachineAccessor();
     final StateMachineTemplate template = new StateMachineTemplate(accessor);
     final TelcoStateFactory stateFactory = new TelcoStateFactory();
-    final TimeoutTicker timeoutTicker = new TimeoutTicker(accessor, template, 1, TimeUnit.SECONDS);
-    final CleanUpFinalisedStateMachines cleaner = new CleanUpFinalisedStateMachines(accessor, 5, SECONDS);
+    final TimeoutTicker timeoutTicker = new TimeoutTicker(accessor, template, 1, SECONDS);
+    final CleanUpFinalisedStateMachines cleaner = new CleanUpFinalisedStateMachines(accessor, 5, SECONDS, 5, ChronoUnit.SECONDS);
 
     public StateMachine getStateMachine(String stateMachineId) {
         return accessor.get(stateMachineId);
