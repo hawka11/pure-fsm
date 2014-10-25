@@ -80,7 +80,7 @@ public class UserActionResource {
     @POST
     @Path("{id}/pin/{pin}/confirm")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public View requestPins(@PathParam("id") String id,
+    public View confirmPin(@PathParam("id") String id,
                             @PathParam("pin") String pin) {
 
         template.tryWithLock(id, new BaseStateMachineCallback() {
