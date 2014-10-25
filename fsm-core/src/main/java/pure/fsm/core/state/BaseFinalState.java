@@ -15,7 +15,7 @@ public abstract class BaseFinalState implements FinalState {
     }
 
     protected State nonHandledEvent(Context context, Event event) {
-        LOG.warn("Final state [{}] received non handled event [{}], ignoring.",
+        LOG.trace("Final state [{}] received non handled event [{}], ignoring.",
                 getClass().getName(), event.getClass().getName());
         return this;
     }
