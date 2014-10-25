@@ -2,8 +2,10 @@ package pure.fsm.telco.user.application.api;
 
 import io.dropwizard.views.View;
 import pure.fsm.core.StateMachine;
+import pure.fsm.core.state.ErrorFinalState;
 import pure.fsm.core.state.State;
 import pure.fsm.core.state.SuccessFinalState;
+import pure.fsm.core.state.TimedOutFinalState;
 import pure.fsm.telco.user.domain.TelcoRechargeContext;
 import pure.fsm.telco.user.domain.state.InitialState;
 import pure.fsm.telco.user.domain.state.WaitingForConfirmationState;
@@ -20,9 +22,13 @@ public class StateMachineViewFactory {
 
     static {
         viewByStateMachineState = newHashMap();
+
         viewByStateMachineState.put(InitialState.class, InitialView.class);
         viewByStateMachineState.put(WaitingForConfirmationState.class, WatingView.class);
         viewByStateMachineState.put(SuccessFinalState.class, SuccessView.class);
+
+        viewByStateMachineState.put(ErrorFinalState.class, ErrorView.class);
+        viewByStateMachineState.put(TimedOutFinalState.class, ErrorView.class);
     }
 
     public Optional<View> getViewFor(StateMachine sm) {
@@ -81,6 +87,12 @@ public class StateMachineViewFactory {
     static class SuccessView extends StateMachineView {
         protected SuccessView() {
             super("success.mustache");
+        }
+    }
+
+    static class ErrorView extends StateMachineView {
+        protected ErrorView() {
+            super("error.mustache");
         }
     }
 }
