@@ -2,10 +2,13 @@ package pure.fsm.core.template;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pure.fsm.core.accessor.StateMachineAccessor;
+import pure.fsm.core.Context;
 import pure.fsm.core.StateMachine;
+import pure.fsm.core.accessor.StateMachineAccessor;
+import pure.fsm.core.state.State;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -18,6 +21,18 @@ public class StateMachineTemplate {
 
     public StateMachineTemplate(StateMachineAccessor accessor) {
         this.accessor = accessor;
+    }
+
+    public StateMachine get(String stateMachineId) {
+        return accessor.get(stateMachineId);
+    }
+
+    public Set<String> getAllIds() {
+        return accessor.getAllIds();
+    }
+
+    public String create(State initialState, Context context) {
+        return accessor.create(initialState, context);
     }
 
     public void tryWithLock(String stateMachineId, StateMachineCallback stateMachineCallback) {

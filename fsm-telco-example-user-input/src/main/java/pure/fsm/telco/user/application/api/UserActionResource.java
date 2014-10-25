@@ -2,7 +2,6 @@ package pure.fsm.telco.user.application.api;
 
 import io.dropwizard.views.View;
 import pure.fsm.core.StateMachine;
-import pure.fsm.core.accessor.StateMachineAccessor;
 import pure.fsm.core.template.BaseStateMachineCallback;
 import pure.fsm.core.template.StateMachineTemplate;
 import pure.fsm.telco.user.domain.TelcoRechargeContext;
@@ -28,16 +27,13 @@ import static java.util.stream.Collectors.toList;
 @Path("/sm")
 public class UserActionResource {
 
-    private final StateMachineAccessor accessor;
     private final StateMachineTemplate template;
     private final StateMachineViewFactory viewFactory;
     private final TelcoStateFactory stateFactory;
 
-    public UserActionResource(StateMachineAccessor accessor,
-                              StateMachineTemplate template,
+    public UserActionResource(StateMachineTemplate template,
                               StateMachineViewFactory viewFactory,
                               TelcoStateFactory stateFactory) {
-        this.accessor = accessor;
         this.template = template;
         this.viewFactory = viewFactory;
         this.stateFactory = stateFactory;
@@ -45,7 +41,7 @@ public class UserActionResource {
 
     @GET
     public View getAll() {
-        Set<String> allIds = accessor.getAllIds();
+        Set<String> allIds = template.getAllIds();
         return new AllStateMachineView(allIds);
     }
 
@@ -53,7 +49,7 @@ public class UserActionResource {
     @Path("/create")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public View create() {
-        accessor.create(stateFactory.getStateByClass(InitialState.class), new TelcoRechargeContext());
+        template.create(stateFactory.getStateByClass(InitialState.class), new TelcoRechargeContext());
         return getAll();
     }
 
@@ -81,7 +77,7 @@ public class UserActionResource {
     @Path("{id}/pin/{pin}/confirm")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public View confirmPin(@PathParam("id") String id,
-                            @PathParam("pin") String pin) {
+                           @PathParam("pin") String pin) {
 
         template.tryWithLock(id, new BaseStateMachineCallback() {
             @Override
@@ -98,7 +94,7 @@ public class UserActionResource {
     @Path("/{id}")
     @Produces(MediaType.TEXT_HTML)
     public View getStateBasedView(@PathParam("id") String id) {
-        StateMachine stateMachine = accessor.get(id);
+        StateMachine stateMachine = template.get(id);
         Optional<View> maybeView = viewFactory.getViewFor(stateMachine);
 
         return maybeView.orElseThrow(() -> new WebServiceException("no views configured"));

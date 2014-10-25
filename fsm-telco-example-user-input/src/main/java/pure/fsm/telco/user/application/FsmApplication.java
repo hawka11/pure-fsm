@@ -6,8 +6,6 @@ import io.dropwizard.setup.Environment;
 import io.dropwizard.views.ViewBundle;
 import pure.fsm.telco.user.application.api.UserActionResource;
 
-import java.time.temporal.ChronoUnit;
-
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -33,7 +31,6 @@ public class FsmApplication extends Application<FsmConfiguration> {
         stateMachineBundle.getCleaner(10, SECONDS, 1, MINUTES).startScheduler();
 
         UserActionResource resource = new UserActionResource(
-                stateMachineBundle.getAccessor(),
                 stateMachineBundle.getTemplate(),
                 stateMachineBundle.getStateMachineViewFactory(),
                 stateMachineBundle.getTelcoStateFactory());
