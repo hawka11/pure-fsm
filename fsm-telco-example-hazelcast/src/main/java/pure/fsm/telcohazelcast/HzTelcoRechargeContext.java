@@ -13,18 +13,18 @@ import static java.util.stream.Collectors.toSet;
 
 public class HzTelcoRechargeContext extends TelcoRechargeContext {
 
-    private HzTelcoRechargeContext(Set<Resource> resources, Exception e, String msg,
+    private HzTelcoRechargeContext(String stateMachineId, Set<Resource> resources, Exception e, String msg,
                                    LocalDateTime transitioned, Set<String> acceptedPins) {
-        super(resources, e, msg, transitioned, acceptedPins);
+        super(stateMachineId, resources, e, msg, transitioned, acceptedPins);
     }
 
     public HzTelcoRechargeContext() {
-        this(newHashSet(), null, null, LocalDateTime.now(), newHashSet());
+        this(null, newHashSet(), null, null, LocalDateTime.now(), newHashSet());
     }
 
     @Override
     public Context transition() {
-        return new HzTelcoRechargeContext(getResources(), getException(), getMessage(), LocalDateTime.now(), getAcceptedPins());
+        return new HzTelcoRechargeContext(getStateMachineId(), getResources(), getException(), getMessage(), LocalDateTime.now(), getAcceptedPins());
     }
 
     @Override

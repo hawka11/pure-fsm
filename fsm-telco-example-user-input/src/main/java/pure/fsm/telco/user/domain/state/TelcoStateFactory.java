@@ -2,7 +2,9 @@ package pure.fsm.telco.user.domain.state;
 
 import pure.fsm.core.state.BaseStateFactory;
 import pure.fsm.core.state.State;
+import pure.fsm.core.template.StateMachineTemplate;
 import pure.fsm.hazelcast.resource.DistributedResourceFactory;
+import pure.fsm.telco.user.infra.TelcoGateway;
 
 import java.util.Map;
 
@@ -12,11 +14,10 @@ public class TelcoStateFactory extends BaseStateFactory {
 
     private final Map<Class<? extends State>, State> stateByStateClass = newHashMap();
 
-    public TelcoStateFactory(DistributedResourceFactory distributedResourceFactory) {
+    public TelcoStateFactory(DistributedResourceFactory distributedResourceFactory, TelcoGateway telcoGateway) {
         super();
-
-        stateByStateClass.put(InitialState.class, new InitialState(distributedResourceFactory));
-        stateByStateClass.put(WaitingForAcceptance.class, new WaitingForAcceptance(distributedResourceFactory));
+        stateByStateClass.put(InitialState.class, new InitialState(this, distributedResourceFactory, telcoGateway));
+        stateByStateClass.put(WaitingForConfirmationState.class, new WaitingForConfirmationState(this, distributedResourceFactory));
     }
 
     @Override

@@ -8,4 +8,6 @@ public interface TelcoEventVisitor extends EventVisitor {
     State accept(TelcoRechargeContext context, RequestPinEvent requestPinEvent);
 
     State accept(TelcoRechargeContext context, ConfirmPinEvent confirmPinEvent);
+
+    State accept(TelcoRechargeContext context, RequestAcceptedEvent requestAcceptedEvent);
 }

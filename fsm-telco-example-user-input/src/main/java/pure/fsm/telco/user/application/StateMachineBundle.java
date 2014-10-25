@@ -10,23 +10,22 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import pure.fsm.core.StateMachine;
 import pure.fsm.core.accessor.CleanUpFinalisedStateMachines;
+import pure.fsm.core.state.StateFactory;
 import pure.fsm.core.template.StateMachineTemplate;
 import pure.fsm.core.timeout.TimeoutTicker;
 import pure.fsm.hazelcast.accessor.HazelcastStateMachineAccessor;
 import pure.fsm.hazelcast.resource.DistributedResourceFactory;
 import pure.fsm.hazelcast.serialization.DistributedLockModule;
 import pure.fsm.hazelcast.serialization.StateMachineSerializer;
-import pure.fsm.telco.user.application.api.StateMachineViewFactory;
-import pure.fsm.telco.user.domain.state.TelcoStateFactory;
 
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 
-public class StateMachineBundle implements Bundle {
+public abstract class StateMachineBundle implements Bundle {
 
-    private StateMachineViewFactory stateMachineViewFactory;
+
     private DistributedResourceFactory distributedResourceFactory;
-    private TelcoStateFactory stateFactory;
+    private StateFactory stateFactory;
     private HazelcastInstance hazelcastInstance;
     private HazelcastStateMachineAccessor accessor;
     private StateMachineTemplate template;
@@ -38,16 +37,17 @@ public class StateMachineBundle implements Bundle {
 
     @Override
     public void run(Environment environment) {
-        stateMachineViewFactory = new StateMachineViewFactory();
         distributedResourceFactory = new DistributedResourceFactory();
-        stateFactory = new TelcoStateFactory(distributedResourceFactory);
+        stateFactory = createStateFactory();
         hazelcastInstance = createClientHz(stateFactory);
         distributedResourceFactory.setInstance(hazelcastInstance);
         accessor = new HazelcastStateMachineAccessor(hazelcastInstance);
         template = new StateMachineTemplate(accessor);
     }
 
-    static HazelcastInstance createClientHz(TelcoStateFactory stateFactory) {
+    protected abstract StateFactory createStateFactory();
+
+    static HazelcastInstance createClientHz(StateFactory stateFactory) {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.addAddress("127.0.0.1:5701"); //TODO: configuredBundle
 
@@ -64,15 +64,11 @@ public class StateMachineBundle implements Bundle {
         return hazelcastInstance;
     }
 
-    public StateMachineViewFactory getStateMachineViewFactory() {
-        return stateMachineViewFactory;
-    }
-
     public DistributedResourceFactory getDistributedResourceFactory() {
         return distributedResourceFactory;
     }
 
-    public TelcoStateFactory getStateFactory() {
+    public StateFactory getStateFactory() {
         return stateFactory;
     }
 

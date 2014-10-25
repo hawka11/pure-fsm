@@ -5,6 +5,10 @@ import java.util.Set;
 
 public interface Context {
 
+    String getStateMachineId();
+
+    void setStateMachineId(String stateMachineId);
+
     LocalDateTime getTransitioned();
 
     void addResource(Resource resource);

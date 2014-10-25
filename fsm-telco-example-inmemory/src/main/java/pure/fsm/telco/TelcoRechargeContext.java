@@ -16,19 +16,19 @@ public class TelcoRechargeContext extends BaseContext {
 
     private final Set<String> acceptedPins;
 
-    protected TelcoRechargeContext(Set<Resource> resources, Exception e, String msg,
+    protected TelcoRechargeContext(String stateMachineId, Set<Resource> resources, Exception e, String msg,
                                  LocalDateTime transitioned, Set<String> acceptedPins) {
-        super(resources, e, msg, transitioned);
+        super(stateMachineId, resources, e, msg, transitioned);
         this.acceptedPins = acceptedPins;
     }
 
     public TelcoRechargeContext() {
-        this(newHashSet(), null, null, LocalDateTime.now(), newHashSet());
+        this(null, newHashSet(), null, null, LocalDateTime.now(), newHashSet());
     }
 
     @Override
     public Context transition() {
-        return new TelcoRechargeContext(getResources(), getException(), getMessage(), LocalDateTime.now(), acceptedPins);
+        return new TelcoRechargeContext(getStateMachineId(), getResources(), getException(), getMessage(), LocalDateTime.now(), acceptedPins);
     }
 
     public void addAcceptedPin(String pin) {

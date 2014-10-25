@@ -2,17 +2,20 @@ package pure.fsm.telco.user.domain.state;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pure.fsm.core.Context;
 import pure.fsm.core.state.State;
 import pure.fsm.hazelcast.resource.DistributedResourceFactory;
 import pure.fsm.telco.user.domain.TelcoRechargeContext;
 import pure.fsm.telco.user.domain.event.ConfirmPinEvent;
 
-public class WaitingForAcceptance extends BaseTelcoState {
+import java.time.LocalDateTime;
 
-    private static final Logger LOG = LoggerFactory.getLogger(WaitingForAcceptance.class);
+public class WaitingForConfirmationState extends BaseTelcoState {
 
-    WaitingForAcceptance(DistributedResourceFactory resourceFactory) {
-        super(resourceFactory);
+    private static final Logger LOG = LoggerFactory.getLogger(WaitingForConfirmationState.class);
+
+    WaitingForConfirmationState(TelcoStateFactory telcoStateFactory, DistributedResourceFactory resourceFactory) {
+        super(telcoStateFactory, resourceFactory);
     }
 
     @Override
@@ -29,5 +32,11 @@ public class WaitingForAcceptance extends BaseTelcoState {
             LOG.info("still waiting for more pins to confirm, transitioning back to current state");
             return this;
         }
+    }
+
+    @Override
+    protected LocalDateTime getTimeoutDateTime(Context context) {
+        //when waiting for user input, timeout can be alot longer than default.
+        return context.getTransitioned().plusSeconds(30);
     }
 }

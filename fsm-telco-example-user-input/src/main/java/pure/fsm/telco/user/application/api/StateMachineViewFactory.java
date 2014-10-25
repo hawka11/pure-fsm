@@ -6,7 +6,7 @@ import pure.fsm.core.state.State;
 import pure.fsm.core.state.SuccessFinalState;
 import pure.fsm.telco.user.domain.TelcoRechargeContext;
 import pure.fsm.telco.user.domain.state.InitialState;
-import pure.fsm.telco.user.domain.state.WaitingForAcceptance;
+import pure.fsm.telco.user.domain.state.WaitingForConfirmationState;
 
 import java.util.Map;
 import java.util.Optional;
@@ -21,7 +21,7 @@ public class StateMachineViewFactory {
     static {
         viewByStateMachineState = newHashMap();
         viewByStateMachineState.put(InitialState.class, InitialView.class);
-        viewByStateMachineState.put(WaitingForAcceptance.class, WatingView.class);
+        viewByStateMachineState.put(WaitingForConfirmationState.class, WatingView.class);
         viewByStateMachineState.put(SuccessFinalState.class, SuccessView.class);
     }
 

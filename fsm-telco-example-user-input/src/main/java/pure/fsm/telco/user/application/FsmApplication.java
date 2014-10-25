@@ -12,7 +12,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class FsmApplication extends Application<FsmConfiguration> {
 
-    private StateMachineBundle stateMachineBundle;
+    private TelcoStateMachineBundle stateMachineBundle;
 
     public static void main(final String[] args) throws Exception {
         new FsmApplication().run(args);
@@ -20,7 +20,7 @@ public class FsmApplication extends Application<FsmConfiguration> {
 
     @Override
     public void initialize(Bootstrap<FsmConfiguration> bootstrap) {
-        stateMachineBundle = new StateMachineBundle();
+        stateMachineBundle = new TelcoStateMachineBundle();
 
         bootstrap.addBundle(new ViewBundle());
         bootstrap.addBundle(stateMachineBundle);
@@ -35,7 +35,7 @@ public class FsmApplication extends Application<FsmConfiguration> {
                 stateMachineBundle.getAccessor(),
                 stateMachineBundle.getTemplate(),
                 stateMachineBundle.getStateMachineViewFactory(),
-                stateMachineBundle.getStateFactory());
+                stateMachineBundle.getTelcoStateFactory());
 
         environment.jersey().register(resource);
     }

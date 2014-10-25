@@ -10,20 +10,23 @@ import pure.fsm.core.state.TimedOutFinalState;
 import pure.fsm.hazelcast.resource.DistributedResourceFactory;
 import pure.fsm.telco.user.domain.TelcoRechargeContext;
 import pure.fsm.telco.user.domain.event.ConfirmPinEvent;
+import pure.fsm.telco.user.domain.event.RequestAcceptedEvent;
 import pure.fsm.telco.user.domain.event.RequestPinEvent;
 import pure.fsm.telco.user.domain.event.TelcoEventVisitor;
 
 public class BaseTelcoState extends BaseNonFinalState implements TelcoEventVisitor {
 
     private final DistributedResourceFactory resourceFactory;
+    private final StateFactory telcoStateFactory;
 
-    protected BaseTelcoState(DistributedResourceFactory resourceFactory) {
+    protected BaseTelcoState(StateFactory telcoStateFactory, DistributedResourceFactory resourceFactory) {
+        this.telcoStateFactory = telcoStateFactory;
         this.resourceFactory = resourceFactory;
     }
 
     @Override
     public StateFactory factory() {
-        return new TelcoStateFactory(resourceFactory);
+        return telcoStateFactory;
     }
 
     public DistributedResourceFactory resourceFactory() {
@@ -56,5 +59,10 @@ public class BaseTelcoState extends BaseNonFinalState implements TelcoEventVisit
     @Override
     public State accept(TelcoRechargeContext context, ConfirmPinEvent confirmPinEvent) {
         return nonHandledEvent(context, confirmPinEvent);
+    }
+
+    @Override
+    public State accept(TelcoRechargeContext context, RequestAcceptedEvent requestAcceptedEvent) {
+        return nonHandledEvent(context, requestAcceptedEvent);
     }
 }

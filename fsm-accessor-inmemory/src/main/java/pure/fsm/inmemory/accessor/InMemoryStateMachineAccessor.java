@@ -29,6 +29,7 @@ public class InMemoryStateMachineAccessor implements StateMachineAccessor {
     public String create(State initialState, Context context) {
         String id = String.valueOf(idGenerator.getAndIncrement());
         StateMachine stateMachine = new StateMachine(id, initialState, context);
+        context.setStateMachineId(id);
         stateMachineByStateMachineId.put(id, stateMachine);
         lockByStateMachineId.put(id, new ReentrantLock());
         return id;

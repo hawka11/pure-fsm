@@ -33,6 +33,7 @@ public class HazelcastStateMachineAccessor implements StateMachineAccessor {
         String id = String.valueOf(idAtomicLong.getAndIncrement());
 
         StateMachine stateMachine = new StateMachine(id, initialState, context);
+        context.setStateMachineId(id);
         getHolderMap().put(id, stateMachine);
 
         return id;
