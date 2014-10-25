@@ -23,7 +23,6 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class StateMachineBundle implements Bundle {
 
-
     private DistributedResourceFactory distributedResourceFactory;
     private StateFactory stateFactory;
     private HazelcastInstance hazelcastInstance;
@@ -32,7 +31,6 @@ public abstract class StateMachineBundle implements Bundle {
 
     @Override
     public void initialize(Bootstrap<?> bootstrap) {
-
     }
 
     @Override
@@ -47,9 +45,8 @@ public abstract class StateMachineBundle implements Bundle {
 
     protected abstract StateFactory createStateFactory();
 
-    static HazelcastInstance createClientHz(StateFactory stateFactory) {
-        ClientConfig clientConfig = new ClientConfig();
-        clientConfig.addAddress("127.0.0.1:5701"); //TODO: configuredBundle
+    private HazelcastInstance createClientHz(StateFactory stateFactory) {
+        ClientConfig clientConfig = getClientConfig();
 
         final StateMachineSerializer stateMachineSerializer = new StateMachineSerializer(stateFactory);
 
@@ -62,6 +59,12 @@ public abstract class StateMachineBundle implements Bundle {
         stateMachineSerializer.registerModule(new DistributedLockModule(hazelcastInstance));
 
         return hazelcastInstance;
+    }
+
+    protected ClientConfig getClientConfig() {
+        ClientConfig clientConfig = new ClientConfig();
+        clientConfig.addAddress("127.0.0.1:5701"); //TODO: configuredBundle
+        return clientConfig;
     }
 
     public DistributedResourceFactory getDistributedResourceFactory() {
