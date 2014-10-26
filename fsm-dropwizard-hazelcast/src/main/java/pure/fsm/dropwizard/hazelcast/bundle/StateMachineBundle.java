@@ -28,6 +28,7 @@ public abstract class StateMachineBundle implements Bundle {
     private HazelcastInstance hazelcastInstance;
     private HazelcastStateMachineAccessor accessor;
     private StateMachineTemplate template;
+    private StateMachineSerializer stateMachineSerializer;
 
     @Override
     public void initialize(Bootstrap<?> bootstrap) {
@@ -36,19 +37,20 @@ public abstract class StateMachineBundle implements Bundle {
     @Override
     public void run(Environment environment) {
         distributedResourceFactory = new DistributedResourceFactory();
-        stateFactory = createStateFactory();
-        hazelcastInstance = createClientHz(stateFactory);
-        distributedResourceFactory.setInstance(hazelcastInstance);
+        stateMachineSerializer = new StateMachineSerializer();
+        hazelcastInstance = createClientHz(stateMachineSerializer);
         accessor = new HazelcastStateMachineAccessor(hazelcastInstance);
         template = new StateMachineTemplate(accessor);
+        stateFactory = createStateFactory();
+
+        distributedResourceFactory.setInstance(hazelcastInstance);
+        stateMachineSerializer.setStateFactory(stateFactory);
     }
 
     protected abstract StateFactory createStateFactory();
 
-    private HazelcastInstance createClientHz(StateFactory stateFactory) {
+    private HazelcastInstance createClientHz(StateMachineSerializer stateMachineSerializer) {
         ClientConfig clientConfig = getClientConfig();
-
-        final StateMachineSerializer stateMachineSerializer = new StateMachineSerializer(stateFactory);
 
         SerializationConfig serializationConfig = clientConfig.getSerializationConfig();
         serializationConfig.getSerializerConfigs()

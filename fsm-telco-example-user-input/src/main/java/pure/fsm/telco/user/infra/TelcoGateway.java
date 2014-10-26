@@ -19,14 +19,11 @@ public class TelcoGateway {
     private static final Logger LOG = LoggerFactory.getLogger(TelcoGateway.class);
 
     private final ScheduledExecutorService service;
-    private StateMachineTemplate template;
+    private final StateMachineTemplate template;
 
-    public TelcoGateway() {
-        service = Executors.newSingleThreadScheduledExecutor();
-    }
-
-    public void setTemplate(StateMachineTemplate template) {
+    public TelcoGateway(StateMachineTemplate template) {
         this.template = template;
+        service = Executors.newSingleThreadScheduledExecutor();
     }
 
     public boolean requestPinRecharge(String smId, List<String> pins) {

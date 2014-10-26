@@ -23,11 +23,9 @@ import static com.google.common.collect.Maps.newHashMap;
 public class StateMachineSerializer implements StreamSerializer<StateMachine> {
 
     private final ObjectMapper mapper;
-    private final StateFactory stateFactory;
+    private StateFactory stateFactory;
 
-    public StateMachineSerializer(StateFactory stateFactory) {
-        this.stateFactory = stateFactory;
-
+    public StateMachineSerializer() {
         mapper = new ObjectMapper(new SmileFactory());
         mapper.registerModule(new JSR310Module());
     }
@@ -116,5 +114,9 @@ public class StateMachineSerializer implements StreamSerializer<StateMachine> {
 
     @Override
     public void destroy() {
+    }
+
+    public void setStateFactory(StateFactory stateFactory) {
+        this.stateFactory = stateFactory;
     }
 }

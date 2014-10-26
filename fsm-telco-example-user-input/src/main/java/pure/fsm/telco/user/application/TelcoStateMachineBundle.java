@@ -11,7 +11,6 @@ import pure.fsm.telco.user.infra.TelcoGateway;
 public class TelcoStateMachineBundle extends StateMachineBundle {
 
     private StateMachineViewFactory stateMachineViewFactory;
-    private TelcoGateway telcoGateway;
     private TelcoStateFactory telcoStateFactory;
 
     @Override
@@ -23,11 +22,10 @@ public class TelcoStateMachineBundle extends StateMachineBundle {
     public void run(Environment environment) {
         super.run(environment);
         stateMachineViewFactory = new StateMachineViewFactory();
-        telcoGateway.setTemplate(getTemplate());
     }
 
     protected StateFactory createStateFactory() {
-        telcoGateway = new TelcoGateway();
+        TelcoGateway telcoGateway = new TelcoGateway(getTemplate());
         telcoStateFactory = new TelcoStateFactory(getDistributedResourceFactory(), telcoGateway);
         return telcoStateFactory;
     }
