@@ -14,7 +14,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="TEST" name="Gradle: junit-4.11" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: hamcrest-core-1.3" level="project" />
-    <orderEntry type="module" module-name="fsm-accessor-hazelcast" exported="" />
     <orderEntry type="library" exported="" name="Gradle: hazelcast-all-3.3.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: dropwizard-core-0.7.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: annotations-1.3.2" level="project" />
@@ -82,6 +81,7 @@
     <orderEntry type="library" exported="" name="Gradle: dropwizard-views-0.7.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: compiler-0.8.15" level="project" />
     <orderEntry type="library" exported="" name="Gradle: dropwizard-assets-0.7.1" level="project" />
+    <orderEntry type="module" module-name="fsm-dropwizard-hazelcast" exported="" />
   </component>
 </module>
 
