@@ -1,4 +1,4 @@
-package pure.fsm.telco.user.application;
+package pure.fsm.dropwizard.hazelcast.bundle;
 
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.client.config.ClientConfig;

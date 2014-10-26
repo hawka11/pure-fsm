@@ -19,6 +19,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.xml.ws.WebServiceException;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -62,11 +63,9 @@ public class UserActionResource {
         template.tryWithLock(id, new BaseStateMachineCallback() {
             @Override
             public StateMachine doWith(StateMachine stateMachine) {
-                RequestPinEvent event = new RequestPinEvent(pins.stream()
-                        .filter(p -> p.length() > 0)
-                        .collect(toList()));
+                List<String> nonEmptyPins = pins.stream().filter(p -> p.length() > 0).collect(toList());
 
-                return stateMachine.handleEvent(event);
+                return stateMachine.handleEvent(new RequestPinEvent(nonEmptyPins));
             }
         });
 

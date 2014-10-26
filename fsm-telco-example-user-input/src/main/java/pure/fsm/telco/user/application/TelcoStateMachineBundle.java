@@ -3,6 +3,7 @@ package pure.fsm.telco.user.application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import pure.fsm.core.state.StateFactory;
+import pure.fsm.dropwizard.hazelcast.bundle.StateMachineBundle;
 import pure.fsm.telco.user.application.api.StateMachineViewFactory;
 import pure.fsm.telco.user.domain.state.TelcoStateFactory;
 import pure.fsm.telco.user.infra.TelcoGateway;
