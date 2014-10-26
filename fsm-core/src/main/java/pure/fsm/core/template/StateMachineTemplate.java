@@ -62,7 +62,11 @@ public class StateMachineTemplate {
                 lock.get().update(newStateMachine);
             } catch (Exception e) {
                 LOG.error("Error with currentStateMachine [" + stateMachineId + "]", e);
+
+                lock.get().getStateMachine().getContext().setException(e);
+
                 StateMachine newStateMachine = stateMachineCallback.onError(lock.get().getStateMachine(), e);
+
                 lock.get().update(newStateMachine);
             } finally {
                 lock.get().unlock();
