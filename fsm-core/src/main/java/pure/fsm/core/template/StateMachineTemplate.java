@@ -67,8 +67,6 @@ public class StateMachineTemplate {
 
                 Context newContext = stateMachineCallback.onError(lock.get().getContext(), stateMachine, e);
 
-                newContext.setException(e);
-
                 lock.get().update(newContext);
             } finally {
                 lock.get().unlock();
