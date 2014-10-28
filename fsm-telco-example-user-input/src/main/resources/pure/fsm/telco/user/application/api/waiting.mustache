@@ -3,16 +3,16 @@
 Waiting for pin confirmation for id: {{context.stateMachineId}}
 
 <h2>Waiting Confirmation</h2>
-{{#waitingPins}}
+{{#context.nonConfirmedPins}}
     <form name="input" action="/sm/{{context.stateMachineId}}/pin/{{.}}/confirm" method="POST">
         <input type="submit" value="Confirm {{.}}">
     </form>
-{{/waitingPins}}
+{{/context.nonConfirmedPins}}
 
 <h2>Confirmed</h2>
-{{#confirmedPins}}
+{{#context.confirmedPins}}
     <li>{{.}}</li>
-{{/confirmedPins}}
+{{/context.confirmedPins}}
 
 <a href="/sm/">Home</a>
 

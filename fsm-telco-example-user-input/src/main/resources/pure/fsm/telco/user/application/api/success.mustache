@@ -3,9 +3,9 @@
 Successfully finished for id: {{context.stateMachineId}}
 
 <h2>Confirmed</h2>
-{{#confirmedPins}}
+{{#context.confirmedPins}}
     <li>{{.}}</li>
-{{/confirmedPins}}
+{{/context.confirmedPins}}
 
 <a href="/sm/">Home</a>
 
