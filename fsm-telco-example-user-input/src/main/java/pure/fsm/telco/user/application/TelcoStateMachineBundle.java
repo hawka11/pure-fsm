@@ -15,7 +15,6 @@ public class TelcoStateMachineBundle extends StateMachineBundle {
 
     @Override
     public void initialize(Bootstrap<?> bootstrap) {
-
     }
 
     @Override
