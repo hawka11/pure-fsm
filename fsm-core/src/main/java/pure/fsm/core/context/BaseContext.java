@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.google.common.collect.Sets.newHashSet;
+
 public abstract class BaseContext implements Context {
 
     private String stateMachineId;
@@ -18,18 +20,37 @@ public abstract class BaseContext implements Context {
     private final Context previous;
     private State currentState;
 
-    protected BaseContext(String stateMachineId, Set<Resource> resources,
-                          Exception e, String msg,
-                          LocalDateTime transitioned,
-                          State currentState, Context previous) {
-        this.stateMachineId = stateMachineId;
-        this.resources = resources;
-        this.e = e;
-        this.msg = msg;
-        this.transitioned = transitioned;
-        this.currentState = currentState;
-        this.previous = previous;
+    protected BaseContext(BaseContextBuilder baseContextBuilder) {
+        stateMachineId = baseContextBuilder.stateMachineId;
+        resources = baseContextBuilder.resources;
+        e = baseContextBuilder.e;
+        msg = baseContextBuilder.msg;
+        transitioned = baseContextBuilder.transitioned;
+        previous = baseContextBuilder.previous;
+        currentState = baseContextBuilder.currentState;
     }
+
+    protected static BaseContextBuilder builder() {
+        return new BaseContextBuilder();
+    }
+
+    protected static BaseContextBuilder initialTransition() {
+        return builder()
+                .resources(newHashSet())
+                .transitioned(LocalDateTime.now());
+    }
+
+    protected BaseContextBuilder transitionWith(State newState) {
+        return builder()
+                .stateMachineId(getStateMachineId())
+                .resources(getResources())
+                .e(getException())
+                .msg(getMessage())
+                .transitioned(LocalDateTime.now())
+                .previous(this)
+                .currentState(newState);
+    }
+
 
     @Override
     public void init(String stateMachineId, State state) {
@@ -90,5 +111,53 @@ public abstract class BaseContext implements Context {
     @Override
     public Optional<Context> previous() {
         return Optional.ofNullable(previous);
+    }
+
+    protected static final class BaseContextBuilder {
+        private String stateMachineId;
+        private Set<Resource> resources;
+        private Exception e;
+        private String msg;
+        private LocalDateTime transitioned;
+        private Context previous;
+        private State currentState;
+
+        private BaseContextBuilder() {
+        }
+
+        public BaseContextBuilder stateMachineId(String stateMachineId) {
+            this.stateMachineId = stateMachineId;
+            return this;
+        }
+
+        public BaseContextBuilder resources(Set<Resource> resources) {
+            this.resources = resources;
+            return this;
+        }
+
+        public BaseContextBuilder e(Exception e) {
+            this.e = e;
+            return this;
+        }
+
+        public BaseContextBuilder msg(String msg) {
+            this.msg = msg;
+            return this;
+        }
+
+        public BaseContextBuilder transitioned(LocalDateTime transitioned) {
+            this.transitioned = transitioned;
+            return this;
+        }
+
+        public BaseContextBuilder previous(Context previous) {
+            this.previous = previous;
+            return this;
+        }
+
+        public BaseContextBuilder currentState(State currentState) {
+            this.currentState = currentState;
+            return this;
+        }
     }
 }
