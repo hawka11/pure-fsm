@@ -2,6 +2,7 @@ package pure.fsm.core.timeout;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pure.fsm.core.Context;
 import pure.fsm.core.StateMachine;
 import pure.fsm.core.accessor.StateMachineAccessor;
 import pure.fsm.core.event.TimeoutTickEvent;
@@ -47,15 +48,15 @@ public class TimeoutTicker {
 
         accessor.getAllIds().forEach(id -> template.tryWithLock(id, new StateMachineCallback() {
             @Override
-            public StateMachine doWith(StateMachine stateMachine) {
+            public Context doWith(Context context, StateMachine stateMachine) {
 
-                return stateMachine.handleEvent(new TimeoutTickEvent());
+                return stateMachine.handleEvent(context, new TimeoutTickEvent());
             }
 
             @Override
-            public StateMachine onError(StateMachine stateMachine, Exception e) {
+            public Context onError(Context context, StateMachine stateMachine, Exception e) {
                 LOG.debug("onError received, ignoring");
-                return stateMachine;
+                return context;
             }
 
             @Override

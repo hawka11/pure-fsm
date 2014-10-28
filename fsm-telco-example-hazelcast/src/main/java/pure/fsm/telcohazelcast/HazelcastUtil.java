@@ -7,9 +7,9 @@ import com.hazelcast.config.SerializationConfig;
 import com.hazelcast.config.SerializerConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
-import pure.fsm.core.StateMachine;
-import pure.fsm.hazelcast.serialization.DistributedLockModule;
-import pure.fsm.hazelcast.serialization.StateMachineSerializer;
+import pure.fsm.core.Context;
+import pure.fsm.hazelcast.serialization.ContextSerializer;
+import pure.fsm.hazelcast.serialization.StateMachineModule;
 import pure.fsm.telcohazelcast.state.HzTelcoStateFactory;
 
 public class HazelcastUtil {
@@ -26,15 +26,15 @@ public class HazelcastUtil {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.addAddress("127.0.0.1:5701");
 
-        final StateMachineSerializer stateMachineSerializer = new StateMachineSerializer(stateFactory);
+        final ContextSerializer contextSerializer = new ContextSerializer();
 
         SerializationConfig serializationConfig = clientConfig.getSerializationConfig();
         serializationConfig.getSerializerConfigs()
-                .add(new SerializerConfig().setTypeClass(StateMachine.class).setImplementation(stateMachineSerializer));
+                .add(new SerializerConfig().setTypeClass(HzTelcoRechargeContext.class).setImplementation(contextSerializer));
 
         HazelcastInstance hazelcastInstance = HazelcastClient.newHazelcastClient(clientConfig);
 
-        stateMachineSerializer.registerModule(new DistributedLockModule(hazelcastInstance));
+        contextSerializer.registerModule(new StateMachineModule(hazelcastInstance, stateFactory));
 
         return hazelcastInstance;
     }

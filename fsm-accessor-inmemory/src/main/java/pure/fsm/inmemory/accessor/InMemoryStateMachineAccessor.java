@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Context;
-import pure.fsm.core.StateMachine;
 import pure.fsm.core.accessor.StateMachineAccessor;
 import pure.fsm.core.state.State;
 
@@ -21,24 +20,26 @@ public class InMemoryStateMachineAccessor implements StateMachineAccessor {
 
     private final AtomicLong idGenerator = new AtomicLong(1000);
 
-    private final ConcurrentHashMap<String, StateMachine> stateMachineByStateMachineId = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Context> contextByStateMachineId = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, ReentrantLock> lockByStateMachineId = new ConcurrentHashMap<>();
 
     @Override
     @SuppressWarnings("unchecked")
     public String create(State initialState, Context context) {
         String id = String.valueOf(idGenerator.getAndIncrement());
-        StateMachine stateMachine = new StateMachine(id, initialState, context);
-        context.setStateMachineId(id);
-        stateMachineByStateMachineId.put(id, stateMachine);
+
+        context.init(id, initialState);
+
+        contextByStateMachineId.put(id, context);
         lockByStateMachineId.put(id, new ReentrantLock());
+
         return id;
     }
 
     @Override
-    public StateMachine get(String stateMachineId) {
+    public Context get(String stateMachineId) {
 
-        return stateMachineByStateMachineId.get(stateMachineId);
+        return contextByStateMachineId.get(stateMachineId);
     }
 
     @Override
@@ -48,13 +49,13 @@ public class InMemoryStateMachineAccessor implements StateMachineAccessor {
             if (reentrantLock != null && reentrantLock.tryLock(timeout, timeUnit)) {
                 Lock lock = new Lock() {
                     @Override
-                    public StateMachine getStateMachine() {
-                        return stateMachineByStateMachineId.get(stateMachineId);
+                    public Context getContext() {
+                        return contextByStateMachineId.get(stateMachineId);
                     }
 
                     @Override
-                    public void update(StateMachine newStateMachine) {
-                        stateMachineByStateMachineId.put(stateMachineId, newStateMachine);
+                    public void update(Context context) {
+                        contextByStateMachineId.put(stateMachineId, context);
                     }
 
                     @Override
@@ -66,7 +67,7 @@ public class InMemoryStateMachineAccessor implements StateMachineAccessor {
                     @Override
                     public boolean unlockAndRemove() {
                         unlock();
-                        stateMachineByStateMachineId.remove(stateMachineId);
+                        contextByStateMachineId.remove(stateMachineId);
                         lockByStateMachineId.remove(stateMachineId);
                         return true;
                     }
@@ -84,6 +85,6 @@ public class InMemoryStateMachineAccessor implements StateMachineAccessor {
 
     @Override
     public Set<String> getAllIds() {
-        return ImmutableSet.copyOf(stateMachineByStateMachineId.keySet());
+        return ImmutableSet.copyOf(contextByStateMachineId.keySet());
     }
 }

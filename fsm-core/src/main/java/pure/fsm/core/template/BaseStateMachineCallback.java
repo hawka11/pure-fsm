@@ -2,6 +2,7 @@ package pure.fsm.core.template;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pure.fsm.core.Context;
 import pure.fsm.core.StateMachine;
 import pure.fsm.core.state.ErrorFinalState;
 
@@ -11,10 +12,14 @@ public abstract class BaseStateMachineCallback implements StateMachineCallback {
 
     @Override
     @SuppressWarnings("unchecked")
-    public StateMachine onError(StateMachine stateMachine, Exception e) {
+    public Context onError(Context context, StateMachine stateMachine, Exception e) {
         LOG.error("On Error, returning state machine in error state.", e);
-        stateMachine.getContext().setException(e);
-        return new StateMachine(stateMachine.getStateMachineId(), new ErrorFinalState(), stateMachine.getContext());
+
+        Context transitioned = context.transition(new ErrorFinalState());
+
+        transitioned.setException(e);
+
+        return transitioned;
     }
 
     @Override

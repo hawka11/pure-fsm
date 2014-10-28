@@ -39,7 +39,7 @@ public class InitialState extends BaseTelcoState {
     public State accept(TelcoRechargeContext context, RequestAcceptedEvent requestAcceptedEvent) {
         List<String> acceptedPins = requestAcceptedEvent.getPins();
 
-        List<String> waitingAcceptance = context.getRequestedPins().stream()
+        List<String> waitingAcceptance = context.requestedPins().stream()
                 .filter(pin -> !acceptedPins.contains(pin))
                 .collect(toList());
 

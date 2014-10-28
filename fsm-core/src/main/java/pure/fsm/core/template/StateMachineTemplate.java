@@ -19,11 +19,13 @@ public class StateMachineTemplate {
 
     private final StateMachineAccessor accessor;
 
+    private final StateMachine stateMachine = new StateMachine();
+
     public StateMachineTemplate(StateMachineAccessor accessor) {
         this.accessor = accessor;
     }
 
-    public StateMachine get(String stateMachineId) {
+    public Context get(String stateMachineId) {
         return accessor.get(stateMachineId);
     }
 
@@ -58,16 +60,16 @@ public class StateMachineTemplate {
 
         if (lock.isPresent()) {
             try {
-                StateMachine newStateMachine = stateMachineCallback.doWith(lock.get().getStateMachine());
-                lock.get().update(newStateMachine);
+                Context newContext = stateMachineCallback.doWith(lock.get().getContext(), stateMachine);
+                lock.get().update(newContext);
             } catch (Exception e) {
                 LOG.error("Error with currentStateMachine [" + stateMachineId + "]", e);
 
-                lock.get().getStateMachine().getContext().setException(e);
+                Context newContext = stateMachineCallback.onError(lock.get().getContext(), stateMachine, e);
 
-                StateMachine newStateMachine = stateMachineCallback.onError(lock.get().getStateMachine(), e);
+                newContext.setException(e);
 
-                lock.get().update(newStateMachine);
+                lock.get().update(newContext);
             } finally {
                 lock.get().unlock();
             }

@@ -2,7 +2,7 @@ package pure.fsm.core.accessor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pure.fsm.core.StateMachine;
+import pure.fsm.core.Context;
 import pure.fsm.core.state.FinalState;
 
 import java.time.LocalDateTime;
@@ -52,13 +52,13 @@ public class CleanUpFinalisedStateMachines {
         LOG.info("About to check for outdated finalized state machines.");
 
         accessor.getAllIds().forEach(id -> {
-            StateMachine stateMachine = accessor.get(id);
-            if (stateMachine.getCurrentState() instanceof FinalState) {
+            Context context = accessor.get(id);
+            if (context.getCurrentState() instanceof FinalState) {
                 try {
                     Optional<StateMachineAccessor.Lock> lock = accessor.tryLock(id, 1, SECONDS);
-                    if (lock.isPresent() && shouldCleanup(lock.get().getStateMachine())) {
+                    if (lock.isPresent() && shouldCleanup(lock.get().getContext())) {
                         LOG.info("unlocking and removing state machine [{}]",
-                                lock.get().getStateMachine().getStateMachineId());
+                                lock.get().getContext().getStateMachineId());
 
                         lock.get().unlockAndRemove();
                     }
@@ -69,8 +69,8 @@ public class CleanUpFinalisedStateMachines {
         });
     }
 
-    protected boolean shouldCleanup(StateMachine stateMachine) {
+    protected boolean shouldCleanup(Context context) {
 
-        return stateMachine.getContext().getTransitioned().plus(keepFinalised, keepFinalisedTimeUnit).isBefore(LocalDateTime.now());
+        return context.getTransitioned().plus(keepFinalised, keepFinalisedTimeUnit).isBefore(LocalDateTime.now());
     }
 }

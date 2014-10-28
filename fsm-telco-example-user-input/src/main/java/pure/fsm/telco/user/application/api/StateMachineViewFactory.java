@@ -1,7 +1,7 @@
 package pure.fsm.telco.user.application.api;
 
 import io.dropwizard.views.View;
-import pure.fsm.core.StateMachine;
+import pure.fsm.core.Context;
 import pure.fsm.core.state.ErrorFinalState;
 import pure.fsm.core.state.State;
 import pure.fsm.core.state.SuccessFinalState;
@@ -31,13 +31,13 @@ public class StateMachineViewFactory {
         viewByStateMachineState.put(TimedOutFinalState.class, ErrorView.class);
     }
 
-    public Optional<View> getViewFor(StateMachine sm) {
+    public Optional<View> getViewFor(Context context) {
 
         try {
-            Class<? extends StateMachineView> view = viewByStateMachineState.get(sm.getCurrentState().getClass());
+            Class<? extends StateMachineView> view = viewByStateMachineState.get(context.getCurrentState().getClass());
             if (view != null) {
                 StateMachineView smView = view.newInstance();
-                smView.setStateMachine(sm);
+                smView.setContext(context);
                 return Optional.of(smView);
             }
         } catch (Exception e) {
@@ -49,26 +49,26 @@ public class StateMachineViewFactory {
 
     static abstract class StateMachineView extends View {
 
-        private StateMachine stateMachine;
+        private Context context;
 
         protected StateMachineView(String templateName) {
             super(templateName);
         }
 
-        void setStateMachine(StateMachine sm) {
-            this.stateMachine = sm;
+        void setContext(Context sm) {
+            this.context = sm;
         }
 
-        public StateMachine getStateMachine() {
-            return stateMachine;
+        public Context getContext() {
+            return context;
         }
 
         public Set<String> getConfirmedPins() {
-            return ((TelcoRechargeContext) getStateMachine().getContext()).getConfirmedPins();
+            return ((TelcoRechargeContext) getContext()).getConfirmedPins();
         }
 
         public Set<String> getWaitingPins() {
-            return ((TelcoRechargeContext) getStateMachine().getContext()).getNonConfirmedPins();
+            return ((TelcoRechargeContext) getContext()).nonConfirmedPins();
         }
     }
 

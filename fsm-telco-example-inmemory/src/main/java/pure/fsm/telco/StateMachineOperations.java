@@ -2,6 +2,7 @@ package pure.fsm.telco;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pure.fsm.core.Context;
 import pure.fsm.core.StateMachine;
 import pure.fsm.core.accessor.CleanUpFinalisedStateMachines;
 import pure.fsm.core.accessor.StateMachineAccessor;
@@ -27,15 +28,15 @@ class StateMachineOperations {
     final TimeoutTicker timeoutTicker = new TimeoutTicker(accessor, template, 1, SECONDS);
     final CleanUpFinalisedStateMachines cleaner = new CleanUpFinalisedStateMachines(accessor, 5, SECONDS, 5, ChronoUnit.SECONDS);
 
-    public StateMachine getStateMachine(String stateMachineId) {
+    public Context getStateMachine(String stateMachineId) {
         return accessor.get(stateMachineId);
     }
 
     public void scheduleEventOnThread(String stateMachineId, final Event event) {
         new Thread(() -> template.tryWithLock(stateMachineId, new BaseStateMachineCallback() {
             @Override
-            public StateMachine doWith(StateMachine stateMachine) {
-                return stateMachine.handleEvent(event);
+            public Context doWith(Context context, StateMachine stateMachine) {
+                return stateMachine.handleEvent(context, event);
             }
         })).start();
     }

@@ -1,6 +1,7 @@
 package pure.fsm.telco.user.application.api;
 
 import io.dropwizard.views.View;
+import pure.fsm.core.Context;
 import pure.fsm.core.StateMachine;
 import pure.fsm.core.template.BaseStateMachineCallback;
 import pure.fsm.core.template.StateMachineTemplate;
@@ -55,17 +56,17 @@ public class UserActionResource {
     }
 
     @POST
-    @Path("{id}/pin/request")
+    @Path("/{id}/pin/request")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public View requestPins(@PathParam("id") String id,
                             @FormParam("pin") Set<String> pins) {
 
         template.tryWithLock(id, new BaseStateMachineCallback() {
             @Override
-            public StateMachine doWith(StateMachine stateMachine) {
+            public Context doWith(Context context, StateMachine stateMachine) {
                 List<String> nonEmptyPins = pins.stream().filter(p -> p.length() > 0).collect(toList());
 
-                return stateMachine.handleEvent(new RequestPinEvent(nonEmptyPins));
+                return stateMachine.handleEvent(context, new RequestPinEvent(nonEmptyPins));
             }
         });
 
@@ -73,16 +74,16 @@ public class UserActionResource {
     }
 
     @POST
-    @Path("{id}/pin/{pin}/confirm")
+    @Path("/{id}/pin/{pin}/confirm")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public View confirmPin(@PathParam("id") String id,
                            @PathParam("pin") String pin) {
 
         template.tryWithLock(id, new BaseStateMachineCallback() {
             @Override
-            public StateMachine doWith(StateMachine stateMachine) {
+            public Context doWith(Context context, StateMachine stateMachine) {
 
-                return stateMachine.handleEvent(new ConfirmPinEvent(pin));
+                return stateMachine.handleEvent(context, new ConfirmPinEvent(pin));
             }
         });
 
@@ -93,8 +94,8 @@ public class UserActionResource {
     @Path("/{id}")
     @Produces(MediaType.TEXT_HTML)
     public View getStateBasedView(@PathParam("id") String id) {
-        StateMachine stateMachine = template.get(id);
-        Optional<View> maybeView = viewFactory.getViewFor(stateMachine);
+        Context context = template.get(id);
+        Optional<View> maybeView = viewFactory.getViewFor(context);
 
         return maybeView.orElseThrow(() -> new WebServiceException("no views configured"));
     }

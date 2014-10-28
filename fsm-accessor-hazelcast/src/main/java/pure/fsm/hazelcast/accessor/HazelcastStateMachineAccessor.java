@@ -6,7 +6,6 @@ import com.hazelcast.core.IMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Context;
-import pure.fsm.core.StateMachine;
 import pure.fsm.core.accessor.StateMachineAccessor;
 import pure.fsm.core.state.State;
 
@@ -32,15 +31,15 @@ public class HazelcastStateMachineAccessor implements StateMachineAccessor {
         IAtomicLong idAtomicLong = getHazel().getAtomicLong("STATE_MACHINE_ID_GENERATOR");
         String id = String.valueOf(idAtomicLong.getAndIncrement());
 
-        StateMachine stateMachine = new StateMachine(id, initialState, context);
-        context.setStateMachineId(id);
-        getHolderMap().put(id, stateMachine);
+        context.init(id, initialState);
+
+        getHolderMap().put(id, context);
 
         return id;
     }
 
     @Override
-    public StateMachine get(String stateMachineId) {
+    public Context get(String stateMachineId) {
         return getHolderMap().get(stateMachineId);
     }
 
@@ -66,13 +65,13 @@ public class HazelcastStateMachineAccessor implements StateMachineAccessor {
     private Optional<Lock> createLock(String stateMachineId, java.util.concurrent.locks.Lock distributedLock) {
         Lock lock = new Lock() {
             @Override
-            public StateMachine getStateMachine() {
+            public Context getContext() {
                 return getHolderMap().get(stateMachineId);
             }
 
             @Override
-            public void update(StateMachine newStateMachine) {
-                getHolderMap().put(stateMachineId, newStateMachine);
+            public void update(Context context) {
+                getHolderMap().put(stateMachineId, context);
             }
 
             @Override
@@ -92,7 +91,7 @@ public class HazelcastStateMachineAccessor implements StateMachineAccessor {
         return Optional.of(lock);
     }
 
-    private IMap<String, StateMachine> getHolderMap() {
+    private IMap<String, Context> getHolderMap() {
         return getHazel().getMap("STATE_MACHINE_HOLDER");
     }
 

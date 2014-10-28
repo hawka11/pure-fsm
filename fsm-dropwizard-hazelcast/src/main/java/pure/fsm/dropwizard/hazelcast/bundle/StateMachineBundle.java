@@ -8,6 +8,7 @@ import com.hazelcast.core.HazelcastInstance;
 import io.dropwizard.Bundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import pure.fsm.core.Context;
 import pure.fsm.core.StateMachine;
 import pure.fsm.core.accessor.CleanUpFinalisedStateMachines;
 import pure.fsm.core.state.StateFactory;
@@ -15,8 +16,8 @@ import pure.fsm.core.template.StateMachineTemplate;
 import pure.fsm.core.timeout.TimeoutTicker;
 import pure.fsm.hazelcast.accessor.HazelcastStateMachineAccessor;
 import pure.fsm.hazelcast.resource.DistributedResourceFactory;
-import pure.fsm.hazelcast.serialization.DistributedLockModule;
-import pure.fsm.hazelcast.serialization.StateMachineSerializer;
+import pure.fsm.hazelcast.serialization.ContextSerializer;
+import pure.fsm.hazelcast.serialization.StateMachineModule;
 
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
@@ -35,30 +36,29 @@ public abstract class StateMachineBundle implements Bundle {
 
     @Override
     public void run(Environment environment) {
-        StateMachineSerializer stateMachineSerializer = new StateMachineSerializer();
+        ContextSerializer contextSerializer = new ContextSerializer();
 
         distributedResourceFactory = new DistributedResourceFactory();
-        hazelcastInstance = createClientHz(stateMachineSerializer);
+        hazelcastInstance = createClientHz(contextSerializer);
         accessor = new HazelcastStateMachineAccessor(hazelcastInstance);
         template = new StateMachineTemplate(accessor);
         stateFactory = createStateFactory();
 
         distributedResourceFactory.setInstance(hazelcastInstance);
-        stateMachineSerializer.setStateFactory(stateFactory);
+
+        contextSerializer.registerModule(new StateMachineModule(hazelcastInstance, stateFactory));
     }
 
     protected abstract StateFactory createStateFactory();
 
-    private HazelcastInstance createClientHz(StateMachineSerializer stateMachineSerializer) {
+    private HazelcastInstance createClientHz(ContextSerializer contextSerializer) {
         ClientConfig clientConfig = getClientConfig();
 
         SerializationConfig serializationConfig = clientConfig.getSerializationConfig();
         serializationConfig.getSerializerConfigs()
-                .add(new SerializerConfig().setTypeClass(StateMachine.class).setImplementation(stateMachineSerializer));
+                .add(new SerializerConfig().setTypeClass(Context.class).setImplementation(contextSerializer));
 
         HazelcastInstance hazelcastInstance = HazelcastClient.newHazelcastClient(clientConfig);
-
-        stateMachineSerializer.registerModule(new DistributedLockModule(hazelcastInstance));
 
         return hazelcastInstance;
     }

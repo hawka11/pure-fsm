@@ -1,9 +1,9 @@
 package pure.fsm.telco;
 
-import com.google.common.collect.ImmutableSet;
 import pure.fsm.core.BaseContext;
 import pure.fsm.core.Context;
 import pure.fsm.core.Resource;
+import pure.fsm.core.state.State;
 import pure.fsm.telco.state.LockedPinResource;
 
 import java.time.LocalDateTime;
@@ -17,18 +17,20 @@ public class TelcoRechargeContext extends BaseContext {
     private final Set<String> acceptedPins;
 
     protected TelcoRechargeContext(String stateMachineId, Set<Resource> resources, Exception e, String msg,
-                                 LocalDateTime transitioned, Set<String> acceptedPins) {
-        super(stateMachineId, resources, e, msg, transitioned);
+                                   LocalDateTime transitioned, State current, Context previous, Set<String> acceptedPins) {
+        super(stateMachineId, resources, e, msg, transitioned, current, previous);
         this.acceptedPins = acceptedPins;
     }
 
     public TelcoRechargeContext() {
-        this(null, newHashSet(), null, null, LocalDateTime.now(), newHashSet());
+        this(null, newHashSet(), null, null, LocalDateTime.now(), null, null, newHashSet());
     }
 
     @Override
-    public Context transition() {
-        return new TelcoRechargeContext(getStateMachineId(), getResources(), getException(), getMessage(), LocalDateTime.now(), acceptedPins);
+    public Context transition(State newState) {
+
+        return new TelcoRechargeContext(getStateMachineId(), getResources(), getException(),
+                getMessage(), LocalDateTime.now(), newState, this, acceptedPins);
     }
 
     public void addAcceptedPin(String pin) {
@@ -36,7 +38,8 @@ public class TelcoRechargeContext extends BaseContext {
     }
 
     public Set<String> getAcceptedPins() {
-        return ImmutableSet.copyOf(acceptedPins);
+        //TODO: make immutable
+        return acceptedPins;
     }
 
     public Set<String> getRequestedPins() {

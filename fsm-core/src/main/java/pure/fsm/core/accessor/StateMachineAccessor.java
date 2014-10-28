@@ -1,8 +1,7 @@
 package pure.fsm.core.accessor;
 
-import pure.fsm.core.state.State;
 import pure.fsm.core.Context;
-import pure.fsm.core.StateMachine;
+import pure.fsm.core.state.State;
 
 import java.util.Optional;
 import java.util.Set;
@@ -10,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 public interface StateMachineAccessor {
 
-    StateMachine get(String stateMachineId);
+    Context get(String stateMachineId);
 
     Set<String> getAllIds();
 
@@ -20,9 +19,9 @@ public interface StateMachineAccessor {
 
     static interface Lock {
 
-        StateMachine getStateMachine();
+        Context getContext();
 
-        void update(StateMachine newStateMachine);
+        void update(Context newStateMachine);
 
         boolean unlock();
 
