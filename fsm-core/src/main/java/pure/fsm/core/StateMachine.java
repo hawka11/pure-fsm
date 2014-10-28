@@ -11,6 +11,11 @@ public class StateMachine {
 
     private final static Logger LOG = LoggerFactory.getLogger(StateMachine.class);
 
+    public final static StateMachine STATE_MACHINE_INSTANCE = new StateMachine();
+
+    private StateMachine() {
+    }
+
     @SuppressWarnings("unchecked")
     public Context handleEvent(Context context, Event event) {
         final State currentState = context.getCurrentState();

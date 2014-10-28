@@ -3,7 +3,6 @@ package pure.fsm.core.template;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Context;
-import pure.fsm.core.StateMachine;
 import pure.fsm.core.accessor.StateMachineContextAccessor;
 import pure.fsm.core.state.State;
 
@@ -12,14 +11,13 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static pure.fsm.core.StateMachine.STATE_MACHINE_INSTANCE;
 
 public class StateMachineTemplate {
 
     private final static Logger LOG = LoggerFactory.getLogger(StateMachineTemplate.class);
 
     private final StateMachineContextAccessor accessor;
-
-    private final StateMachine stateMachine = new StateMachine();
 
     public StateMachineTemplate(StateMachineContextAccessor accessor) {
         this.accessor = accessor;
@@ -60,12 +58,12 @@ public class StateMachineTemplate {
 
         if (lock.isPresent()) {
             try {
-                Context newContext = stateMachineCallback.doWith(lock.get().getContext(), stateMachine);
+                Context newContext = stateMachineCallback.doWith(lock.get().getContext(), STATE_MACHINE_INSTANCE);
                 lock.get().update(newContext);
             } catch (Exception e) {
                 LOG.error("Error with currentStateMachine [" + stateMachineId + "]", e);
 
-                Context newContext = stateMachineCallback.onError(lock.get().getContext(), stateMachine, e);
+                Context newContext = stateMachineCallback.onError(lock.get().getContext(), STATE_MACHINE_INSTANCE, e);
 
                 lock.get().update(newContext);
             } finally {
