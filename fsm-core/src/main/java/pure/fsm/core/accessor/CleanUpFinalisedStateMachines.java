@@ -18,14 +18,14 @@ public class CleanUpFinalisedStateMachines {
 
     private final static Logger LOG = LoggerFactory.getLogger(CleanUpFinalisedStateMachines.class);
 
-    private final StateMachineAccessor accessor;
+    private final StateMachineContextAccessor accessor;
     private final long scheduleFrequency;
     private final TimeUnit scheduleTimeUnit;
     private final long keepFinalised;
     private final ChronoUnit keepFinalisedTimeUnit;
     private final ScheduledExecutorService scheduledExecutorService;
 
-    public CleanUpFinalisedStateMachines(StateMachineAccessor accessor,
+    public CleanUpFinalisedStateMachines(StateMachineContextAccessor accessor,
                                          long scheduleFrequency, TimeUnit scheduleTimeUnit,
                                          long keepFinalised, ChronoUnit keepFinalisedTimeUnit) {
         this.accessor = accessor;
@@ -55,7 +55,7 @@ public class CleanUpFinalisedStateMachines {
             Context context = accessor.get(id);
             if (context.getCurrentState() instanceof FinalState) {
                 try {
-                    Optional<StateMachineAccessor.Lock> lock = accessor.tryLock(id, 1, SECONDS);
+                    Optional<StateMachineContextAccessor.Lock> lock = accessor.tryLock(id, 1, SECONDS);
                     if (lock.isPresent() && shouldCleanup(lock.get().getContext())) {
                         LOG.info("unlocking and removing state machine [{}]",
                                 lock.get().getContext().getStateMachineId());

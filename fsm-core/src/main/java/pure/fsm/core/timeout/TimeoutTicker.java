@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Context;
 import pure.fsm.core.StateMachine;
-import pure.fsm.core.accessor.StateMachineAccessor;
+import pure.fsm.core.accessor.StateMachineContextAccessor;
 import pure.fsm.core.event.TimeoutTickEvent;
 import pure.fsm.core.template.StateMachineCallback;
 import pure.fsm.core.template.StateMachineTemplate;
@@ -17,13 +17,13 @@ public class TimeoutTicker {
 
     private final static Logger LOG = LoggerFactory.getLogger(TimeoutTicker.class);
 
-    private final StateMachineAccessor accessor;
+    private final StateMachineContextAccessor accessor;
     private final StateMachineTemplate template;
     private final long scheduleFrequency;
     private final TimeUnit timeUnit;
     private final ScheduledExecutorService scheduledExecutorService;
 
-    public TimeoutTicker(StateMachineAccessor accessor,
+    public TimeoutTicker(StateMachineContextAccessor accessor,
                          StateMachineTemplate template,
                          long scheduleFrequency, TimeUnit timeUnit) {
         this.accessor = accessor;

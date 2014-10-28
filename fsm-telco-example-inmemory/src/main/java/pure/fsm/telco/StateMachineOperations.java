@@ -5,12 +5,12 @@ import org.slf4j.LoggerFactory;
 import pure.fsm.core.Context;
 import pure.fsm.core.StateMachine;
 import pure.fsm.core.accessor.CleanUpFinalisedStateMachines;
-import pure.fsm.core.accessor.StateMachineAccessor;
+import pure.fsm.core.accessor.StateMachineContextAccessor;
 import pure.fsm.core.event.Event;
 import pure.fsm.core.template.BaseStateMachineCallback;
 import pure.fsm.core.template.StateMachineTemplate;
 import pure.fsm.core.timeout.TimeoutTicker;
-import pure.fsm.inmemory.accessor.InMemoryStateMachineAccessor;
+import pure.fsm.inmemory.accessor.InMemoryStateMachineContextAccessor;
 import pure.fsm.telco.state.InitialState;
 import pure.fsm.telco.state.TelcoStateFactory;
 
@@ -22,7 +22,7 @@ class StateMachineOperations {
 
     private final static Logger LOG = LoggerFactory.getLogger(StateMachineOperations.class);
 
-    final StateMachineAccessor accessor = new InMemoryStateMachineAccessor();
+    final StateMachineContextAccessor accessor = new InMemoryStateMachineContextAccessor();
     final StateMachineTemplate template = new StateMachineTemplate(accessor);
     final TelcoStateFactory stateFactory = new TelcoStateFactory();
     final TimeoutTicker timeoutTicker = new TimeoutTicker(accessor, template, 1, SECONDS);
@@ -52,7 +52,7 @@ class StateMachineOperations {
                 getStateMachine(stateMachineId).getCurrentState().getClass().getSimpleName());
     }
 
-    public StateMachineAccessor getAccessor() {
+    public StateMachineContextAccessor getAccessor() {
         return accessor;
     }
 

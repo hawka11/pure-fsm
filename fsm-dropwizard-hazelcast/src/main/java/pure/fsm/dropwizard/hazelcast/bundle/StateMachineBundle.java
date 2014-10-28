@@ -9,12 +9,11 @@ import io.dropwizard.Bundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import pure.fsm.core.Context;
-import pure.fsm.core.StateMachine;
 import pure.fsm.core.accessor.CleanUpFinalisedStateMachines;
 import pure.fsm.core.state.StateFactory;
 import pure.fsm.core.template.StateMachineTemplate;
 import pure.fsm.core.timeout.TimeoutTicker;
-import pure.fsm.hazelcast.accessor.HazelcastStateMachineAccessor;
+import pure.fsm.hazelcast.accessor.HazelcastStateMachineContextAccessor;
 import pure.fsm.hazelcast.resource.DistributedResourceFactory;
 import pure.fsm.hazelcast.serialization.ContextSerializer;
 import pure.fsm.hazelcast.serialization.StateMachineModule;
@@ -27,7 +26,7 @@ public abstract class StateMachineBundle implements Bundle {
     private DistributedResourceFactory distributedResourceFactory;
     private StateFactory stateFactory;
     private HazelcastInstance hazelcastInstance;
-    private HazelcastStateMachineAccessor accessor;
+    private HazelcastStateMachineContextAccessor accessor;
     private StateMachineTemplate template;
 
     @Override
@@ -40,7 +39,7 @@ public abstract class StateMachineBundle implements Bundle {
 
         distributedResourceFactory = new DistributedResourceFactory();
         hazelcastInstance = createClientHz(contextSerializer);
-        accessor = new HazelcastStateMachineAccessor(hazelcastInstance);
+        accessor = new HazelcastStateMachineContextAccessor(hazelcastInstance);
         template = new StateMachineTemplate(accessor);
         stateFactory = createStateFactory();
 
@@ -81,7 +80,7 @@ public abstract class StateMachineBundle implements Bundle {
         return hazelcastInstance;
     }
 
-    public HazelcastStateMachineAccessor getAccessor() {
+    public HazelcastStateMachineContextAccessor getAccessor() {
         return accessor;
     }
 

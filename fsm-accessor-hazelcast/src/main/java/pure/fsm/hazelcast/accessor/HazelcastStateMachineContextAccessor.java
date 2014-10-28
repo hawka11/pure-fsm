@@ -6,7 +6,7 @@ import com.hazelcast.core.IMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Context;
-import pure.fsm.core.accessor.StateMachineAccessor;
+import pure.fsm.core.accessor.StateMachineContextAccessor;
 import pure.fsm.core.state.State;
 
 import java.util.Optional;
@@ -15,13 +15,13 @@ import java.util.concurrent.TimeUnit;
 
 import static com.google.common.collect.ImmutableSet.copyOf;
 
-public class HazelcastStateMachineAccessor implements StateMachineAccessor {
+public class HazelcastStateMachineContextAccessor implements StateMachineContextAccessor {
 
-    private final Logger LOG = LoggerFactory.getLogger(HazelcastStateMachineAccessor.class);
+    private final Logger LOG = LoggerFactory.getLogger(HazelcastStateMachineContextAccessor.class);
 
     private final HazelcastInstance hazelcastInstance;
 
-    public HazelcastStateMachineAccessor(HazelcastInstance hazelcastInstance) {
+    public HazelcastStateMachineContextAccessor(HazelcastInstance hazelcastInstance) {
         this.hazelcastInstance = hazelcastInstance;
     }
 

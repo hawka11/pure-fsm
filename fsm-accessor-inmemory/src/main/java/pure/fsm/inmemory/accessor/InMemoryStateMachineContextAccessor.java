@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Context;
-import pure.fsm.core.accessor.StateMachineAccessor;
+import pure.fsm.core.accessor.StateMachineContextAccessor;
 import pure.fsm.core.state.State;
 
 import java.util.Optional;
@@ -14,9 +14,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class InMemoryStateMachineAccessor implements StateMachineAccessor {
+public class InMemoryStateMachineContextAccessor implements StateMachineContextAccessor {
 
-    private final Logger LOG = LoggerFactory.getLogger(InMemoryStateMachineAccessor.class);
+    private final Logger LOG = LoggerFactory.getLogger(InMemoryStateMachineContextAccessor.class);
 
     private final AtomicLong idGenerator = new AtomicLong(1000);
 

@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Context;
 import pure.fsm.core.StateMachine;
-import pure.fsm.core.accessor.StateMachineAccessor;
+import pure.fsm.core.accessor.StateMachineContextAccessor;
 import pure.fsm.core.state.State;
 
 import java.util.Optional;
@@ -17,11 +17,11 @@ public class StateMachineTemplate {
 
     private final static Logger LOG = LoggerFactory.getLogger(StateMachineTemplate.class);
 
-    private final StateMachineAccessor accessor;
+    private final StateMachineContextAccessor accessor;
 
     private final StateMachine stateMachine = new StateMachine();
 
-    public StateMachineTemplate(StateMachineAccessor accessor) {
+    public StateMachineTemplate(StateMachineContextAccessor accessor) {
         this.accessor = accessor;
     }
 
@@ -49,7 +49,7 @@ public class StateMachineTemplate {
      * This does not prevent multiple state machines being sent their own events concurrently
      */
     public void tryWithLock(String stateMachineId, StateMachineCallback stateMachineCallback, long timeout, TimeUnit timeUnit) {
-        Optional<StateMachineAccessor.Lock> lock = Optional.empty();
+        Optional<StateMachineContextAccessor.Lock> lock = Optional.empty();
 
         try {
             lock = accessor.tryLock(stateMachineId, timeout, timeUnit);

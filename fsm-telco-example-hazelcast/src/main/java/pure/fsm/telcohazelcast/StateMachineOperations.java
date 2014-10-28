@@ -5,11 +5,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Context;
 import pure.fsm.core.StateMachine;
-import pure.fsm.core.accessor.StateMachineAccessor;
+import pure.fsm.core.accessor.StateMachineContextAccessor;
 import pure.fsm.core.event.Event;
 import pure.fsm.core.template.BaseStateMachineCallback;
 import pure.fsm.core.template.StateMachineTemplate;
-import pure.fsm.hazelcast.accessor.HazelcastStateMachineAccessor;
+import pure.fsm.hazelcast.accessor.HazelcastStateMachineContextAccessor;
 import pure.fsm.hazelcast.resource.DistributedResourceFactory;
 import pure.fsm.telcohazelcast.state.HzInitialState;
 import pure.fsm.telcohazelcast.state.HzTelcoStateFactory;
@@ -23,7 +23,7 @@ class StateMachineOperations {
     private final StateMachineTemplate template;
     private final HzTelcoStateFactory stateFactory;
     private final HazelcastInstance hazelcastInstance;
-    private final StateMachineAccessor accessor;
+    private final StateMachineContextAccessor accessor;
 
     public Context getStateMachine(String stateMachineId) {
         return accessor.get(stateMachineId);
@@ -36,7 +36,7 @@ class StateMachineOperations {
         hazelcastInstance = createClientHz(stateFactory);
         distributedResourceFactory.setInstance(hazelcastInstance);
 
-        accessor = new HazelcastStateMachineAccessor(hazelcastInstance);
+        accessor = new HazelcastStateMachineContextAccessor(hazelcastInstance);
         template = new StateMachineTemplate(accessor);
     }
 
