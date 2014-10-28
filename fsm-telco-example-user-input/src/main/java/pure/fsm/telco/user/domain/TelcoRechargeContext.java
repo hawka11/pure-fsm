@@ -1,7 +1,6 @@
 package pure.fsm.telco.user.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import pure.fsm.core.BaseContext;
+import pure.fsm.core.context.BaseContext;
 import pure.fsm.core.Context;
 import pure.fsm.core.Resource;
 import pure.fsm.core.state.State;

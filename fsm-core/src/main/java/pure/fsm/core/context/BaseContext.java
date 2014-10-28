@@ -1,5 +1,7 @@
-package pure.fsm.core;
+package pure.fsm.core.context;
 
+import pure.fsm.core.Context;
+import pure.fsm.core.Resource;
 import pure.fsm.core.state.State;
 
 import java.time.LocalDateTime;
