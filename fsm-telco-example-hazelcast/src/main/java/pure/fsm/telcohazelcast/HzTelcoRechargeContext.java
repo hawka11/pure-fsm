@@ -2,6 +2,7 @@ package pure.fsm.telcohazelcast;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import pure.fsm.core.Context;
+import pure.fsm.core.event.Event;
 import pure.fsm.core.state.State;
 import pure.fsm.hazelcast.resource.DistributedLockResource;
 import pure.fsm.telco.TelcoRechargeContext;
@@ -22,9 +23,9 @@ public class HzTelcoRechargeContext extends TelcoRechargeContext {
     }
 
     @Override
-    public Context transition(State newState) {
+    public Context transition(State newState, Event event) {
 
-        return new HzTelcoRechargeContext(transitionWith(newState), getAcceptedPins());
+        return new HzTelcoRechargeContext(transitionWith(newState, event), getAcceptedPins());
     }
 
     @Override

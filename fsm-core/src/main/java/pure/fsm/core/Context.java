@@ -1,5 +1,6 @@
 package pure.fsm.core;
 
+import pure.fsm.core.event.Event;
 import pure.fsm.core.state.State;
 
 import java.time.LocalDateTime;
@@ -30,7 +31,9 @@ public interface Context {
 
     void setMessage(String msg);
 
-    Context transition(State newState);
+    Context transition(State newState, Event event);
+
+    String getEvent();
 
     Optional<Context> previous();
 }

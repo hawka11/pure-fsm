@@ -28,7 +28,7 @@ public class StateMachine {
 
             currentState.onExit(context, event);
 
-            transitionedContext = context.transition(newState);
+            transitionedContext = context.transition(newState, event);
 
             newState.onEntry(transitionedContext, event, currentState);
         } catch (Exception e) {
@@ -36,7 +36,7 @@ public class StateMachine {
 
             newState = new ErrorFinalState();
 
-            transitionedContext = context.transition(newState);
+            transitionedContext = context.transition(newState, event);
             transitionedContext.setException(e);
 
             newState.onEntry(transitionedContext, event, currentState);

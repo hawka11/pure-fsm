@@ -2,6 +2,7 @@ package pure.fsm.core.context;
 
 import pure.fsm.core.Context;
 import pure.fsm.core.Resource;
+import pure.fsm.core.event.Event;
 import pure.fsm.core.state.State;
 
 import java.time.LocalDateTime;
@@ -19,6 +20,7 @@ public abstract class BaseContext implements Context {
     private final LocalDateTime transitioned;
     private final Context previous;
     private State currentState;
+    private String event;
 
     protected BaseContext(BaseContextBuilder baseContextBuilder) {
         stateMachineId = baseContextBuilder.stateMachineId;
@@ -28,9 +30,10 @@ public abstract class BaseContext implements Context {
         transitioned = baseContextBuilder.transitioned;
         previous = baseContextBuilder.previous;
         currentState = baseContextBuilder.currentState;
+        event = (baseContextBuilder.event != null) ? baseContextBuilder.event.toString() : "";
     }
 
-    protected static BaseContextBuilder builder() {
+    public static BaseContextBuilder builder() {
         return new BaseContextBuilder();
     }
 
@@ -40,7 +43,7 @@ public abstract class BaseContext implements Context {
                 .transitioned(LocalDateTime.now());
     }
 
-    protected BaseContextBuilder transitionWith(State newState) {
+    protected BaseContextBuilder transitionWith(State newState, Event event) {
         return builder()
                 .stateMachineId(getStateMachineId())
                 .resources(getResources())
@@ -48,6 +51,7 @@ public abstract class BaseContext implements Context {
                 .msg(getMessage())
                 .transitioned(LocalDateTime.now())
                 .previous(this)
+                .event(event)
                 .currentState(newState);
     }
 
@@ -108,12 +112,16 @@ public abstract class BaseContext implements Context {
         this.msg = msg;
     }
 
+    public String getEvent() {
+        return event;
+    }
+
     @Override
     public Optional<Context> previous() {
         return Optional.ofNullable(previous);
     }
 
-    protected static final class BaseContextBuilder {
+    public static final class BaseContextBuilder {
         private String stateMachineId;
         private Set<Resource> resources;
         private Exception e;
@@ -121,6 +129,7 @@ public abstract class BaseContext implements Context {
         private LocalDateTime transitioned;
         private Context previous;
         private State currentState;
+        private Event event;
 
         private BaseContextBuilder() {
         }
@@ -157,6 +166,11 @@ public abstract class BaseContext implements Context {
 
         public BaseContextBuilder currentState(State currentState) {
             this.currentState = currentState;
+            return this;
+        }
+
+        public BaseContextBuilder event(Event event) {
+            this.event = event;
             return this;
         }
     }

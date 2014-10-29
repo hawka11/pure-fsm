@@ -2,6 +2,7 @@ package pure.fsm.telco;
 
 import pure.fsm.core.Context;
 import pure.fsm.core.context.BaseContext;
+import pure.fsm.core.event.Event;
 import pure.fsm.core.state.State;
 import pure.fsm.telco.state.LockedPinResource;
 
@@ -24,9 +25,9 @@ public class TelcoRechargeContext extends BaseContext {
     }
 
     @Override
-    public Context transition(State newState) {
+    public Context transition(State newState, Event event) {
 
-        return new TelcoRechargeContext(transitionWith(newState), acceptedPins);
+        return new TelcoRechargeContext(transitionWith(newState, event), acceptedPins);
     }
 
     public void addAcceptedPin(String pin) {

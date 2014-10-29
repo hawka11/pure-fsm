@@ -15,7 +15,7 @@ public abstract class BaseStateMachineCallback implements StateMachineCallback {
     public Context onError(Context context, StateMachine stateMachine, Exception e) {
         LOG.error("On Error, returning state machine in error state.", e);
 
-        Context transitioned = context.transition(new ErrorFinalState());
+        Context transitioned = context.transition(new ErrorFinalState(), null);
 
         transitioned.setException(e);
 

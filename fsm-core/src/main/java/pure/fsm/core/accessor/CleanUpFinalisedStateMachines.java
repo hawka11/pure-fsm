@@ -13,6 +13,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static pure.fsm.core.accessor.ContextHistoryFormatter.HISTORY_FORMATTER;
 
 public class CleanUpFinalisedStateMachines {
 
@@ -59,6 +60,8 @@ public class CleanUpFinalisedStateMachines {
                     if (lock.isPresent() && shouldCleanup(lock.get().getContext())) {
                         LOG.info("unlocking and removing state machine [{}]",
                                 lock.get().getContext().getStateMachineId());
+
+                        LOG.info(HISTORY_FORMATTER.toTransitionString(lock.get().getContext()));
 
                         lock.get().unlockAndRemove();
                     }
