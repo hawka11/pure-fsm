@@ -5,14 +5,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Context;
 import pure.fsm.core.accessor.StateMachineContextAccessor;
+import pure.fsm.core.state.FinalState;
 import pure.fsm.core.state.State;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
+
+import static java.util.stream.Collectors.toSet;
 
 public class InMemoryStateMachineContextAccessor implements StateMachineContextAccessor {
 
@@ -86,5 +90,13 @@ public class InMemoryStateMachineContextAccessor implements StateMachineContextA
     @Override
     public Set<String> getAllIds() {
         return ImmutableSet.copyOf(contextByStateMachineId.keySet());
+    }
+
+    @Override
+    public Set<String> getAllNonFinalIds() {
+        return contextByStateMachineId.entrySet().stream()
+                .filter(e -> !FinalState.class.isAssignableFrom(e.getValue().getCurrentState().getClass()))
+                .map(Map.Entry::getKey)
+                .collect(toSet());
     }
 }

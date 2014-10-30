@@ -13,6 +13,8 @@ public interface StateMachineContextAccessor {
 
     Set<String> getAllIds();
 
+    Set<String> getAllNonFinalIds();
+
     String create(State initialState, Context context);
 
     Optional<Lock> tryLock(String stateMachineId, long timeout, TimeUnit timeUnit);

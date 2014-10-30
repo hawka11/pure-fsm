@@ -10,8 +10,8 @@ public class ContextHistoryFormatter {
 
     public String toTransitionString(Context context) {
 
-        return format("\n+++++ State Machine Transition history stateMachineId [%s] =>",
-                context.getStateMachineId()) + "\n" + toContextString(context, calcNumTransitions(context, 1)) + "\n\n";
+        return format("\n\n+++++ State Machine Transition history stateMachineId [%s] =>",
+                context.getStateMachineId()) + "\n" + toContextString(context, calcNumTransitions(context, 1));
     }
 
     private int calcNumTransitions(Context context, int count) {

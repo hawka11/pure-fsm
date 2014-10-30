@@ -46,7 +46,7 @@ public class TimeoutTicker {
     public void sendTimeOutTickerEvents() {
         LOG.info("About to send out time out ticker events.");
 
-        accessor.getAllIds().forEach(id -> template.tryWithLock(id, new StateMachineCallback() {
+        accessor.getAllNonFinalIds().forEach(id -> template.tryWithLock(id, new StateMachineCallback() {
             @Override
             public Context doWith(Context context, StateMachine stateMachine) {
 

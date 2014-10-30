@@ -1,5 +1,6 @@
 package pure.fsm.core.context;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import pure.fsm.core.Context;
 import pure.fsm.core.Resource;
 import pure.fsm.core.event.Event;
@@ -119,6 +120,10 @@ public abstract class BaseContext implements Context {
     @Override
     public Optional<Context> previous() {
         return Optional.ofNullable(previous);
+    }
+
+    public Context getPrevious() {
+        return previous;
     }
 
     public static final class BaseContextBuilder {

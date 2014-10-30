@@ -7,13 +7,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Context;
 import pure.fsm.core.accessor.StateMachineContextAccessor;
+import pure.fsm.core.state.FinalState;
 import pure.fsm.core.state.State;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static com.google.common.collect.ImmutableSet.copyOf;
+import static java.util.stream.Collectors.toSet;
 
 public class HazelcastStateMachineContextAccessor implements StateMachineContextAccessor {
 
@@ -60,6 +63,14 @@ public class HazelcastStateMachineContextAccessor implements StateMachineContext
     @Override
     public Set<String> getAllIds() {
         return copyOf(getHolderMap().keySet());
+    }
+
+    @Override
+    public Set<String> getAllNonFinalIds() {
+        return getHolderMap().entrySet().stream()
+                .filter(e -> !FinalState.class.isAssignableFrom(e.getValue().getCurrentState().getClass()))
+                .map(Map.Entry::getKey)
+                .collect(toSet());
     }
 
     private Optional<Lock> createLock(String stateMachineId, java.util.concurrent.locks.Lock distributedLock) {
