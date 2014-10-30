@@ -10,6 +10,7 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import pure.fsm.core.Context;
 import pure.fsm.core.accessor.CleanUpFinalisedStateMachines;
+import pure.fsm.core.accessor.OnCleanupListener;
 import pure.fsm.core.state.StateFactory;
 import pure.fsm.core.template.StateMachineTemplate;
 import pure.fsm.core.timeout.TimeoutTicker;
@@ -19,6 +20,7 @@ import pure.fsm.hazelcast.serialization.ContextSerializer;
 import pure.fsm.hazelcast.serialization.StateMachineModule;
 
 import java.time.temporal.ChronoUnit;
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 public abstract class StateMachineBundle implements Bundle {
@@ -57,9 +59,7 @@ public abstract class StateMachineBundle implements Bundle {
         serializationConfig.getSerializerConfigs()
                 .add(new SerializerConfig().setTypeClass(Context.class).setImplementation(contextSerializer));
 
-        HazelcastInstance hazelcastInstance = HazelcastClient.newHazelcastClient(clientConfig);
-
-        return hazelcastInstance;
+        return HazelcastClient.newHazelcastClient(clientConfig);
     }
 
     protected ClientConfig getClientConfig() {
@@ -92,9 +92,10 @@ public abstract class StateMachineBundle implements Bundle {
         return new TimeoutTicker(getAccessor(), getTemplate(), howOften, timeUnit);
     }
 
-    public CleanUpFinalisedStateMachines getCleaner(long scheduleFrequency, TimeUnit scheduleTimeUnit,
+    public CleanUpFinalisedStateMachines getCleaner(Collection<OnCleanupListener> cleanupListeners,
+                                                    long scheduleFrequency, TimeUnit scheduleTimeUnit,
                                                     long keepFinalised, ChronoUnit keepFinalisedTimeUnit) {
 
-        return new CleanUpFinalisedStateMachines(getAccessor(), scheduleFrequency, scheduleTimeUnit, keepFinalised, keepFinalisedTimeUnit);
+        return new CleanUpFinalisedStateMachines(getAccessor(), cleanupListeners, scheduleFrequency, scheduleTimeUnit, keepFinalised, keepFinalisedTimeUnit);
     }
 }

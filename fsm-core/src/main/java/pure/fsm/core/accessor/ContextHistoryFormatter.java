@@ -1,10 +1,14 @@
 package pure.fsm.core.accessor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pure.fsm.core.Context;
 
 import static java.lang.String.format;
 
-public class ContextHistoryFormatter {
+public class ContextHistoryFormatter implements OnCleanupListener {
+
+    private final static Logger LOG = LoggerFactory.getLogger(ContextHistoryFormatter.class);
 
     public static final ContextHistoryFormatter HISTORY_FORMATTER = new ContextHistoryFormatter();
 
@@ -31,5 +35,10 @@ public class ContextHistoryFormatter {
                 context.getMessage()));
 
         return sb.append("\n").toString();
+    }
+
+    @Override
+    public void onCleanup(Context context) {
+        LOG.info(toTransitionString(context));
     }
 }

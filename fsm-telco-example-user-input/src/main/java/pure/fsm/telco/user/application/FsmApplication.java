@@ -6,11 +6,11 @@ import io.dropwizard.setup.Environment;
 import io.dropwizard.views.ViewBundle;
 import pure.fsm.telco.user.application.api.UserActionResource;
 
-import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 
-import static java.time.temporal.ChronoUnit.MINUTES;
+import static com.google.common.collect.Lists.newArrayList;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static pure.fsm.core.accessor.ContextHistoryFormatter.HISTORY_FORMATTER;
 
 public class FsmApplication extends Application<FsmConfiguration> {
 
@@ -31,7 +31,7 @@ public class FsmApplication extends Application<FsmConfiguration> {
     @Override
     public void run(FsmConfiguration configuration, Environment environment) throws Exception {
         stateMachineBundle.getTimeoutTicker(10, SECONDS).startTickScheduler();
-        stateMachineBundle.getCleaner(10, SECONDS, 5, ChronoUnit.SECONDS).startScheduler();
+        stateMachineBundle.getCleaner(newArrayList(HISTORY_FORMATTER), 10, SECONDS, 5, ChronoUnit.SECONDS).startScheduler();
 
         UserActionResource resource = new UserActionResource(
                 stateMachineBundle.getTemplate(),

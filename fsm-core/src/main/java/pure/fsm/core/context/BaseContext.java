@@ -1,6 +1,5 @@
 package pure.fsm.core.context;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import pure.fsm.core.Context;
 import pure.fsm.core.Resource;
 import pure.fsm.core.event.Event;

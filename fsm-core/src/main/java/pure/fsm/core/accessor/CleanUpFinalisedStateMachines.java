@@ -7,19 +7,20 @@ import pure.fsm.core.state.FinalState;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static pure.fsm.core.accessor.ContextHistoryFormatter.HISTORY_FORMATTER;
 
 public class CleanUpFinalisedStateMachines {
 
     private final static Logger LOG = LoggerFactory.getLogger(CleanUpFinalisedStateMachines.class);
 
     private final StateMachineContextAccessor accessor;
+    private final Collection<OnCleanupListener> cleanupListeners;
     private final long scheduleFrequency;
     private final TimeUnit scheduleTimeUnit;
     private final long keepFinalised;
@@ -27,9 +28,11 @@ public class CleanUpFinalisedStateMachines {
     private final ScheduledExecutorService scheduledExecutorService;
 
     public CleanUpFinalisedStateMachines(StateMachineContextAccessor accessor,
+                                         Collection<OnCleanupListener> cleanupListeners,
                                          long scheduleFrequency, TimeUnit scheduleTimeUnit,
                                          long keepFinalised, ChronoUnit keepFinalisedTimeUnit) {
         this.accessor = accessor;
+        this.cleanupListeners = cleanupListeners;
         this.scheduleFrequency = scheduleFrequency;
         this.scheduleTimeUnit = scheduleTimeUnit;
         this.keepFinalised = keepFinalised;
@@ -61,7 +64,7 @@ public class CleanUpFinalisedStateMachines {
                         LOG.info("unlocking and removing state machine [{}]",
                                 lock.get().getContext().getStateMachineId());
 
-                        LOG.info(HISTORY_FORMATTER.toTransitionString(lock.get().getContext()));
+                        cleanupListeners.forEach(l -> l.onCleanup(context));
 
                         lock.get().unlockAndRemove();
                     }
