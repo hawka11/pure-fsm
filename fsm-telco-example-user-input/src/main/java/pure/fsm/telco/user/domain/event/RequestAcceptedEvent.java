@@ -6,6 +6,8 @@ import pure.fsm.telco.user.domain.TelcoRechargeContext;
 
 import java.util.List;
 
+import static com.google.common.base.Objects.toStringHelper;
+
 public class RequestAcceptedEvent implements Event<TelcoRechargeContext, TelcoEventVisitor> {
 
     private final List<String> pins;
@@ -21,5 +23,12 @@ public class RequestAcceptedEvent implements Event<TelcoRechargeContext, TelcoEv
     @Override
     public State accept(TelcoRechargeContext context, TelcoEventVisitor visitor) {
         return visitor.accept(context, this);
+    }
+
+    @Override
+    public String toString() {
+        return toStringHelper(this)
+                .add("pins", pins)
+                .toString();
     }
 }
