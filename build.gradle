@@ -1,13 +1,16 @@
-apply plugin: 'java'
-
-sourceCompatibility = 1.8
 version = '1.0'
 
-repositories {
-    mavenCentral()
+subprojects {
+    apply plugin: 'java'
+
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+
+    dependencies {
+    }
+
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
-
-dependencies {
-
-}
-
