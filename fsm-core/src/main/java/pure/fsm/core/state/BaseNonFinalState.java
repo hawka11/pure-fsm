@@ -16,7 +16,8 @@ public abstract class BaseNonFinalState implements State {
         return context.getTransitioned().plusSeconds(5);
     }
 
-    protected boolean isTimeout(Context context) {
+    @Override
+    public boolean isTimeout(Context context) {
 
         return LocalDateTime.now().isAfter(getTimeoutDateTime(context));
     }

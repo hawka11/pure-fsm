@@ -36,4 +36,6 @@ public interface Context {
     String getEvent();
 
     Optional<Context> previous();
+
+    Context initialContext();
 }

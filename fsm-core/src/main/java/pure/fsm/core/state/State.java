@@ -11,6 +11,8 @@ public interface State {
 
     State handle(Context context, Event event);
 
+    boolean isTimeout(Context context);
+
     void onExit(Context context, Event event);
 
     void onEntry(Context context, Event event, State prevState);

@@ -121,6 +121,15 @@ public abstract class BaseContext implements Context {
         return Optional.ofNullable(previous);
     }
 
+    @Override
+    public Context initialContext() {
+        Context curr = this;
+        while (curr.previous().isPresent()) {
+            curr = curr.previous().get();
+        }
+        return curr;
+    }
+
     public Context getPrevious() {
         return previous;
     }

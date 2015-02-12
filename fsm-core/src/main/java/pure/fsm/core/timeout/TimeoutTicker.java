@@ -46,23 +46,30 @@ public class TimeoutTicker {
     public void sendTimeOutTickerEvents() {
         LOG.info("About to send out time out ticker events.");
 
-        accessor.getAllNonFinalIds().forEach(id -> template.tryWithLock(id, new StateMachineCallback() {
-            @Override
-            public Context doWith(Context context, StateMachine stateMachine) {
+        accessor.getAllNonFinalIds().stream()
+                .filter(this::stateMachineIsTimedout)
+                .forEach(id -> template.tryWithLock(id, new StateMachineCallback() {
+                    @Override
+                    public Context doWith(Context context, StateMachine stateMachine) {
 
-                return stateMachine.handleEvent(context, new TimeoutTickEvent());
-            }
+                        return stateMachine.handleEvent(context, new TimeoutTickEvent());
+                    }
 
-            @Override
-            public Context onError(Context context, StateMachine stateMachine, Exception e) {
-                LOG.debug("onError received, ignoring");
-                return context;
-            }
+                    @Override
+                    public Context onError(Context context, StateMachine stateMachine, Exception e) {
+                        LOG.debug("onError received, ignoring");
+                        return context;
+                    }
 
-            @Override
-            public void onLockFailed(Exception e) {
-                LOG.debug("onLockFailed received, ignoring");
-            }
-        }));
+                    @Override
+                    public void onLockFailed(Exception e) {
+                        LOG.debug("onLockFailed received, ignoring");
+                    }
+                }));
+    }
+
+    private boolean stateMachineIsTimedout(String id) {
+        final Context context = template.get(id);
+        return context.getCurrentState().isTimeout(context);
     }
 }

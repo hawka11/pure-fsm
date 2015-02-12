@@ -14,6 +14,11 @@ public abstract class BaseFinalState implements FinalState {
         throw new IllegalStateException("In final state, probably shouldn't need to create another state");
     }
 
+    @Override
+    public boolean isTimeout(Context context) {
+        return false;
+    }
+
     protected State nonHandledEvent(Context context, Event event) {
         LOG.trace("Final state [{}] received non handled event [{}], ignoring.",
                 getClass().getName(), event.getClass().getName());
