@@ -6,6 +6,7 @@ import pure.fsm.core.Context;
 import java.util.Map;
 
 import static com.google.common.collect.Maps.newHashMap;
+import static pure.fsm.core.trait.MessageTrait.withMessage;
 
 public abstract class BaseStateFactory implements StateFactory {
 
@@ -34,7 +35,7 @@ public abstract class BaseStateFactory implements StateFactory {
 
     @Override
     public SuccessFinalState userCanceled(Context context) {
-        context.setMessage("USER_CANCELED");
+        context.addTrait(withMessage("USER_CANCELED"));
         return new SuccessFinalState();
     }
 

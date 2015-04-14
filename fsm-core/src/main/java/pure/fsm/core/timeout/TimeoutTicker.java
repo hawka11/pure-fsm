@@ -13,6 +13,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static pure.fsm.core.context.MostRecentTrait.currentState;
+
 public class TimeoutTicker {
 
     private final static Logger LOG = LoggerFactory.getLogger(TimeoutTicker.class);
@@ -70,6 +72,6 @@ public class TimeoutTicker {
 
     private boolean stateMachineIsTimedout(String id) {
         final Context context = template.get(id);
-        return context.getCurrentState().isTimeout(context);
+        return currentState(context).isTimeout(context);
     }
 }

@@ -23,6 +23,7 @@ public class DistributedLockResourceDeserializer extends StdDeserializer<Distrib
     @Override
     public DistributedLockResource deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
         jp.nextToken();
+        jp.nextToken();
         String setName = jp.getValueAsString();
 
         Set<String> keysToLock = newHashSet();

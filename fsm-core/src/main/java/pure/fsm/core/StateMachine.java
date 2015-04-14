@@ -2,9 +2,12 @@ package pure.fsm.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pure.fsm.core.context.MostRecentTrait;
 import pure.fsm.core.event.Event;
 import pure.fsm.core.state.ErrorFinalState;
 import pure.fsm.core.state.State;
+
+import static pure.fsm.core.trait.ExceptionTrait.withException;
 
 public class StateMachine {
 
@@ -17,31 +20,27 @@ public class StateMachine {
 
     @SuppressWarnings("unchecked")
     public Context handleEvent(Context context, Event event) {
-        final State currentState = context.getCurrentState();
-        final String stateMachineId = context.getStateMachineId();
+        final State currentState = MostRecentTrait.currentState(context);
+        final String stateMachineId = context.stateMachineId;
 
-        State newState;
-        Context transitionedContext;
+        Transition transition;
 
         try {
-            newState = currentState.handle(context, event);
+            transition = currentState.handle(context, event);
 
             currentState.onExit(context, event);
 
-            transitionedContext = context.transition(newState, event);
-
-            newState.onEntry(transitionedContext, event, currentState);
+            transition.state.onEntry(transition.context, event, currentState);
         } catch (Exception e) {
             LOG.error("SM [" + stateMachineId + "], Error handling event [" + event + "]", e);
 
-            newState = new ErrorFinalState();
+            transition = context
+                    .addTrait(withException(e))
+                    .transition(new ErrorFinalState(), event);
 
-            transitionedContext = context.transition(newState, event);
-            transitionedContext.setException(e);
-
-            newState.onEntry(transitionedContext, event, currentState);
+            transition.state.onEntry(transition.context, event, currentState);
         }
 
-        return transitionedContext;
+        return transition.context;
     }
 }

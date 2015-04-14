@@ -3,9 +3,12 @@ package pure.fsm.core.state;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Context;
+import pure.fsm.core.Transition;
 import pure.fsm.core.event.Event;
 
 import java.time.LocalDateTime;
+
+import static pure.fsm.core.context.MostRecentTrait.mostRecentTransition;
 
 public abstract class BaseNonFinalState implements State {
 
@@ -13,7 +16,7 @@ public abstract class BaseNonFinalState implements State {
 
     protected LocalDateTime getTimeoutDateTime(Context context) {
         //example timeout is 5 seconds
-        return context.getTransitioned().plusSeconds(5);
+        return mostRecentTransition(context).transitioned.plusSeconds(5);
     }
 
     @Override
@@ -22,10 +25,10 @@ public abstract class BaseNonFinalState implements State {
         return LocalDateTime.now().isAfter(getTimeoutDateTime(context));
     }
 
-    protected State nonHandledEvent(Context context, Event event) {
+    protected Transition nonHandledEvent(Context context, Event event) {
         LOG.warn("State [{}] received non handled event [{}], ignoring.",
                 getClass().getName(), event.getClass().getName());
-        return this;
+        return new Transition(this, context);
     }
 
     @Override

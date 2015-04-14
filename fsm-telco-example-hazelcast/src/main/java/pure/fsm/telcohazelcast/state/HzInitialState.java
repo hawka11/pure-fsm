@@ -1,8 +1,9 @@
 package pure.fsm.telcohazelcast.state;
 
-import pure.fsm.core.state.State;
+import pure.fsm.core.Context;
+import pure.fsm.core.Transition;
+import pure.fsm.hazelcast.resource.DistributedLockResource;
 import pure.fsm.hazelcast.resource.DistributedResourceFactory;
-import pure.fsm.telco.TelcoRechargeContext;
 import pure.fsm.telco.event.RequestRechargeEvent;
 import pure.fsm.telco.state.RechargeRequestedState;
 
@@ -16,7 +17,7 @@ public class HzInitialState extends BaseHzTelcoState {
     }
 
     @Override
-    public State visit(TelcoRechargeContext context, RequestRechargeEvent requestRechargeEvent) {
+    public Transition visit(Context context, RequestRechargeEvent requestRechargeEvent) {
 
         System.out.println("In InitialState, processing RequestRechargeEvent event ");
 
@@ -24,10 +25,11 @@ public class HzInitialState extends BaseHzTelcoState {
         Set<String> pinsToLock = requestRechargeEvent.getPinsToLock();
 
         //lock pin in distributed lock set, and represent that as a locked pin resource.
-        context.addResource(getDistributedResourceFactory().tryLock("MyLockedPins", pinsToLock));
+        final DistributedLockResource lockResource = getDistributedResourceFactory().tryLock("MyLockedPins", pinsToLock);
 
         //telcoClientRepository.startRechargeProcess(rechargeAmount);
 
-        return factory().getStateByClass(RechargeRequestedState.class);
+        return context.addTrait(lockResource)
+                .transition(factory().getStateByClass(RechargeRequestedState.class), requestRechargeEvent);
     }
 }

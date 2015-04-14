@@ -1,13 +1,13 @@
 package pure.fsm.telco.event;
 
+import pure.fsm.core.Context;
+import pure.fsm.core.Transition;
 import pure.fsm.core.event.EventVisitor;
-import pure.fsm.core.state.State;
-import pure.fsm.telco.TelcoRechargeContext;
 
 public interface TelcoEventVisitor extends EventVisitor {
-    State visit(TelcoRechargeContext context, RequestRechargeEvent requestRechargeEvent);
+    Transition visit(Context context, RequestRechargeEvent requestRechargeEvent);
 
-    State visit(TelcoRechargeContext context, CancelRechargeEvent cancelRechargeEvent);
+    Transition visit(Context context, CancelRechargeEvent cancelRechargeEvent);
 
-    State visit(TelcoRechargeContext context, RechargeAcceptedEvent rechargeAcceptedEvent);
+    Transition visit(Context context, RechargeAcceptedEvent rechargeAcceptedEvent);
 }

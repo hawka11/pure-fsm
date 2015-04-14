@@ -3,6 +3,7 @@ package pure.fsm.hazelcast.serialization;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.smile.SmileFactory;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
@@ -15,11 +16,12 @@ import java.io.InputStream;
 @SuppressWarnings("unchecked")
 public class ContextSerializer implements StreamSerializer<Context> {
 
-    private final ObjectMapper mapper;
+    public final ObjectMapper mapper;
 
     public ContextSerializer() {
         mapper = new ObjectMapper(new SmileFactory());
         mapper.registerModule(new JSR310Module());
+        mapper.registerModule(new Jdk8Module());
         mapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
     }
 

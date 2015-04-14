@@ -9,7 +9,9 @@ import pure.fsm.core.Context;
 import pure.fsm.core.accessor.StateMachineContextAccessor;
 import pure.fsm.core.state.FinalState;
 import pure.fsm.core.state.State;
+import pure.fsm.core.trait.Trait;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -17,6 +19,8 @@ import java.util.concurrent.TimeUnit;
 
 import static com.google.common.collect.ImmutableSet.copyOf;
 import static java.util.stream.Collectors.toSet;
+import static pure.fsm.core.Context.initialContext;
+import static pure.fsm.core.context.MostRecentTrait.currentState;
 
 public class HazelcastStateMachineContextAccessor implements StateMachineContextAccessor {
 
@@ -30,11 +34,11 @@ public class HazelcastStateMachineContextAccessor implements StateMachineContext
 
     @Override
     @SuppressWarnings("unchecked")
-    public String create(State initialState, Context context) {
+    public String create(State initialState, List<? extends Trait> initialTraits) {
         IAtomicLong idAtomicLong = getHazel().getAtomicLong("STATE_MACHINE_ID_GENERATOR");
-        String id = String.valueOf(idAtomicLong.getAndIncrement());
+        String id = String.valueOf(idAtomicLong.addAndGet(1));
 
-        context.init(id, initialState);
+        final Context context = initialContext(id, initialState, initialTraits);
 
         getHolderMap().put(id, context);
 
@@ -51,13 +55,13 @@ public class HazelcastStateMachineContextAccessor implements StateMachineContext
         java.util.concurrent.locks.Lock distributedLock = getHazel().getLock("STATE_MACHINE-" + stateMachineId);
 
         try {
-            distributedLock.tryLock(timeout, timeUnit);
-
-            return createLock(stateMachineId, distributedLock);
+            if (distributedLock.tryLock(timeout, timeUnit)) {
+                return createLock(stateMachineId, distributedLock);
+            }
         } catch (InterruptedException e) {
             LOG.warn("Could not get HZ distributed distributedLock for state machine [" + stateMachineId + "]", e);
-            return Optional.empty();
         }
+        return Optional.empty();
     }
 
     @Override
@@ -68,7 +72,7 @@ public class HazelcastStateMachineContextAccessor implements StateMachineContext
     @Override
     public Set<String> getAllNonFinalIds() {
         return getHolderMap().entrySet().stream()
-                .filter(e -> !FinalState.class.isAssignableFrom(e.getValue().getCurrentState().getClass()))
+                .filter(e -> !FinalState.class.isAssignableFrom(currentState(e.getValue()).getClass()))
                 .map(Map.Entry::getKey)
                 .collect(toSet());
     }
@@ -77,7 +81,8 @@ public class HazelcastStateMachineContextAccessor implements StateMachineContext
         Lock lock = new Lock() {
             @Override
             public Context getContext() {
-                return getHolderMap().get(stateMachineId);
+                final Context context = getHolderMap().get(stateMachineId);
+                return context;
             }
 
             @Override

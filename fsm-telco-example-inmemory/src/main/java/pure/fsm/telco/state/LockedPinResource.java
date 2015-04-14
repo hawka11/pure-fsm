@@ -1,10 +1,10 @@
 package pure.fsm.telco.state;
 
-import pure.fsm.core.Resource;
+import pure.fsm.core.trait.CanUnlockTrait;
 
 import java.util.Set;
 
-public class LockedPinResource implements Resource {
+public class LockedPinResource implements CanUnlockTrait {
 
     private final Set<String> pinsToLock;
 

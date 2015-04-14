@@ -1,41 +1,92 @@
 package pure.fsm.core;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.google.common.collect.ImmutableList;
 import pure.fsm.core.event.Event;
 import pure.fsm.core.state.State;
+import pure.fsm.core.trait.CanUnlockTrait;
+import pure.fsm.core.trait.Trait;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
-public interface Context {
+import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
+import static pure.fsm.core.trait.TransitionedTrait.transitioned;
 
-    String getStateMachineId();
+public class Context {
 
-    void init(String stateMachineId, State state);
+    public final String stateMachineId;
 
-    State getCurrentState();
+    @JsonSerialize
+    private final Context previous;
 
-    LocalDateTime getTransitioned();
+    @JsonSerialize
+    private List<Trait> traits;
 
-    void addResource(Resource resource);
+    @JsonCreator
+    private Context(
+            @JsonProperty("stateMachineId") String stateMachineId,
+            @JsonProperty("previous") Context previous,
+            @JsonProperty("traits") List<Trait> traits) {
+        this.stateMachineId = stateMachineId;
+        this.previous = previous;
+        this.traits = traits;
+    }
 
-    Set<Resource> getResources();
+    public static Context initialContext(String stateMachineId, State initialState, List<? extends Trait> initialTraits) {
+        final Context context = new Context(stateMachineId, null, newArrayList())
+                .addTrait(transitioned(LocalDateTime.now(), initialState, Optional.empty()));
 
-    void unlockResources();
+        return initialTraits.stream().reduce(context, Context::addTrait, (c, t) -> c);
+    }
 
-    Exception getException();
+    @JsonIgnore
+    public Optional<Context> previous() {
+        return ofNullable(previous);
+    }
 
-    void setException(Exception e);
+    public Context addTrait(Trait trait) {
+        final List<Trait> newTraits = newArrayList();
+        newTraits.addAll(traits);
+        newTraits.add(trait);
+        return new Context(stateMachineId, previous, newTraits);
+    }
 
-    String getMessage();
+    public Context addTrait(CanUnlockTrait trait) {
+        traits.add(trait);
+        return this;
+    }
 
-    void setMessage(String msg);
+    @Override
+    public String toString() {
+        return reflectionToString(this);
+    }
 
-    Context transition(State newState, Event event);
+    private Context withPrevious(Context previousContext) {
+        return new Context(stateMachineId, previousContext, traits);
+    }
 
-    String getEvent();
+    public Transition transition(State state, Event event) {
+        final Context transitioned = withPrevious(this)
+                .addTrait(transitioned(LocalDateTime.now(), state, Optional.ofNullable(event)));
 
-    Optional<Context> previous();
+        return new Transition<>(state, transitioned);
+    }
 
-    Context initialContext();
+    @SuppressWarnings("unchecked")
+    public <T extends Trait> List<T> getTraitsOf(Class<T> klass) {
+        final List<T> traits = (List<T>) this.traits.stream()
+                .filter(t -> klass.isAssignableFrom(t.getClass()))
+                .collect(toList());
+        return ImmutableList.copyOf(traits);
+    }
+
+    //StateFactory stateFactory();
 }

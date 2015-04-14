@@ -6,6 +6,8 @@ import pure.fsm.core.Context;
 import pure.fsm.core.StateMachine;
 import pure.fsm.core.state.ErrorFinalState;
 
+import static pure.fsm.core.trait.ExceptionTrait.withException;
+
 public abstract class BaseStateMachineCallback implements StateMachineCallback {
 
     private final static Logger LOG = LoggerFactory.getLogger(BaseStateMachineCallback.class);
@@ -15,11 +17,10 @@ public abstract class BaseStateMachineCallback implements StateMachineCallback {
     public Context onError(Context context, StateMachine stateMachine, Exception e) {
         LOG.error("On Error, returning state machine in error state.", e);
 
-        Context transitioned = context.transition(new ErrorFinalState(), null);
-
-        transitioned.setException(e);
-
-        return transitioned;
+        return context
+                .addTrait(withException(e))
+                .transition(new ErrorFinalState(), null)
+                .context;
     }
 
     @Override

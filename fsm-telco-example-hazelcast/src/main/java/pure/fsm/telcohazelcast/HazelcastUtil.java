@@ -30,7 +30,7 @@ public class HazelcastUtil {
 
         SerializationConfig serializationConfig = clientConfig.getSerializationConfig();
         serializationConfig.getSerializerConfigs()
-                .add(new SerializerConfig().setTypeClass(HzTelcoRechargeContext.class).setImplementation(contextSerializer));
+                .add(new SerializerConfig().setTypeClass(Context.class).setImplementation(contextSerializer));
 
         HazelcastInstance hazelcastInstance = HazelcastClient.newHazelcastClient(clientConfig);
 

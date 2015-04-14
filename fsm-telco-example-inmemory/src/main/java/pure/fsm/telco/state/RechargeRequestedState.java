@@ -1,41 +1,47 @@
 package pure.fsm.telco.state;
 
-import pure.fsm.core.state.State;
-import pure.fsm.telco.TelcoRechargeContext;
+import pure.fsm.core.Context;
+import pure.fsm.core.Transition;
+import pure.fsm.telco.TelcoRechargeTrait;
 import pure.fsm.telco.event.CancelRechargeEvent;
 import pure.fsm.telco.event.RechargeAcceptedEvent;
-import pure.fsm.telco.guard.AllPinsRechargedAcceptedGuard;
+import pure.fsm.telco.guard.Guard;
+
+import static pure.fsm.core.context.MostRecentTrait.mostRecentOf;
+import static pure.fsm.core.trait.MessageTrait.withMessage;
 
 public class RechargeRequestedState extends BaseTelcoState {
 
-    private final AllPinsRechargedAcceptedGuard guard;
+    private final Guard guard;
 
-    public RechargeRequestedState(AllPinsRechargedAcceptedGuard guard) {
-        this.guard = guard;
+    public RechargeRequestedState(Guard allPinsLockedGuard) {
+        this.guard = allPinsLockedGuard;
     }
 
     @Override
-    public State visit(TelcoRechargeContext context, CancelRechargeEvent cancelRechargeEvent) {
+    public Transition visit(Context context, CancelRechargeEvent cancelRechargeEvent) {
 
         System.out.println("In RechargeRequestedState, processing CancelRechargeEvent event ");
 
         //telcoClientRepository.cancelRechargeProcess();
 
-        return factory().userCanceled(context);
+        return context.transition(factory().userCanceled(context), cancelRechargeEvent);
     }
 
     @Override
-    public State visit(TelcoRechargeContext context, RechargeAcceptedEvent rechargeAcceptedEvent) {
+    public Transition visit(Context context, RechargeAcceptedEvent rechargeAcceptedEvent) {
         System.out.println("In RechargeRequestedState, processing RechargeAcceptedEvent event ");
 
-        context.addAcceptedPin(rechargeAcceptedEvent.getAcceptedPin());
+        mostRecentOf(context, TelcoRechargeTrait.class).get()
+                .addAcceptedPin(rechargeAcceptedEvent.getAcceptedPin());
 
         if (guard.isSatisfied(context)) {
-            context.setMessage("RECHARGE_ACCEPTED");
-            return factory().successFinalState();
+            return context
+                    .addTrait(withMessage("RECHARGE_ACCEPTED"))
+                    .transition(factory().successFinalState(), rechargeAcceptedEvent);
         } else {
             //stay in current state, until all RechargeAcceptedEvent's have been received
-            return factory().getStateByClass(getClass());
+            return new Transition<>(this, context);
         }
     }
 }

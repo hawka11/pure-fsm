@@ -1,9 +1,9 @@
 package pure.fsm.core.event;
 
 import pure.fsm.core.Context;
-import pure.fsm.core.state.State;
+import pure.fsm.core.Transition;
 
-public interface Event<C extends Context, T extends EventVisitor> {
+public interface Event<T extends EventVisitor> {
 
-    State accept(C context, T visitor);
+    Transition accept(Context context, T visitor);
 }

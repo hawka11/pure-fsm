@@ -3,7 +3,10 @@ package pure.fsm.core.state;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Context;
+import pure.fsm.core.Transition;
 import pure.fsm.core.event.Event;
+
+import static pure.fsm.core.context.UnlockTraits.unlockTraits;
 
 public abstract class BaseFinalState implements FinalState {
 
@@ -19,14 +22,14 @@ public abstract class BaseFinalState implements FinalState {
         return false;
     }
 
-    protected State nonHandledEvent(Context context, Event event) {
+    protected Transition nonHandledEvent(Context context, Event event) {
         LOG.trace("Final state [{}] received non handled event [{}], ignoring.",
                 getClass().getName(), event.getClass().getName());
-        return this;
+        return new Transition(this, context);
     }
 
     @Override
-    public State handle(Context context, Event event) {
+    public Transition handle(Context context, Event event) {
 
         return nonHandledEvent(context, event);
     }
@@ -37,6 +40,6 @@ public abstract class BaseFinalState implements FinalState {
 
     @Override
     public void onEntry(Context context, Event event, State prevState) {
-        context.unlockResources();
+        unlockTraits(context);
     }
 }

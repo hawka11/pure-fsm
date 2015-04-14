@@ -7,7 +7,9 @@ import pure.fsm.core.Context;
 import pure.fsm.core.accessor.StateMachineContextAccessor;
 import pure.fsm.core.state.FinalState;
 import pure.fsm.core.state.State;
+import pure.fsm.core.trait.Trait;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -17,6 +19,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static java.util.stream.Collectors.toSet;
+import static pure.fsm.core.Context.initialContext;
+import static pure.fsm.core.context.MostRecentTrait.currentState;
 
 public class InMemoryStateMachineContextAccessor implements StateMachineContextAccessor {
 
@@ -29,10 +33,10 @@ public class InMemoryStateMachineContextAccessor implements StateMachineContextA
 
     @Override
     @SuppressWarnings("unchecked")
-    public String create(State initialState, Context context) {
+    public String create(State initialState, List<? extends Trait> initialTraits) {
         String id = String.valueOf(idGenerator.getAndIncrement());
 
-        context.init(id, initialState);
+        final Context context = initialContext(id, initialState, initialTraits);
 
         contextByStateMachineId.put(id, context);
         lockByStateMachineId.put(id, new ReentrantLock());
@@ -95,7 +99,7 @@ public class InMemoryStateMachineContextAccessor implements StateMachineContextA
     @Override
     public Set<String> getAllNonFinalIds() {
         return contextByStateMachineId.entrySet().stream()
-                .filter(e -> !FinalState.class.isAssignableFrom(e.getValue().getCurrentState().getClass()))
+                .filter(e -> !FinalState.class.isAssignableFrom(currentState(e.getValue()).getClass()))
                 .map(Map.Entry::getKey)
                 .collect(toSet());
     }

@@ -1,10 +1,10 @@
 package pure.fsm.telco.event;
 
+import pure.fsm.core.Context;
+import pure.fsm.core.Transition;
 import pure.fsm.core.event.Event;
-import pure.fsm.core.state.State;
-import pure.fsm.telco.TelcoRechargeContext;
 
-public class RechargeAcceptedEvent implements Event<TelcoRechargeContext, TelcoEventVisitor> {
+public class RechargeAcceptedEvent implements Event<TelcoEventVisitor> {
 
     private final String acceptedPin;
 
@@ -17,7 +17,7 @@ public class RechargeAcceptedEvent implements Event<TelcoRechargeContext, TelcoE
     }
 
     @Override
-    public State accept(TelcoRechargeContext context, TelcoEventVisitor visitor) {
+    public Transition accept(Context context, TelcoEventVisitor visitor) {
         return visitor.visit(context, this);
     }
 }

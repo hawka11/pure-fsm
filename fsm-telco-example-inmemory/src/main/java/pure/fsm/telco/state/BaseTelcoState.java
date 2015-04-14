@@ -1,17 +1,18 @@
 package pure.fsm.telco.state;
 
 import pure.fsm.core.Context;
+import pure.fsm.core.Transition;
 import pure.fsm.core.event.Event;
 import pure.fsm.core.event.TimeoutTickEvent;
 import pure.fsm.core.state.BaseNonFinalState;
-import pure.fsm.core.state.State;
 import pure.fsm.core.state.StateFactory;
 import pure.fsm.core.state.TimedOutFinalState;
-import pure.fsm.telco.TelcoRechargeContext;
 import pure.fsm.telco.event.CancelRechargeEvent;
-import pure.fsm.telco.event.TelcoEventVisitor;
 import pure.fsm.telco.event.RechargeAcceptedEvent;
 import pure.fsm.telco.event.RequestRechargeEvent;
+import pure.fsm.telco.event.TelcoEventVisitor;
+
+import static pure.fsm.core.trait.MessageTrait.withMessage;
 
 public class BaseTelcoState extends BaseNonFinalState implements TelcoEventVisitor {
 
@@ -22,31 +23,31 @@ public class BaseTelcoState extends BaseNonFinalState implements TelcoEventVisit
 
     @Override
     @SuppressWarnings("unchecked")
-    public State handle(Context context, Event event) {
+    public Transition handle(Context context, Event event) {
         return event.accept(context, this);
     }
 
     @Override
-    public State visit(TelcoRechargeContext context, RequestRechargeEvent requestRechargeEvent) {
+    public Transition visit(Context context, RequestRechargeEvent requestRechargeEvent) {
         return nonHandledEvent(context, requestRechargeEvent);
     }
 
     @Override
-    public State visit(TelcoRechargeContext context, CancelRechargeEvent cancelRechargeEvent) {
+    public Transition visit(Context context, CancelRechargeEvent cancelRechargeEvent) {
         return nonHandledEvent(context, cancelRechargeEvent);
     }
 
     @Override
-    public State visit(TelcoRechargeContext context, RechargeAcceptedEvent rechargeAcceptedEvent) {
+    public Transition visit(Context context, RechargeAcceptedEvent rechargeAcceptedEvent) {
         return nonHandledEvent(context, rechargeAcceptedEvent);
     }
 
     @Override
-    public State visit(Context context, TimeoutTickEvent timeoutTickEvent) {
+    public Transition visit(Context context, TimeoutTickEvent timeoutTickEvent) {
         System.out.println("In " + getClass().getSimpleName() + ", processing TimeoutTickEvent event ");
 
-        context.setMessage("because timedout");
+        context.addTrait(withMessage("because timedout"));
 
-        return isTimeout(context) ? new TimedOutFinalState() : this;
+        return isTimeout(context) ? context.transition(new TimedOutFinalState(), timeoutTickEvent) : new Transition<>(this, context);
     }
 }

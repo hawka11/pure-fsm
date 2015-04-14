@@ -3,8 +3,11 @@ package pure.fsm.core.accessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Context;
+import pure.fsm.core.trait.TransitionedTrait;
 
 import static java.lang.String.format;
+import static pure.fsm.core.context.MostRecentTrait.currentState;
+import static pure.fsm.core.context.MostRecentTrait.mostRecentTransition;
 
 public class ContextHistoryFormatter implements OnCleanupListener {
 
@@ -15,7 +18,7 @@ public class ContextHistoryFormatter implements OnCleanupListener {
     public String toTransitionString(Context context) {
 
         return format("\n\n+++++ State Machine Transition history stateMachineId [%s] +++++ =>",
-                context.getStateMachineId()) + "\n" + toContextString(context, calcNumTransitions(context, 1));
+                context.stateMachineId) + "\n" + toContextString(context, calcNumTransitions(context, 1));
     }
 
     private int calcNumTransitions(Context context, int count) {
@@ -28,11 +31,13 @@ public class ContextHistoryFormatter implements OnCleanupListener {
 
         context.previous().ifPresent(prev -> sb.append(toContextString(prev, indent - 1)));
 
+        final TransitionedTrait transition = mostRecentTransition(context);
+
         sb.append(format("%" + indent + "s", " ")).append(format("State[%s], Transitioned[%s], event[%s], msg[%s]",
-                context.getCurrentState().getClass().getSimpleName(),
-                context.getTransitioned(),
-                context.getEvent(),
-                context.getMessage()));
+                currentState(context).getClass().getSimpleName(),
+                transition.transitioned,
+                transition.event,
+                "TODO ContextHistoryFormatter"));
 
         return sb.append("\n").toString();
     }
