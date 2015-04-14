@@ -77,7 +77,7 @@ public class Context {
         final Context transitioned = withPrevious(this)
                 .addTrait(transitioned(LocalDateTime.now(), state, Optional.ofNullable(event)));
 
-        return new Transition<>(state, transitioned);
+        return Transition.transition(state, transitioned);
     }
 
     @SuppressWarnings("unchecked")

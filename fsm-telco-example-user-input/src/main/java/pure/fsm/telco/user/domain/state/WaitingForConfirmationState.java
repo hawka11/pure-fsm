@@ -3,12 +3,16 @@ package pure.fsm.telco.user.domain.state;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Context;
-import pure.fsm.core.state.State;
+import pure.fsm.core.Transition;
 import pure.fsm.hazelcast.resource.DistributedResourceFactory;
-import pure.fsm.telco.user.domain.TelcoRechargeContext;
+import pure.fsm.telco.user.domain.TelcoRechargeData;
 import pure.fsm.telco.user.domain.event.ConfirmPinEvent;
 
 import java.time.LocalDateTime;
+
+import static pure.fsm.core.Transition.transition;
+import static pure.fsm.core.context.MostRecentTrait.mostRecentOf;
+import static pure.fsm.core.context.MostRecentTrait.mostRecentTransition;
 
 public class WaitingForConfirmationState extends BaseTelcoState {
 
@@ -19,24 +23,26 @@ public class WaitingForConfirmationState extends BaseTelcoState {
     }
 
     @Override
-    public State accept(TelcoRechargeContext context, ConfirmPinEvent confirmPinEvent) {
+    public Transition accept(Context context, ConfirmPinEvent confirmPinEvent) {
 
         LOG.info("confirming pin [{}]", confirmPinEvent.getPin());
 
-        context.addConfirmedPin(confirmPinEvent.getPin());
+        final TelcoRechargeData data = mostRecentOf(context, TelcoRechargeData.class).get();
 
-        if (context.allPinsConfirmed()) {
+        data.addConfirmedPin(confirmPinEvent.getPin());
+
+        if (data.allPinsConfirmed(context)) {
             LOG.info("all pins confirmed, transitioning to successful final state");
-            return factory().successFinalState();
+            return context.transition(factory().successFinalState(), confirmPinEvent);
         } else {
             LOG.info("still waiting for more pins to confirm, transitioning back to current state");
-            return this;
+            return transition(this, context);
         }
     }
 
     @Override
     protected LocalDateTime getTimeoutDateTime(Context context) {
         //when waiting for user input, timeout can be alot longer than default.
-        return context.getTransitioned().plusSeconds(30);
+        return mostRecentTransition(context).transitioned.plusSeconds(30);
     }
 }

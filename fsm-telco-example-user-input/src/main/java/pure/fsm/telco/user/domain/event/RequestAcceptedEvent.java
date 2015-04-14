@@ -1,14 +1,14 @@
 package pure.fsm.telco.user.domain.event;
 
+import pure.fsm.core.Context;
+import pure.fsm.core.Transition;
 import pure.fsm.core.event.Event;
-import pure.fsm.core.state.State;
-import pure.fsm.telco.user.domain.TelcoRechargeContext;
 
 import java.util.List;
 
 import static com.google.common.base.Objects.toStringHelper;
 
-public class RequestAcceptedEvent implements Event<TelcoRechargeContext, TelcoEventVisitor> {
+public class RequestAcceptedEvent implements Event<TelcoEventVisitor> {
 
     private final List<String> pins;
 
@@ -21,7 +21,7 @@ public class RequestAcceptedEvent implements Event<TelcoRechargeContext, TelcoEv
     }
 
     @Override
-    public State accept(TelcoRechargeContext context, TelcoEventVisitor visitor) {
+    public Transition accept(Context context, TelcoEventVisitor visitor) {
         return visitor.accept(context, this);
     }
 

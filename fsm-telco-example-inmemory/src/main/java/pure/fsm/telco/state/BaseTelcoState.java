@@ -12,6 +12,7 @@ import pure.fsm.telco.event.RechargeAcceptedEvent;
 import pure.fsm.telco.event.RequestRechargeEvent;
 import pure.fsm.telco.event.TelcoEventVisitor;
 
+import static pure.fsm.core.Transition.transition;
 import static pure.fsm.core.trait.MessageTrait.withMessage;
 
 public class BaseTelcoState extends BaseNonFinalState implements TelcoEventVisitor {
@@ -48,6 +49,6 @@ public class BaseTelcoState extends BaseNonFinalState implements TelcoEventVisit
 
         context.addTrait(withMessage("because timedout"));
 
-        return isTimeout(context) ? context.transition(new TimedOutFinalState(), timeoutTickEvent) : new Transition<>(this, context);
+        return isTimeout(context) ? context.transition(new TimedOutFinalState(), timeoutTickEvent) : transition(this, context);
     }
 }

@@ -7,6 +7,7 @@ import pure.fsm.telco.event.CancelRechargeEvent;
 import pure.fsm.telco.event.RechargeAcceptedEvent;
 import pure.fsm.telco.guard.Guard;
 
+import static pure.fsm.core.Transition.transition;
 import static pure.fsm.core.context.MostRecentTrait.mostRecentOf;
 import static pure.fsm.core.trait.MessageTrait.withMessage;
 
@@ -41,7 +42,7 @@ public class RechargeRequestedState extends BaseTelcoState {
                     .transition(factory().successFinalState(), rechargeAcceptedEvent);
         } else {
             //stay in current state, until all RechargeAcceptedEvent's have been received
-            return new Transition<>(this, context);
+            return transition(this, context);
         }
     }
 }

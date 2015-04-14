@@ -8,6 +8,7 @@ import pure.fsm.core.event.Event;
 
 import java.time.LocalDateTime;
 
+import static pure.fsm.core.Transition.transition;
 import static pure.fsm.core.context.MostRecentTrait.mostRecentTransition;
 
 public abstract class BaseNonFinalState implements State {
@@ -28,7 +29,7 @@ public abstract class BaseNonFinalState implements State {
     protected Transition nonHandledEvent(Context context, Event event) {
         LOG.warn("State [{}] received non handled event [{}], ignoring.",
                 getClass().getName(), event.getClass().getName());
-        return new Transition(this, context);
+        return transition(this, context);
     }
 
     @Override

@@ -6,6 +6,7 @@ import pure.fsm.core.Context;
 import pure.fsm.core.Transition;
 import pure.fsm.core.event.Event;
 
+import static pure.fsm.core.Transition.transition;
 import static pure.fsm.core.context.UnlockTraits.unlockTraits;
 
 public abstract class BaseFinalState implements FinalState {
@@ -25,7 +26,7 @@ public abstract class BaseFinalState implements FinalState {
     protected Transition nonHandledEvent(Context context, Event event) {
         LOG.trace("Final state [{}] received non handled event [{}], ignoring.",
                 getClass().getName(), event.getClass().getName());
-        return new Transition(this, context);
+        return transition(this, context);
     }
 
     @Override

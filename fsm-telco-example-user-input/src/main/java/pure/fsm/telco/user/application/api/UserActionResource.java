@@ -5,7 +5,6 @@ import pure.fsm.core.Context;
 import pure.fsm.core.StateMachine;
 import pure.fsm.core.template.BaseStateMachineCallback;
 import pure.fsm.core.template.StateMachineTemplate;
-import pure.fsm.telco.user.domain.TelcoRechargeContext;
 import pure.fsm.telco.user.domain.event.ConfirmPinEvent;
 import pure.fsm.telco.user.domain.event.RequestPinEvent;
 import pure.fsm.telco.user.domain.state.InitialState;
@@ -24,7 +23,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static java.util.stream.Collectors.toList;
+import static pure.fsm.telco.user.domain.TelcoRechargeData.initialTelcoRechargeData;
 
 @Path("/sm")
 public class UserActionResource {
@@ -51,7 +52,7 @@ public class UserActionResource {
     @Path("/create")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public View create() {
-        template.create(stateFactory.getStateByClass(InitialState.class), new TelcoRechargeContext());
+        template.create(stateFactory.getStateByClass(InitialState.class), newArrayList(initialTelcoRechargeData()));
         return getAll();
     }
 

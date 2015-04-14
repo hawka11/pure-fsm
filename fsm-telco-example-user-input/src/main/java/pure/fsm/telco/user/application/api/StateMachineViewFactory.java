@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.google.common.collect.Maps.newHashMap;
+import static pure.fsm.core.context.MostRecentTrait.currentState;
 
 public class StateMachineViewFactory {
 
@@ -32,7 +33,7 @@ public class StateMachineViewFactory {
     public Optional<View> getViewFor(Context context) {
 
         try {
-            Class<? extends StateMachineView> view = viewByStateMachineState.get(context.getCurrentState().getClass());
+            Class<? extends StateMachineView> view = viewByStateMachineState.get(currentState(context).getClass());
             if (view != null) {
                 StateMachineView smView = view.newInstance();
                 smView.setContext(context);
