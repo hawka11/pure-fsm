@@ -10,13 +10,13 @@ import java.util.Optional;
 
 public class TransitionedTrait implements Trait {
     public final LocalDateTime transitioned;
-    public final State state;
+    public final String state;
     public final String event;
 
     @JsonCreator
     private TransitionedTrait(
             @JsonProperty("transitioned") LocalDateTime transitioned,
-            @JsonProperty("state") State state,
+            @JsonProperty("state") String state,
             @JsonProperty("event") String event) {
         this.transitioned = transitioned;
         this.state = state;
@@ -25,6 +25,6 @@ public class TransitionedTrait implements Trait {
 
     public static TransitionedTrait transitioned(LocalDateTime transitioned, State state, Optional<Event> event) {
         final String eventString = event.isPresent() ? event.get().toString() : "<NONE>";
-        return new TransitionedTrait(transitioned, state, eventString);
+        return new TransitionedTrait(transitioned, state.getClass().getName(), eventString);
     }
 }

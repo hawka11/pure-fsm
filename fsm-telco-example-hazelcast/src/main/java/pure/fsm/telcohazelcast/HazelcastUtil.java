@@ -10,7 +10,6 @@ import com.hazelcast.core.HazelcastInstance;
 import pure.fsm.core.Context;
 import pure.fsm.hazelcast.serialization.ContextSerializer;
 import pure.fsm.hazelcast.serialization.StateMachineModule;
-import pure.fsm.telcohazelcast.state.HzTelcoStateFactory;
 
 public class HazelcastUtil {
 
@@ -22,7 +21,7 @@ public class HazelcastUtil {
         }).run();
     }
 
-    static HazelcastInstance createClientHz(HzTelcoStateFactory stateFactory) {
+    static HazelcastInstance createClientHz() {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.addAddress("127.0.0.1:5701");
 
@@ -34,7 +33,7 @@ public class HazelcastUtil {
 
         HazelcastInstance hazelcastInstance = HazelcastClient.newHazelcastClient(clientConfig);
 
-        contextSerializer.registerModule(new StateMachineModule(hazelcastInstance, stateFactory));
+        contextSerializer.registerModule(new StateMachineModule(hazelcastInstance));
 
         return hazelcastInstance;
     }

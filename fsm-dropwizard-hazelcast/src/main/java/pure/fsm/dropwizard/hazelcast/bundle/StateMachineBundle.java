@@ -28,7 +28,6 @@ import static pure.fsm.core.StateFactoryRegistration.registerStateFactory;
 public abstract class StateMachineBundle implements Bundle {
 
     private DistributedResourceFactory distributedResourceFactory;
-    private StateFactory stateFactory;
     private HazelcastInstance hazelcastInstance;
     private HazelcastStateMachineContextAccessor accessor;
     private StateMachineTemplate template;
@@ -46,12 +45,11 @@ public abstract class StateMachineBundle implements Bundle {
         accessor = new HazelcastStateMachineContextAccessor(hazelcastInstance);
         template = new StateMachineTemplate(accessor);
 
-        stateFactory = createStateFactory();
-        registerStateFactory(stateFactory);
+        registerStateFactory(createStateFactory());
 
         distributedResourceFactory.setInstance(hazelcastInstance);
 
-        contextSerializer.registerModule(new StateMachineModule(hazelcastInstance, stateFactory));
+        contextSerializer.registerModule(new StateMachineModule(hazelcastInstance));
     }
 
     protected abstract StateFactory createStateFactory();
@@ -74,10 +72,6 @@ public abstract class StateMachineBundle implements Bundle {
 
     public DistributedResourceFactory getDistributedResourceFactory() {
         return distributedResourceFactory;
-    }
-
-    public StateFactory getStateFactory() {
-        return stateFactory;
     }
 
     public HazelcastInstance getHazelcastInstance() {
