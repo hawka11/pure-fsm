@@ -3,7 +3,7 @@ dependencies {
     compile project(":fsm-telco-example-inmemory")
     compile project(":fsm-accessor-hazelcast")
 
-    compile 'com.hazelcast:hazelcast-all:3.3.1'
+    compile "com.hazelcast:hazelcast-all:$hazelcastVersion"
 
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+    testCompile "junit:junit:$junitVersion"
 }

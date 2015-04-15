@@ -24,7 +24,7 @@ public class FsmApplication extends Application<FsmConfiguration> {
     public void initialize(Bootstrap<FsmConfiguration> bootstrap) {
         stateMachineBundle = new TelcoStateMachineBundle();
 
-        bootstrap.addBundle(new ViewBundle());
+        bootstrap.addBundle(new ViewBundle<>());
         bootstrap.addBundle(stateMachineBundle);
     }
 

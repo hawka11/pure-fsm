@@ -3,10 +3,10 @@ apply plugin: 'java'
 dependencies {
     compile project(":fsm-dropwizard-hazelcast")
 
-    compile 'com.hazelcast:hazelcast-all:3.3.1'
-    compile "io.dropwizard:dropwizard-core:0.7.1"
-    compile "io.dropwizard:dropwizard-views-mustache:0.7.1"
-    compile "io.dropwizard:dropwizard-assets:0.7.1"
+    compile "com.hazelcast:hazelcast-all:$hazelcastVersion"
+    compile "io.dropwizard:dropwizard-core:$dropWizardVersion"
+    compile "io.dropwizard:dropwizard-views-mustache:$dropWizardVersion"
+    compile "io.dropwizard:dropwizard-assets:$dropWizardVersion"
 
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+    testCompile "junit:junit:$junitVersion"
 }
