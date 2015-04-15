@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import pure.fsm.core.Context;
 import pure.fsm.core.accessor.StateMachineContextAccessor;
 import pure.fsm.core.state.State;
+import pure.fsm.core.state.StateFactory;
 import pure.fsm.core.trait.Trait;
 
 import java.util.List;
@@ -33,8 +34,8 @@ public class StateMachineTemplate {
         return accessor.getAllIds();
     }
 
-    public String create(State initialState, List<? extends Trait> initialTraits) {
-        return accessor.create(initialState, initialTraits);
+    public String create(State initialState, Class<? extends StateFactory> stateFactory, List<? extends Trait> initialTraits) {
+        return accessor.create(initialState, stateFactory, initialTraits);
     }
 
     public void tryWithLock(String stateMachineId, StateMachineCallback stateMachineCallback) {

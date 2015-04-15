@@ -8,8 +8,6 @@ import pure.fsm.core.event.Event;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NONE)
 public interface State {
 
-    StateFactory factory();
-
     Transition handle(Context context, Event event);
 
     boolean isTimeout(Context context);

@@ -7,6 +7,7 @@ import pure.fsm.core.Context;
 import pure.fsm.core.accessor.StateMachineContextAccessor;
 import pure.fsm.core.state.FinalState;
 import pure.fsm.core.state.State;
+import pure.fsm.core.state.StateFactory;
 import pure.fsm.core.trait.Trait;
 
 import java.util.List;
@@ -33,10 +34,10 @@ public class InMemoryStateMachineContextAccessor implements StateMachineContextA
 
     @Override
     @SuppressWarnings("unchecked")
-    public String create(State initialState, List<? extends Trait> initialTraits) {
+    public String create(State initialState, Class<? extends StateFactory> stateFactory, List<? extends Trait> initialTraits) {
         String id = String.valueOf(idGenerator.getAndIncrement());
 
-        final Context context = initialContext(id, initialState, initialTraits);
+        final Context context = initialContext(id, initialState, stateFactory, initialTraits);
 
         contextByStateMachineId.put(id, context);
         lockByStateMachineId.put(id, new ReentrantLock());

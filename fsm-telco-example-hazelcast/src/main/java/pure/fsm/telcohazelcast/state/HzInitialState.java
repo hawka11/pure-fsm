@@ -30,6 +30,6 @@ public class HzInitialState extends BaseHzTelcoState {
         //telcoClientRepository.startRechargeProcess(rechargeAmount);
 
         return context.addTrait(lockResource)
-                .transition(factory().getStateByClass(RechargeRequestedState.class), requestRechargeEvent);
+                .transition(RechargeRequestedState.class, requestRechargeEvent);
     }
 }

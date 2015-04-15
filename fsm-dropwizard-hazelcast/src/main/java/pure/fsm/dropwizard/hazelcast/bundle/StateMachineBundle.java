@@ -23,6 +23,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
+import static pure.fsm.core.StateFactoryRegistration.registerStateFactory;
+
 public abstract class StateMachineBundle implements Bundle {
 
     private DistributedResourceFactory distributedResourceFactory;
@@ -43,7 +45,9 @@ public abstract class StateMachineBundle implements Bundle {
         hazelcastInstance = createClientHz(contextSerializer);
         accessor = new HazelcastStateMachineContextAccessor(hazelcastInstance);
         template = new StateMachineTemplate(accessor);
+
         stateFactory = createStateFactory();
+        registerStateFactory(stateFactory);
 
         distributedResourceFactory.setInstance(hazelcastInstance);
 

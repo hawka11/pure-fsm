@@ -5,7 +5,6 @@ import pure.fsm.core.Transition;
 import pure.fsm.core.event.Event;
 import pure.fsm.core.event.TimeoutTickEvent;
 import pure.fsm.core.state.BaseNonFinalState;
-import pure.fsm.core.state.StateFactory;
 import pure.fsm.core.state.TimedOutFinalState;
 import pure.fsm.hazelcast.resource.DistributedResourceFactory;
 import pure.fsm.telco.user.domain.event.ConfirmPinEvent;
@@ -19,16 +18,9 @@ import static pure.fsm.core.trait.MessageTrait.withMessage;
 public class BaseTelcoState extends BaseNonFinalState implements TelcoEventVisitor {
 
     private final DistributedResourceFactory resourceFactory;
-    private final StateFactory telcoStateFactory;
 
-    protected BaseTelcoState(StateFactory telcoStateFactory, DistributedResourceFactory resourceFactory) {
-        this.telcoStateFactory = telcoStateFactory;
+    protected BaseTelcoState(DistributedResourceFactory resourceFactory) {
         this.resourceFactory = resourceFactory;
-    }
-
-    @Override
-    public StateFactory factory() {
-        return telcoStateFactory;
     }
 
     public DistributedResourceFactory resourceFactory() {

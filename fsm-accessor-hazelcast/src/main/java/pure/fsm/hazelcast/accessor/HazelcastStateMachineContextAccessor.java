@@ -9,6 +9,7 @@ import pure.fsm.core.Context;
 import pure.fsm.core.accessor.StateMachineContextAccessor;
 import pure.fsm.core.state.FinalState;
 import pure.fsm.core.state.State;
+import pure.fsm.core.state.StateFactory;
 import pure.fsm.core.trait.Trait;
 
 import java.util.List;
@@ -34,11 +35,11 @@ public class HazelcastStateMachineContextAccessor implements StateMachineContext
 
     @Override
     @SuppressWarnings("unchecked")
-    public String create(State initialState, List<? extends Trait> initialTraits) {
+    public String create(State initialState, Class<? extends StateFactory> stateFactory, List<? extends Trait> initialTraits) {
         IAtomicLong idAtomicLong = getHazel().getAtomicLong("STATE_MACHINE_ID_GENERATOR");
         String id = String.valueOf(idAtomicLong.addAndGet(1));
 
-        final Context context = initialContext(id, initialState, initialTraits);
+        final Context context = initialContext(id, initialState, stateFactory, initialTraits);
 
         getHolderMap().put(id, context);
 

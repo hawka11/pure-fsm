@@ -23,6 +23,6 @@ public class InitialState extends BaseTelcoState {
 
         //lock pin in distributed lock set, and represent that as a locked pin resource.
         return context.addTrait(new LockedPinResource(pinsToLock))
-                .transition(factory().getStateByClass(RechargeRequestedState.class), requestRechargeEvent);
+                .transition(RechargeRequestedState.class, requestRechargeEvent);
     }
 }

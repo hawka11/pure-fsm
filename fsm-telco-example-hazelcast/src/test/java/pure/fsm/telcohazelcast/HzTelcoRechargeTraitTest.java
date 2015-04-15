@@ -21,7 +21,7 @@ public class HzTelcoRechargeTraitTest {
     public void test() throws Exception {
         final ObjectMapper mapper = new ContextSerializer().mapper;
 
-        final Context context = initialContext("1", null, newArrayList(initialTelcoRecharge().addAcceptedPin("333")));
+        final Context context = initialContext("1", null, null, newArrayList(initialTelcoRecharge().addAcceptedPin("333")));
 
         byte[] data = mapper.writeValueAsBytes(context);
 

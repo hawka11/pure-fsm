@@ -16,8 +16,8 @@ public class TelcoStateFactory extends BaseStateFactory {
 
     public TelcoStateFactory(DistributedResourceFactory distributedResourceFactory, TelcoGateway telcoGateway) {
         super();
-        stateByStateClass.put(InitialState.class, new InitialState(this, distributedResourceFactory, telcoGateway));
-        stateByStateClass.put(WaitingForConfirmationState.class, new WaitingForConfirmationState(this, distributedResourceFactory));
+        stateByStateClass.put(InitialState.class, new InitialState(distributedResourceFactory, telcoGateway));
+        stateByStateClass.put(WaitingForConfirmationState.class, new WaitingForConfirmationState(distributedResourceFactory));
     }
 
     @Override

@@ -5,7 +5,6 @@ import pure.fsm.core.Transition;
 import pure.fsm.core.event.Event;
 import pure.fsm.core.event.TimeoutTickEvent;
 import pure.fsm.core.state.BaseNonFinalState;
-import pure.fsm.core.state.StateFactory;
 import pure.fsm.core.state.TimedOutFinalState;
 import pure.fsm.telco.event.CancelRechargeEvent;
 import pure.fsm.telco.event.RechargeAcceptedEvent;
@@ -16,11 +15,6 @@ import static pure.fsm.core.Transition.transition;
 import static pure.fsm.core.trait.MessageTrait.withMessage;
 
 public class BaseTelcoState extends BaseNonFinalState implements TelcoEventVisitor {
-
-    @Override
-    public StateFactory factory() {
-        return new TelcoStateFactory();
-    }
 
     @Override
     @SuppressWarnings("unchecked")

@@ -14,11 +14,6 @@ public abstract class BaseFinalState implements FinalState {
     private final static Logger LOG = LoggerFactory.getLogger(BaseFinalState.class);
 
     @Override
-    public StateFactory factory() {
-        throw new IllegalStateException("In final state, probably shouldn't need to create another state");
-    }
-
-    @Override
     public boolean isTimeout(Context context) {
         return false;
     }

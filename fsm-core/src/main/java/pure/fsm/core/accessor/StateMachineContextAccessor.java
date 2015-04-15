@@ -2,6 +2,7 @@ package pure.fsm.core.accessor;
 
 import pure.fsm.core.Context;
 import pure.fsm.core.state.State;
+import pure.fsm.core.state.StateFactory;
 import pure.fsm.core.trait.Trait;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public interface StateMachineContextAccessor {
 
     Set<String> getAllNonFinalIds();
 
-    String create(State initialState, List<? extends Trait> initialTraits);
+    String create(State initialState, Class<? extends StateFactory> stateFactory, List<? extends Trait> initialTraits);
 
     Optional<Lock> tryLock(String stateMachineId, long timeout, TimeUnit timeUnit);
 

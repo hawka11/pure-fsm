@@ -18,6 +18,7 @@ import java.time.temporal.ChronoUnit;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static pure.fsm.core.StateFactoryRegistration.registerStateFactory;
 import static pure.fsm.core.context.MostRecentTrait.currentState;
 import static pure.fsm.telco.TelcoRechargeTrait.initialTelcoRecharge;
 
@@ -45,8 +46,9 @@ class StateMachineOperations {
     }
 
     public String createStateMachineInInitialState() {
+        registerStateFactory(stateFactory);
         return accessor.create(
-                stateFactory.getStateByClass(InitialState.class), newArrayList(initialTelcoRecharge()));
+                stateFactory.getStateByClass(InitialState.class), TelcoStateFactory.class, newArrayList(initialTelcoRecharge()));
     }
 
     public void logCurrentState(String stateMachineId) {

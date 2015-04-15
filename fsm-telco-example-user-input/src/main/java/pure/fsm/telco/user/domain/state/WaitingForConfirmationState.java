@@ -18,8 +18,8 @@ public class WaitingForConfirmationState extends BaseTelcoState {
 
     private static final Logger LOG = LoggerFactory.getLogger(WaitingForConfirmationState.class);
 
-    WaitingForConfirmationState(TelcoStateFactory telcoStateFactory, DistributedResourceFactory resourceFactory) {
-        super(telcoStateFactory, resourceFactory);
+    WaitingForConfirmationState(DistributedResourceFactory resourceFactory) {
+        super(resourceFactory);
     }
 
     @Override
@@ -33,7 +33,7 @@ public class WaitingForConfirmationState extends BaseTelcoState {
 
         if (data.allPinsConfirmed(context)) {
             LOG.info("all pins confirmed, transitioning to successful final state");
-            return context.transition(factory().successFinalState(), confirmPinEvent);
+            return context.transition(context.stateFactory().successFinalState(), confirmPinEvent);
         } else {
             LOG.info("still waiting for more pins to confirm, transitioning back to current state");
             return transition(this, context);

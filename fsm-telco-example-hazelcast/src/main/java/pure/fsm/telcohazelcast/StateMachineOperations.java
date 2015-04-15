@@ -15,6 +15,7 @@ import pure.fsm.telcohazelcast.state.HzInitialState;
 import pure.fsm.telcohazelcast.state.HzTelcoStateFactory;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static pure.fsm.core.StateFactoryRegistration.registerStateFactory;
 import static pure.fsm.core.context.MostRecentTrait.currentState;
 import static pure.fsm.telcohazelcast.HazelcastUtil.createClientHz;
 import static pure.fsm.telcohazelcast.HzTelcoRechargeTrait.initialTelcoRecharge;
@@ -53,8 +54,9 @@ class StateMachineOperations {
     }
 
     public String createStateMachineInInitialState() {
+        registerStateFactory(stateFactory);
         return accessor.create(
-                stateFactory.getStateByClass(HzInitialState.class), newArrayList(initialTelcoRecharge()));
+                stateFactory.getStateByClass(HzInitialState.class), HzTelcoStateFactory.class, newArrayList(initialTelcoRecharge()));
     }
 
     public void logCurrentState(String stateMachineId) {

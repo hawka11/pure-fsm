@@ -26,7 +26,7 @@ public class RechargeRequestedState extends BaseTelcoState {
 
         //telcoClientRepository.cancelRechargeProcess();
 
-        return context.transition(factory().userCanceled(context), cancelRechargeEvent);
+        return context.transition(context.stateFactory().userCanceled(context), cancelRechargeEvent);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class RechargeRequestedState extends BaseTelcoState {
         if (guard.isSatisfied(context)) {
             return context
                     .addTrait(withMessage("RECHARGE_ACCEPTED"))
-                    .transition(factory().successFinalState(), rechargeAcceptedEvent);
+                    .transition(context.stateFactory().successFinalState(), rechargeAcceptedEvent);
         } else {
             //stay in current state, until all RechargeAcceptedEvent's have been received
             return transition(this, context);

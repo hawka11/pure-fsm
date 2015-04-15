@@ -52,7 +52,7 @@ public class UserActionResource {
     @Path("/create")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public View create() {
-        template.create(stateFactory.getStateByClass(InitialState.class), newArrayList(initialTelcoRechargeData()));
+        template.create(stateFactory.getStateByClass(InitialState.class), TelcoStateFactory.class, newArrayList(initialTelcoRechargeData()));
         return getAll();
     }
 

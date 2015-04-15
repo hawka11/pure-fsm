@@ -21,8 +21,8 @@ public class InitialState extends BaseTelcoState {
 
     private final TelcoGateway telcoGateway;
 
-    InitialState(TelcoStateFactory telcoStateFactory, DistributedResourceFactory resourceFactory, TelcoGateway telcoGateway) {
-        super(telcoStateFactory, resourceFactory);
+    InitialState(DistributedResourceFactory resourceFactory, TelcoGateway telcoGateway) {
+        super(resourceFactory);
         this.telcoGateway = telcoGateway;
     }
 
@@ -48,7 +48,7 @@ public class InitialState extends BaseTelcoState {
                 .collect(toList());
 
         final BaseTelcoState nextState = waitingAcceptance.isEmpty() ?
-                factory().getStateByClass(WaitingForConfirmationState.class) : this;
+                context.stateFactory().getStateByClass(WaitingForConfirmationState.class) : this;
 
         return context.transition(nextState, requestAcceptedEvent);
     }
