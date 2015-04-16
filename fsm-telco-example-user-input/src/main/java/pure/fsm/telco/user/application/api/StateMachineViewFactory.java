@@ -6,14 +6,17 @@ import pure.fsm.core.state.ErrorFinalState;
 import pure.fsm.core.state.State;
 import pure.fsm.core.state.SuccessFinalState;
 import pure.fsm.core.state.TimedOutFinalState;
+import pure.fsm.telco.user.domain.TelcoRechargeData;
 import pure.fsm.telco.user.domain.state.InitialState;
 import pure.fsm.telco.user.domain.state.WaitingForConfirmationState;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.google.common.collect.Maps.newHashMap;
 import static pure.fsm.core.context.MostRecentTrait.currentState;
+import static pure.fsm.core.context.MostRecentTrait.mostRecentOf;
 
 public class StateMachineViewFactory {
 
@@ -66,6 +69,18 @@ public class StateMachineViewFactory {
     static class WatingView extends StateMachineView {
         protected WatingView() {
             super("waiting.mustache");
+        }
+
+        public Set<String> nonConfirmedPins() {
+            return data().nonConfirmedPins(getContext());
+        }
+
+        public Set<String> confirmedPins() {
+            return data().getConfirmedPins();
+        }
+
+        private TelcoRechargeData data() {
+            return mostRecentOf(getContext(), TelcoRechargeData.class).get();
         }
     }
 

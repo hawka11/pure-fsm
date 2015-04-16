@@ -37,13 +37,14 @@ public class BaseTelcoState extends BaseNonFinalState implements TelcoEventVisit
     public Transition visit(Context context, TimeoutTickEvent timeoutTickEvent) {
         System.out.println("In " + getClass().getSimpleName() + ", processing TimeoutTickEvent event ");
 
+        Transition transition = transition(this, context);
         if (isTimeout(context)) {
-            context
+            transition = context
                     .addTrait(withMessage("because timedout"))
                     .transition(new TimedOutFinalState(), timeoutTickEvent);
         }
 
-        return transition(this, context);
+        return transition;
     }
 
     @Override
