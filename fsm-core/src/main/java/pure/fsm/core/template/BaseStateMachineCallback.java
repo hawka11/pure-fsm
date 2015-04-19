@@ -15,10 +15,10 @@ public abstract class BaseStateMachineCallback implements StateMachineCallback {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Transition onError(Transition transition, StateMachine stateMachine, Exception e) {
+    public Transition onError(Transition prevTransition, StateMachine stateMachine, Exception e) {
         LOG.error("On Error, returning state machine in error state.", e);
 
-        return transition
+        return prevTransition
                 .transitionTo(new ErrorFinalState(), null, newArrayList(withException(e)));
     }
 

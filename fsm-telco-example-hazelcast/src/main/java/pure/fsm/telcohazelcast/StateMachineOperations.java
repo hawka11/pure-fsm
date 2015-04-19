@@ -46,8 +46,8 @@ class StateMachineOperations {
     public void scheduleEventOnThread(String stateMachineId, final Event event) {
         new Thread(() -> template.tryWithLock(stateMachineId, new BaseStateMachineCallback() {
             @Override
-            public Transition doWith(Transition transition, StateMachine stateMachine) {
-                return stateMachine.handleEvent(transition, event);
+            public Transition doWith(Transition prevTransition, StateMachine stateMachine) {
+                return stateMachine.handleEvent(prevTransition, event);
             }
         })).start();
     }

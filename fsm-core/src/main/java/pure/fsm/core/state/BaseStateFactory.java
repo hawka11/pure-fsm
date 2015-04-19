@@ -1,7 +1,6 @@
 package pure.fsm.core.state;
 
 import com.google.common.base.Preconditions;
-import pure.fsm.core.Transition;
 
 import java.util.Map;
 
@@ -33,8 +32,7 @@ public abstract class BaseStateFactory implements StateFactory {
     }
 
     @Override
-    public SuccessFinalState userCanceled(Transition transition) {
-        //TODO: transition.addContext(withMessage("USER_CANCELED"));
+    public SuccessFinalState userCanceled() {
         return new SuccessFinalState();
     }
 

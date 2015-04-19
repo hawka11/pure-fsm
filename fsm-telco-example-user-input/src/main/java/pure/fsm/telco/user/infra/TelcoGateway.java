@@ -30,9 +30,9 @@ public class TelcoGateway {
     public boolean requestPinRecharge(String smId, List<String> pins) {
         service.schedule(() -> template.tryWithLock(smId, new BaseStateMachineCallback() {
             @Override
-            public Transition doWith(Transition transition, StateMachine stateMachine) {
+            public Transition doWith(Transition prevTransition, StateMachine stateMachine) {
                 LOG.info("about to accept request of pins [{}]", pins);
-                return stateMachine.handleEvent(transition, new RequestAcceptedEvent(pins));
+                return stateMachine.handleEvent(prevTransition, new RequestAcceptedEvent(pins));
             }
         }), 1, SECONDS);
 

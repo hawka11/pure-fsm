@@ -64,10 +64,10 @@ public class UserActionResource {
 
         template.tryWithLock(id, new BaseStateMachineCallback() {
             @Override
-            public Transition doWith(Transition transition, StateMachine stateMachine) {
+            public Transition doWith(Transition prevTransition, StateMachine stateMachine) {
                 List<String> nonEmptyPins = pins.stream().filter(p -> p.length() > 0).collect(toList());
 
-                return stateMachine.handleEvent(transition, new RequestPinEvent(nonEmptyPins));
+                return stateMachine.handleEvent(prevTransition, new RequestPinEvent(nonEmptyPins));
             }
         });
 
@@ -82,9 +82,9 @@ public class UserActionResource {
 
         template.tryWithLock(id, new BaseStateMachineCallback() {
             @Override
-            public Transition doWith(Transition transition, StateMachine stateMachine) {
+            public Transition doWith(Transition prevTransition, StateMachine stateMachine) {
 
-                return stateMachine.handleEvent(transition, new ConfirmPinEvent(pin));
+                return stateMachine.handleEvent(prevTransition, new ConfirmPinEvent(pin));
             }
         });
 

@@ -50,15 +50,15 @@ public class TimeoutTicker {
                 .filter(this::stateMachineIsTimedout)
                 .forEach(id -> template.tryWithLock(id, new StateMachineCallback() {
                     @Override
-                    public Transition doWith(Transition transition, StateMachine stateMachine) {
+                    public Transition doWith(Transition prevTransition, StateMachine stateMachine) {
 
-                        return stateMachine.handleEvent(transition, new TimeoutTickEvent());
+                        return stateMachine.handleEvent(prevTransition, new TimeoutTickEvent());
                     }
 
                     @Override
-                    public Transition onError(Transition transition, StateMachine stateMachine, Exception e) {
+                    public Transition onError(Transition prevTransition, StateMachine stateMachine, Exception e) {
                         LOG.debug("onError received, ignoring");
-                        return transition;
+                        return prevTransition;
                     }
 
                     @Override

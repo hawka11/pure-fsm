@@ -1,7 +1,5 @@
 package pure.fsm.core.state;
 
-import pure.fsm.core.Transition;
-
 public interface StateFactory {
 
     ErrorFinalState errorFinalState();
@@ -10,7 +8,7 @@ public interface StateFactory {
 
     SuccessFinalState successFinalState();
 
-    SuccessFinalState userCanceled(Transition transition);
+    SuccessFinalState userCanceled();
 
     <T extends State> T getStateByClass(Class<T> stateClass);
 }

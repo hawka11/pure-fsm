@@ -5,9 +5,9 @@ import pure.fsm.core.StateMachine;
 
 public interface StateMachineCallback {
 
-    Transition doWith(Transition transition, StateMachine stateMachine);
+    Transition doWith(Transition prevTransition, StateMachine stateMachine);
 
     void onLockFailed(Exception e);
 
-    Transition onError(Transition transition, StateMachine stateMachine, Exception e);
+    Transition onError(Transition prevTransition, StateMachine stateMachine, Exception e);
 }
