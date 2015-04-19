@@ -2,8 +2,8 @@ package pure.fsm.core.timeout;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pure.fsm.core.Context;
 import pure.fsm.core.StateMachine;
+import pure.fsm.core.Transition;
 import pure.fsm.core.accessor.StateMachineContextAccessor;
 import pure.fsm.core.event.TimeoutTickEvent;
 import pure.fsm.core.template.StateMachineCallback;
@@ -12,8 +12,6 @@ import pure.fsm.core.template.StateMachineTemplate;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import static pure.fsm.core.context.MostRecentTrait.currentState;
 
 public class TimeoutTicker {
 
@@ -52,15 +50,15 @@ public class TimeoutTicker {
                 .filter(this::stateMachineIsTimedout)
                 .forEach(id -> template.tryWithLock(id, new StateMachineCallback() {
                     @Override
-                    public Context doWith(Context context, StateMachine stateMachine) {
+                    public Transition doWith(Transition transition, StateMachine stateMachine) {
 
-                        return stateMachine.handleEvent(context, new TimeoutTickEvent());
+                        return stateMachine.handleEvent(transition, new TimeoutTickEvent());
                     }
 
                     @Override
-                    public Context onError(Context context, StateMachine stateMachine, Exception e) {
+                    public Transition onError(Transition transition, StateMachine stateMachine, Exception e) {
                         LOG.debug("onError received, ignoring");
-                        return context;
+                        return transition;
                     }
 
                     @Override
@@ -71,7 +69,7 @@ public class TimeoutTicker {
     }
 
     private boolean stateMachineIsTimedout(String id) {
-        final Context context = template.get(id);
-        return currentState(context).isTimeout(context);
+        final Transition transition = template.get(id);
+        return transition.getState().isTimeout(transition);
     }
 }

@@ -1,7 +1,7 @@
 package pure.fsm.core.accessor;
 
-import pure.fsm.core.Context;
+import pure.fsm.core.Transition;
 
 public interface OnCleanupListener {
-    void onCleanup(Context context);
+    void onCleanup(Transition transition);
 }

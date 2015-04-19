@@ -5,8 +5,8 @@ public class ContextHistoryFormatterTest {
    /* @Test
     public void testLog() throws InterruptedException {
         Context initial =  new TestContext(builder().transitioned(LocalDateTime.now()).currentState(new TestInitialState()).stateMachineId("1"));
-        Context middle = initial.transition(new SuccessFinalState(), new TestEvent());
-        Context end = middle.transition(new SuccessFinalState(), new TestEvent());
+        Context middle = initial.transitionTo(new SuccessFinalState(), new TestEvent());
+        Context end = middle.transitionTo(new SuccessFinalState(), new TestEvent());
 
         String output = HISTORY_FORMATTER.toTransitionString(end);
 

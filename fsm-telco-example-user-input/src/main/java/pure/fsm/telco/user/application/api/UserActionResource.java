@@ -1,7 +1,7 @@
 package pure.fsm.telco.user.application.api;
 
 import io.dropwizard.views.View;
-import pure.fsm.core.Context;
+import pure.fsm.core.Transition;
 import pure.fsm.core.StateMachine;
 import pure.fsm.core.template.BaseStateMachineCallback;
 import pure.fsm.core.template.StateMachineTemplate;
@@ -64,10 +64,10 @@ public class UserActionResource {
 
         template.tryWithLock(id, new BaseStateMachineCallback() {
             @Override
-            public Context doWith(Context context, StateMachine stateMachine) {
+            public Transition doWith(Transition transition, StateMachine stateMachine) {
                 List<String> nonEmptyPins = pins.stream().filter(p -> p.length() > 0).collect(toList());
 
-                return stateMachine.handleEvent(context, new RequestPinEvent(nonEmptyPins));
+                return stateMachine.handleEvent(transition, new RequestPinEvent(nonEmptyPins));
             }
         });
 
@@ -82,9 +82,9 @@ public class UserActionResource {
 
         template.tryWithLock(id, new BaseStateMachineCallback() {
             @Override
-            public Context doWith(Context context, StateMachine stateMachine) {
+            public Transition doWith(Transition transition, StateMachine stateMachine) {
 
-                return stateMachine.handleEvent(context, new ConfirmPinEvent(pin));
+                return stateMachine.handleEvent(transition, new ConfirmPinEvent(pin));
             }
         });
 
@@ -95,8 +95,8 @@ public class UserActionResource {
     @Path("/{id}")
     @Produces(MediaType.TEXT_HTML)
     public View getStateBasedView(@PathParam("id") String id) {
-        Context context = template.get(id);
-        Optional<View> maybeView = viewFactory.getViewFor(context);
+        Transition transition = template.get(id);
+        Optional<View> maybeView = viewFactory.getViewFor(transition);
 
         return maybeView.orElseThrow(() -> new WebServiceException("no views configured"));
     }

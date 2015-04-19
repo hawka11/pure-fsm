@@ -1,7 +1,7 @@
 package pure.fsm.telco.user.application.api;
 
 import io.dropwizard.views.View;
-import pure.fsm.core.Context;
+import pure.fsm.core.Transition;
 import pure.fsm.core.state.ErrorFinalState;
 import pure.fsm.core.state.State;
 import pure.fsm.core.state.SuccessFinalState;
@@ -15,7 +15,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import static com.google.common.collect.Maps.newHashMap;
-import static pure.fsm.core.context.MostRecentTrait.currentState;
 import static pure.fsm.core.context.MostRecentTrait.mostRecentOf;
 
 public class StateMachineViewFactory {
@@ -33,13 +32,13 @@ public class StateMachineViewFactory {
         viewByStateMachineState.put(TimedOutFinalState.class, ErrorView.class);
     }
 
-    public Optional<View> getViewFor(Context context) {
+    public Optional<View> getViewFor(Transition transition) {
 
         try {
-            Class<? extends StateMachineView> view = viewByStateMachineState.get(currentState(context).getClass());
+            Class<? extends StateMachineView> view = viewByStateMachineState.get(transition.getState().getClass());
             if (view != null) {
                 StateMachineView smView = view.newInstance();
-                smView.setContext(context);
+                smView.setTransition(transition);
                 return Optional.of(smView);
             }
         } catch (Exception e) {
@@ -51,18 +50,18 @@ public class StateMachineViewFactory {
 
     static abstract class StateMachineView extends View {
 
-        private Context context;
+        private Transition transition;
 
         protected StateMachineView(String templateName) {
             super(templateName);
         }
 
-        void setContext(Context context) {
-            this.context = context;
+        void setTransition(Transition transition) {
+            this.transition = transition;
         }
 
-        public Context getContext() {
-            return context;
+        public Transition getTransition() {
+            return transition;
         }
     }
 
@@ -72,7 +71,7 @@ public class StateMachineViewFactory {
         }
 
         public Set<String> nonConfirmedPins() {
-            return data().nonConfirmedPins(getContext());
+            return data().nonConfirmedPins(getTransition());
         }
 
         public Set<String> confirmedPins() {
@@ -80,7 +79,7 @@ public class StateMachineViewFactory {
         }
 
         private TelcoRechargeData data() {
-            return mostRecentOf(getContext(), TelcoRechargeData.class).get();
+            return mostRecentOf(getTransition(), TelcoRechargeData.class).get();
         }
     }
 

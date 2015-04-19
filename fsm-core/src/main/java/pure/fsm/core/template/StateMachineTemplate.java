@@ -3,10 +3,10 @@ package pure.fsm.core.template;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Context;
+import pure.fsm.core.Transition;
 import pure.fsm.core.accessor.StateMachineContextAccessor;
 import pure.fsm.core.state.State;
 import pure.fsm.core.state.StateFactory;
-import pure.fsm.core.trait.Trait;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +26,7 @@ public class StateMachineTemplate {
         this.accessor = accessor;
     }
 
-    public Context get(String stateMachineId) {
+    public Transition get(String stateMachineId) {
         return accessor.get(stateMachineId);
     }
 
@@ -34,7 +34,7 @@ public class StateMachineTemplate {
         return accessor.getAllIds();
     }
 
-    public String create(State initialState, Class<? extends StateFactory> stateFactory, List<? extends Trait> initialTraits) {
+    public String create(State initialState, Class<? extends StateFactory> stateFactory, List<Context> initialTraits) {
         return accessor.create(initialState, stateFactory, initialTraits);
     }
 
@@ -61,14 +61,14 @@ public class StateMachineTemplate {
 
         if (lock.isPresent()) {
             try {
-                Context newContext = stateMachineCallback.doWith(lock.get().getContext(), STATE_MACHINE_INSTANCE);
-                lock.get().update(newContext);
+                Transition newTransition = stateMachineCallback.doWith(lock.get().getTransition(), STATE_MACHINE_INSTANCE);
+                lock.get().update(newTransition);
             } catch (Exception e) {
                 LOG.error("Error with currentStateMachine [" + stateMachineId + "]", e);
 
-                Context newContext = stateMachineCallback.onError(lock.get().getContext(), STATE_MACHINE_INSTANCE, e);
+                Transition newTransition = stateMachineCallback.onError(lock.get().getTransition(), STATE_MACHINE_INSTANCE, e);
 
-                lock.get().update(newContext);
+                lock.get().update(newTransition);
             } finally {
                 lock.get().unlock();
             }

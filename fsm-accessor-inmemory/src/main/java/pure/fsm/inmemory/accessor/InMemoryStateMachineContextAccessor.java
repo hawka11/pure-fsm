@@ -4,11 +4,11 @@ import com.google.common.collect.ImmutableSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Context;
+import pure.fsm.core.Transition;
 import pure.fsm.core.accessor.StateMachineContextAccessor;
 import pure.fsm.core.state.FinalState;
 import pure.fsm.core.state.State;
 import pure.fsm.core.state.StateFactory;
-import pure.fsm.core.trait.Trait;
 
 import java.util.List;
 import java.util.Map;
@@ -20,8 +20,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static java.util.stream.Collectors.toSet;
-import static pure.fsm.core.Context.initialContext;
-import static pure.fsm.core.context.MostRecentTrait.currentState;
+import static pure.fsm.core.Transition.initialTransition;
 
 public class InMemoryStateMachineContextAccessor implements StateMachineContextAccessor {
 
@@ -29,24 +28,24 @@ public class InMemoryStateMachineContextAccessor implements StateMachineContextA
 
     private final AtomicLong idGenerator = new AtomicLong(1000);
 
-    private final ConcurrentHashMap<String, Context> contextByStateMachineId = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Transition> contextByStateMachineId = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, ReentrantLock> lockByStateMachineId = new ConcurrentHashMap<>();
 
     @Override
     @SuppressWarnings("unchecked")
-    public String create(State initialState, Class<? extends StateFactory> stateFactory, List<? extends Trait> initialTraits) {
+    public String create(State initialState, Class<? extends StateFactory> stateFactory, List<Context> initialTraits) {
         String id = String.valueOf(idGenerator.getAndIncrement());
 
-        final Context context = initialContext(id, initialState, stateFactory, initialTraits);
+        final Transition transition = initialTransition(id, initialState, stateFactory, initialTraits);
 
-        contextByStateMachineId.put(id, context);
+        contextByStateMachineId.put(id, transition);
         lockByStateMachineId.put(id, new ReentrantLock());
 
         return id;
     }
 
     @Override
-    public Context get(String stateMachineId) {
+    public Transition get(String stateMachineId) {
 
         return contextByStateMachineId.get(stateMachineId);
     }
@@ -58,12 +57,12 @@ public class InMemoryStateMachineContextAccessor implements StateMachineContextA
             if (reentrantLock != null && reentrantLock.tryLock(timeout, timeUnit)) {
                 Lock lock = new Lock() {
                     @Override
-                    public Context getContext() {
+                    public Transition getTransition() {
                         return contextByStateMachineId.get(stateMachineId);
                     }
 
                     @Override
-                    public void update(Context context) {
+                    public void update(Transition context) {
                         contextByStateMachineId.put(stateMachineId, context);
                     }
 
@@ -100,7 +99,7 @@ public class InMemoryStateMachineContextAccessor implements StateMachineContextA
     @Override
     public Set<String> getAllNonFinalIds() {
         return contextByStateMachineId.entrySet().stream()
-                .filter(e -> !FinalState.class.isAssignableFrom(currentState(e.getValue()).getClass()))
+                .filter(e -> !FinalState.class.isAssignableFrom(e.getValue().getState().getClass()))
                 .map(Map.Entry::getKey)
                 .collect(toSet());
     }

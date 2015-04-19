@@ -1,13 +1,13 @@
 package pure.fsm.core.template;
 
-import pure.fsm.core.Context;
+import pure.fsm.core.Transition;
 import pure.fsm.core.StateMachine;
 
 public interface StateMachineCallback {
 
-    Context doWith(Context context, StateMachine stateMachine);
+    Transition doWith(Transition transition, StateMachine stateMachine);
 
     void onLockFailed(Exception e);
 
-    Context onError(Context context, StateMachine stateMachine, Exception e);
+    Transition onError(Transition transition, StateMachine stateMachine, Exception e);
 }

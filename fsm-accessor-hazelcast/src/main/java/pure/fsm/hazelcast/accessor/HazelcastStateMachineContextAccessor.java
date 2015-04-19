@@ -6,11 +6,11 @@ import com.hazelcast.core.IMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Context;
+import pure.fsm.core.Transition;
 import pure.fsm.core.accessor.StateMachineContextAccessor;
 import pure.fsm.core.state.FinalState;
 import pure.fsm.core.state.State;
 import pure.fsm.core.state.StateFactory;
-import pure.fsm.core.trait.Trait;
 
 import java.util.List;
 import java.util.Map;
@@ -20,8 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.google.common.collect.ImmutableSet.copyOf;
 import static java.util.stream.Collectors.toSet;
-import static pure.fsm.core.Context.initialContext;
-import static pure.fsm.core.context.MostRecentTrait.currentState;
+import static pure.fsm.core.Transition.initialTransition;
 
 public class HazelcastStateMachineContextAccessor implements StateMachineContextAccessor {
 
@@ -35,19 +34,19 @@ public class HazelcastStateMachineContextAccessor implements StateMachineContext
 
     @Override
     @SuppressWarnings("unchecked")
-    public String create(State initialState, Class<? extends StateFactory> stateFactory, List<? extends Trait> initialTraits) {
+    public String create(State initialState, Class<? extends StateFactory> stateFactory, List<Context> initialTraits) {
         IAtomicLong idAtomicLong = getHazel().getAtomicLong("STATE_MACHINE_ID_GENERATOR");
         String id = String.valueOf(idAtomicLong.addAndGet(1));
 
-        final Context context = initialContext(id, initialState, stateFactory, initialTraits);
+        final Transition transition = initialTransition(id, initialState, stateFactory, initialTraits);
 
-        getHolderMap().put(id, context);
+        getHolderMap().put(id, transition);
 
         return id;
     }
 
     @Override
-    public Context get(String stateMachineId) {
+    public Transition get(String stateMachineId) {
         return getHolderMap().get(stateMachineId);
     }
 
@@ -73,21 +72,22 @@ public class HazelcastStateMachineContextAccessor implements StateMachineContext
     @Override
     public Set<String> getAllNonFinalIds() {
         return getHolderMap().entrySet().stream()
-                .filter(e -> !FinalState.class.isAssignableFrom(currentState(e.getValue()).getClass()))
+                .filter(e -> !FinalState.class.isAssignableFrom(e.getValue().getState().getClass()))
                 .map(Map.Entry::getKey)
                 .collect(toSet());
     }
 
+
     private Optional<Lock> createLock(String stateMachineId, java.util.concurrent.locks.Lock distributedLock) {
         Lock lock = new Lock() {
             @Override
-            public Context getContext() {
-                final Context context = getHolderMap().get(stateMachineId);
-                return context;
+            public Transition getTransition() {
+                final Transition transition = getHolderMap().get(stateMachineId);
+                return transition;
             }
 
             @Override
-            public void update(Context context) {
+            public void update(Transition context) {
                 getHolderMap().put(stateMachineId, context);
             }
 
@@ -108,7 +108,7 @@ public class HazelcastStateMachineContextAccessor implements StateMachineContext
         return Optional.of(lock);
     }
 
-    private IMap<String, Context> getHolderMap() {
+    private IMap<String, Transition> getHolderMap() {
         return getHazel().getMap("STATE_MACHINE_HOLDER");
     }
 

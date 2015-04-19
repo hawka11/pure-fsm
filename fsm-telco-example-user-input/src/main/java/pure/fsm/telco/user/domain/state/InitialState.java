@@ -2,7 +2,6 @@ package pure.fsm.telco.user.domain.state;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pure.fsm.core.Context;
 import pure.fsm.core.Transition;
 import pure.fsm.hazelcast.resource.DistributedResourceFactory;
 import pure.fsm.telco.user.domain.TelcoRechargeData;
@@ -14,6 +13,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 import static pure.fsm.core.context.MostRecentTrait.mostRecentOf;
+import static pure.fsm.core.trait.InitialContext.initialContext;
 
 public class InitialState extends BaseTelcoState {
 
@@ -27,29 +27,29 @@ public class InitialState extends BaseTelcoState {
     }
 
     @Override
-    public Transition accept(Context context, RequestPinEvent requestPinEvent) {
+    public Transition accept(Transition transition, RequestPinEvent requestPinEvent) {
         List<String> pins = requestPinEvent.getPins();
 
-        pins.stream().forEach(pin -> context.addTrait(resourceFactory().tryLock("LOCKED_PINS", pin)));
+        pins.stream().forEach(pin -> transition.appendContext(resourceFactory().tryLock("LOCKED_PINS", pin)));
 
-        telcoGateway.requestPinRecharge(context.stateMachineId, pins);
+        telcoGateway.requestPinRecharge(initialContext(transition).stateMachineId, pins);
 
-        return context.transition(this, requestPinEvent);
+        return transition.transitionTo(this, requestPinEvent);
     }
 
     @Override
-    public Transition accept(Context context, RequestAcceptedEvent requestAcceptedEvent) {
+    public Transition accept(Transition transition, RequestAcceptedEvent requestAcceptedEvent) {
         List<String> acceptedPins = requestAcceptedEvent.getPins();
 
-        final TelcoRechargeData data = mostRecentOf(context, TelcoRechargeData.class).get();
+        final TelcoRechargeData data = mostRecentOf(transition, TelcoRechargeData.class).get();
 
-        List<String> waitingAcceptance = data.requestedPins(context).stream()
+        List<String> waitingAcceptance = data.requestedPins(transition).stream()
                 .filter(pin -> !acceptedPins.contains(pin))
                 .collect(toList());
 
         final BaseTelcoState nextState = waitingAcceptance.isEmpty() ?
-                context.stateFactory().getStateByClass(WaitingForConfirmationState.class) : this;
+                transition.stateFactory().getStateByClass(WaitingForConfirmationState.class) : this;
 
-        return context.transition(nextState, requestAcceptedEvent);
+        return transition.transitionTo(nextState, requestAcceptedEvent);
     }
 }

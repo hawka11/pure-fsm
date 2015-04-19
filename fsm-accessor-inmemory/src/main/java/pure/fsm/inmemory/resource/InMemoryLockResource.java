@@ -3,13 +3,13 @@ package pure.fsm.inmemory.resource;
 import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pure.fsm.core.trait.CanUnlockTrait;
+import pure.fsm.core.trait.CanUnlockContext;
 
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.function.Function;
 
-public class InMemoryLockResource implements CanUnlockTrait {
+public class InMemoryLockResource implements CanUnlockContext {
 
     private final Logger LOG = LoggerFactory.getLogger(InMemoryLockResource.class);
 

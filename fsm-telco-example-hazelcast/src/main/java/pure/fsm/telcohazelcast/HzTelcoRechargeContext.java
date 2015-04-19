@@ -2,9 +2,9 @@ package pure.fsm.telcohazelcast;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import pure.fsm.core.Context;
+import pure.fsm.core.Transition;
 import pure.fsm.hazelcast.resource.DistributedLockResource;
-import pure.fsm.telco.TelcoRechargeTrait;
+import pure.fsm.telco.TelcoRechargeContext;
 
 import java.util.Set;
 
@@ -12,19 +12,19 @@ import static com.google.common.collect.Sets.newHashSet;
 import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
-public class HzTelcoRechargeTrait extends TelcoRechargeTrait {
+public class HzTelcoRechargeContext extends TelcoRechargeContext {
 
     @JsonCreator
-    private HzTelcoRechargeTrait(@JsonProperty("acceptedPins") Set<String> acceptedPins) {
+    private HzTelcoRechargeContext(@JsonProperty("acceptedPins") Set<String> acceptedPins) {
         super(acceptedPins);
     }
 
-    public static HzTelcoRechargeTrait initialTelcoRecharge() {
-        return new HzTelcoRechargeTrait(newHashSet());
+    public static HzTelcoRechargeContext initialTelcoRecharge() {
+        return new HzTelcoRechargeContext(newHashSet());
     }
 
-    public static Set<String> getRequestedPins(Context context) {
-        return context.getTraitsOf(DistributedLockResource.class).stream()
+    public static Set<String> getRequestedPins(Transition transition) {
+        return transition.getContextsOfType(DistributedLockResource.class).stream()
                 .flatMap(r -> r.getLockedKeys().stream())
                 .collect(toSet());
     }

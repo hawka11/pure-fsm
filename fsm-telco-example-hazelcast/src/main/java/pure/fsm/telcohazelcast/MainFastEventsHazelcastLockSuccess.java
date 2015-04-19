@@ -19,6 +19,7 @@ public class MainFastEventsHazelcastLockSuccess {
         final String stateMachineId = ops.createStateMachineInInitialState();
 
         ops.scheduleEventOnThread(stateMachineId, new RequestRechargeEvent(new BigDecimal("20.00"), newHashSet("555")));
+        Thread.sleep(5);
         ops.scheduleEventOnThread(stateMachineId, new RechargeAcceptedEvent("555"));
 
         Thread.sleep(100);

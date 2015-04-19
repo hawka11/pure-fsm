@@ -8,7 +8,7 @@ import com.hazelcast.core.HazelcastInstance;
 import io.dropwizard.Bundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import pure.fsm.core.Context;
+import pure.fsm.core.Transition;
 import pure.fsm.core.accessor.CleanUpFinalisedStateMachines;
 import pure.fsm.core.accessor.OnCleanupListener;
 import pure.fsm.core.state.StateFactory;
@@ -59,7 +59,7 @@ public abstract class StateMachineBundle implements Bundle {
 
         SerializationConfig serializationConfig = clientConfig.getSerializationConfig();
         serializationConfig.getSerializerConfigs()
-                .add(new SerializerConfig().setTypeClass(Context.class).setImplementation(contextSerializer));
+                .add(new SerializerConfig().setTypeClass(Transition.class).setImplementation(contextSerializer));
 
         return HazelcastClient.newHazelcastClient(clientConfig);
     }

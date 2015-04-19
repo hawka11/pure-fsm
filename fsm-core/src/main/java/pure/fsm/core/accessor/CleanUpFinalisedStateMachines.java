@@ -2,7 +2,7 @@ package pure.fsm.core.accessor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pure.fsm.core.Context;
+import pure.fsm.core.Transition;
 import pure.fsm.core.state.FinalState;
 
 import java.time.LocalDateTime;
@@ -14,8 +14,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static pure.fsm.core.context.MostRecentTrait.currentState;
-import static pure.fsm.core.context.MostRecentTrait.mostRecentTransition;
+import static pure.fsm.core.trait.InitialContext.initialContext;
 
 public class CleanUpFinalisedStateMachines {
 
@@ -58,15 +57,15 @@ public class CleanUpFinalisedStateMachines {
         LOG.info("About to check for outdated finalized state machines.");
 
         accessor.getAllIds().forEach(id -> {
-            Context context = accessor.get(id);
-            if (currentState(context) instanceof FinalState) {
+            Transition transition = accessor.get(id);
+            if (transition.getState() instanceof FinalState) {
                 try {
                     Optional<StateMachineContextAccessor.Lock> lock = accessor.tryLock(id, 1, SECONDS);
-                    if (lock.isPresent() && shouldCleanup(lock.get().getContext())) {
+                    if (lock.isPresent() && shouldCleanup(lock.get().getTransition())) {
                         LOG.info("unlocking and removing state machine [{}]",
-                                lock.get().getContext().stateMachineId);
+                                initialContext(lock.get().getTransition()).stateMachineId);
 
-                        cleanupListeners.forEach(l -> l.onCleanup(context));
+                        cleanupListeners.forEach(l -> l.onCleanup(transition));
 
                         lock.get().unlockAndRemove();
                     }
@@ -77,8 +76,8 @@ public class CleanUpFinalisedStateMachines {
         });
     }
 
-    protected boolean shouldCleanup(Context context) {
+    protected boolean shouldCleanup(Transition transition) {
 
-        return mostRecentTransition(context).transitioned.plus(keepFinalised, keepFinalisedTimeUnit).isBefore(LocalDateTime.now());
+        return transition.getTransitioned().plus(keepFinalised, keepFinalisedTimeUnit).isBefore(LocalDateTime.now());
     }
 }

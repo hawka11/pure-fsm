@@ -1,9 +1,9 @@
 package pure.fsm.core.accessor;
 
 import pure.fsm.core.Context;
+import pure.fsm.core.Transition;
 import pure.fsm.core.state.State;
 import pure.fsm.core.state.StateFactory;
-import pure.fsm.core.trait.Trait;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,21 +12,21 @@ import java.util.concurrent.TimeUnit;
 
 public interface StateMachineContextAccessor {
 
-    Context get(String stateMachineId);
+    Transition get(String stateMachineId);
 
     Set<String> getAllIds();
 
     Set<String> getAllNonFinalIds();
 
-    String create(State initialState, Class<? extends StateFactory> stateFactory, List<? extends Trait> initialTraits);
+    String create(State initialState, Class<? extends StateFactory> stateFactory, List<Context> initialTraits);
 
     Optional<Lock> tryLock(String stateMachineId, long timeout, TimeUnit timeUnit);
 
     static interface Lock {
 
-        Context getContext();
+        Transition getTransition();
 
-        void update(Context newStateMachine);
+        void update(Transition newStateMachine);
 
         boolean unlock();
 

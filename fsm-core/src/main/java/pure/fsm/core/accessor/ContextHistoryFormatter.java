@@ -2,16 +2,14 @@ package pure.fsm.core.accessor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pure.fsm.core.Context;
-import pure.fsm.core.trait.MessageTrait;
-import pure.fsm.core.trait.TransitionedTrait;
+import pure.fsm.core.Transition;
+import pure.fsm.core.trait.MessageContext;
 
 import java.util.Optional;
 
 import static java.lang.String.format;
-import static pure.fsm.core.context.MostRecentTrait.currentState;
 import static pure.fsm.core.context.MostRecentTrait.mostRecentOf;
-import static pure.fsm.core.context.MostRecentTrait.mostRecentTransition;
+import static pure.fsm.core.trait.InitialContext.initialContext;
 
 public class ContextHistoryFormatter implements OnCleanupListener {
 
@@ -19,36 +17,35 @@ public class ContextHistoryFormatter implements OnCleanupListener {
 
     public static final ContextHistoryFormatter HISTORY_FORMATTER = new ContextHistoryFormatter();
 
-    public String toTransitionString(Context context) {
+    public String toTransitionString(Transition transition) {
 
         return format("\n\n+++++ State Machine Transition history stateMachineId [%s] +++++ =>",
-                context.stateMachineId) + "\n" + toContextString(context, calcNumTransitions(context, 1));
+                initialContext(transition).stateMachineId) + "\n" + toContextString(transition, calcNumTransitions(transition, 1));
     }
 
-    private int calcNumTransitions(Context context, int count) {
+    private int calcNumTransitions(Transition transition, int count) {
 
-        return context.previous().isPresent() ? calcNumTransitions(context.previous().get(), count + 1) : count;
+        return transition.previous().isPresent() ? calcNumTransitions(transition.previous().get(), count + 1) : count;
     }
 
-    private String toContextString(Context context, int indent) {
+    private String toContextString(Transition lastTransition, int indent) {
         StringBuilder sb = new StringBuilder();
 
-        context.previous().ifPresent(prev -> sb.append(toContextString(prev, indent - 1)));
+        lastTransition.previous().ifPresent(prev -> sb.append(toContextString(prev, indent - 1)));
 
-        final TransitionedTrait transition = mostRecentTransition(context);
-        final Optional<MessageTrait> msg = mostRecentOf(context, MessageTrait.class);
+        final Optional<MessageContext> msg = mostRecentOf(lastTransition, MessageContext.class);
 
         sb.append(format("%" + indent + "s", " ")).append(format("State[%s], Transitioned[%s], event[%s], msg[%s]",
-                currentState(context).getClass().getSimpleName(),
-                transition.transitioned,
-                transition.event,
+                lastTransition.getState().getClass().getName(),
+                lastTransition.getTransitioned(),
+                lastTransition.getEvent(),
                 msg.map(m -> m.message).orElse("")));
 
         return sb.append("\n").toString();
     }
 
     @Override
-    public void onCleanup(Context context) {
-        LOG.info(toTransitionString(context));
+    public void onCleanup(Transition transition) {
+        LOG.info(toTransitionString(transition));
     }
 }

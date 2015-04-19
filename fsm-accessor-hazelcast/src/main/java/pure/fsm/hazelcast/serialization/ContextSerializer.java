@@ -8,13 +8,13 @@ import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.nio.serialization.StreamSerializer;
-import pure.fsm.core.Context;
+import pure.fsm.core.Transition;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 @SuppressWarnings("unchecked")
-public class ContextSerializer implements StreamSerializer<Context> {
+public class ContextSerializer implements StreamSerializer<Transition> {
 
     public final ObjectMapper mapper;
 
@@ -30,9 +30,9 @@ public class ContextSerializer implements StreamSerializer<Context> {
     }
 
     @Override
-    public void write(ObjectDataOutput out, Context context) throws IOException {
+    public void write(ObjectDataOutput out, Transition transition) throws IOException {
         try {
-            byte[] data = mapper.writeValueAsBytes(context);
+            byte[] data = mapper.writeValueAsBytes(transition);
             out.write(data);
         } catch (Exception e) {
             throw new RuntimeException("", e);
@@ -40,9 +40,9 @@ public class ContextSerializer implements StreamSerializer<Context> {
     }
 
     @Override
-    public Context read(ObjectDataInput in) throws IOException {
+    public Transition read(ObjectDataInput in) throws IOException {
         try {
-            return mapper.readValue((InputStream) in, Context.class);
+            return mapper.readValue((InputStream) in, Transition.class);
         } catch (Exception e) {
             throw new RuntimeException("", e);
         }

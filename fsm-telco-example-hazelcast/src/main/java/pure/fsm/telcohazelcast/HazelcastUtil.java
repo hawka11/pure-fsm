@@ -7,7 +7,7 @@ import com.hazelcast.config.SerializationConfig;
 import com.hazelcast.config.SerializerConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
-import pure.fsm.core.Context;
+import pure.fsm.core.Transition;
 import pure.fsm.hazelcast.serialization.ContextSerializer;
 import pure.fsm.hazelcast.serialization.StateMachineModule;
 
@@ -29,7 +29,7 @@ public class HazelcastUtil {
 
         SerializationConfig serializationConfig = clientConfig.getSerializationConfig();
         serializationConfig.getSerializerConfigs()
-                .add(new SerializerConfig().setTypeClass(Context.class).setImplementation(contextSerializer));
+                .add(new SerializerConfig().setTypeClass(Transition.class).setImplementation(contextSerializer));
 
         HazelcastInstance hazelcastInstance = HazelcastClient.newHazelcastClient(clientConfig);
 

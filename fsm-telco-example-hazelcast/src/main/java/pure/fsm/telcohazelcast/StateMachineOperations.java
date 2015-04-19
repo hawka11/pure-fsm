@@ -3,8 +3,8 @@ package pure.fsm.telcohazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pure.fsm.core.Context;
 import pure.fsm.core.StateMachine;
+import pure.fsm.core.Transition;
 import pure.fsm.core.accessor.StateMachineContextAccessor;
 import pure.fsm.core.event.Event;
 import pure.fsm.core.template.BaseStateMachineCallback;
@@ -16,9 +16,8 @@ import pure.fsm.telcohazelcast.state.HzTelcoStateFactory;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static pure.fsm.core.StateFactoryRegistration.registerStateFactory;
-import static pure.fsm.core.context.MostRecentTrait.currentState;
 import static pure.fsm.telcohazelcast.HazelcastUtil.createClientHz;
-import static pure.fsm.telcohazelcast.HzTelcoRechargeTrait.initialTelcoRecharge;
+import static pure.fsm.telcohazelcast.HzTelcoRechargeContext.initialTelcoRecharge;
 
 class StateMachineOperations {
 
@@ -29,7 +28,7 @@ class StateMachineOperations {
     private final HazelcastInstance hazelcastInstance;
     private final StateMachineContextAccessor accessor;
 
-    public Context getStateMachine(String stateMachineId) {
+    public Transition getStateMachine(String stateMachineId) {
         return accessor.get(stateMachineId);
     }
 
@@ -47,8 +46,8 @@ class StateMachineOperations {
     public void scheduleEventOnThread(String stateMachineId, final Event event) {
         new Thread(() -> template.tryWithLock(stateMachineId, new BaseStateMachineCallback() {
             @Override
-            public Context doWith(Context context, StateMachine stateMachine) {
-                return stateMachine.handleEvent(context, event);
+            public Transition doWith(Transition transition, StateMachine stateMachine) {
+                return stateMachine.handleEvent(transition, event);
             }
         })).start();
     }
@@ -61,6 +60,6 @@ class StateMachineOperations {
 
     public void logCurrentState(String stateMachineId) {
         LOG.info("Ending.... current state for [{}] is: [{}]", stateMachineId,
-                currentState(getStateMachine(stateMachineId)).getClass().getSimpleName());
+                getStateMachine(stateMachineId).getState().getClass().getSimpleName());
     }
 }

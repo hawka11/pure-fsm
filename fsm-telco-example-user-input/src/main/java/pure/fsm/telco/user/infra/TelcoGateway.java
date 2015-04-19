@@ -2,7 +2,7 @@ package pure.fsm.telco.user.infra;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pure.fsm.core.Context;
+import pure.fsm.core.Transition;
 import pure.fsm.core.StateMachine;
 import pure.fsm.core.template.BaseStateMachineCallback;
 import pure.fsm.core.template.StateMachineTemplate;
@@ -30,9 +30,9 @@ public class TelcoGateway {
     public boolean requestPinRecharge(String smId, List<String> pins) {
         service.schedule(() -> template.tryWithLock(smId, new BaseStateMachineCallback() {
             @Override
-            public Context doWith(Context context, StateMachine stateMachine) {
+            public Transition doWith(Transition transition, StateMachine stateMachine) {
                 LOG.info("about to accept request of pins [{}]", pins);
-                return stateMachine.handleEvent(context, new RequestAcceptedEvent(pins));
+                return stateMachine.handleEvent(transition, new RequestAcceptedEvent(pins));
             }
         }), 1, SECONDS);
 
