@@ -12,8 +12,8 @@ import pure.fsm.telco.user.infra.TelcoGateway;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
-import static pure.fsm.core.context.MostRecentTrait.mostRecentOf;
-import static pure.fsm.core.trait.InitialContext.initialContext;
+import static pure.fsm.core.context.MostRecentContext.mostRecentOf;
+import static pure.fsm.core.context.InitialContext.initialContext;
 
 public class InitialState extends BaseTelcoState {
 

@@ -7,7 +7,7 @@ import java.util.Optional;
 
 import static com.google.common.collect.Lists.reverse;
 
-public class MostRecentTrait {
+public class MostRecentContext {
 
     public static <T extends Context> Optional<T> mostRecentOf(Transition transition, Class<T> klass) {
         final Optional<T> maybeFound = reverse(transition.getContextsOfType(klass)).stream().findFirst();

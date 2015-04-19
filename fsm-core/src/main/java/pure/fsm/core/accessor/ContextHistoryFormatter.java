@@ -3,13 +3,13 @@ package pure.fsm.core.accessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Transition;
-import pure.fsm.core.trait.MessageContext;
+import pure.fsm.core.context.MessageContext;
 
 import java.util.Optional;
 
 import static java.lang.String.format;
-import static pure.fsm.core.context.MostRecentTrait.mostRecentOf;
-import static pure.fsm.core.trait.InitialContext.initialContext;
+import static pure.fsm.core.context.MostRecentContext.mostRecentOf;
+import static pure.fsm.core.context.InitialContext.initialContext;
 
 public class ContextHistoryFormatter implements OnCleanupListener {
 

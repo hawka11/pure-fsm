@@ -7,8 +7,8 @@ import pure.fsm.telco.event.RechargeAcceptedEvent;
 import pure.fsm.telco.guard.Guard;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static pure.fsm.core.context.MostRecentTrait.mostRecentOf;
-import static pure.fsm.core.trait.MessageContext.withMessage;
+import static pure.fsm.core.context.MostRecentContext.mostRecentOf;
+import static pure.fsm.core.context.MessageContext.withMessage;
 
 public class RechargeRequestedState extends BaseTelcoState {
 

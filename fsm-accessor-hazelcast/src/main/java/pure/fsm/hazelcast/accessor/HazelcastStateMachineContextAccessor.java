@@ -34,11 +34,11 @@ public class HazelcastStateMachineContextAccessor implements StateMachineContext
 
     @Override
     @SuppressWarnings("unchecked")
-    public String create(State initialState, Class<? extends StateFactory> stateFactory, List<Context> initialTraits) {
+    public String create(State initialState, Class<? extends StateFactory> stateFactory, List<Context> initialContexts) {
         IAtomicLong idAtomicLong = getHazel().getAtomicLong("STATE_MACHINE_ID_GENERATOR");
         String id = String.valueOf(idAtomicLong.addAndGet(1));
 
-        final Transition transition = initialTransition(id, initialState, stateFactory, initialTraits);
+        final Transition transition = initialTransition(id, initialState, stateFactory, initialContexts);
 
         getHolderMap().put(id, transition);
 

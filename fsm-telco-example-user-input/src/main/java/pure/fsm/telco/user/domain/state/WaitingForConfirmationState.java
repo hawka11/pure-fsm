@@ -9,7 +9,7 @@ import pure.fsm.telco.user.domain.event.ConfirmPinEvent;
 
 import java.time.LocalDateTime;
 
-import static pure.fsm.core.context.MostRecentTrait.mostRecentOf;
+import static pure.fsm.core.context.MostRecentContext.mostRecentOf;
 
 public class WaitingForConfirmationState extends BaseTelcoState {
 

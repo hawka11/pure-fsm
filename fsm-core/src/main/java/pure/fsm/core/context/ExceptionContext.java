@@ -1,4 +1,4 @@
-package pure.fsm.core.trait;
+package pure.fsm.core.context;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

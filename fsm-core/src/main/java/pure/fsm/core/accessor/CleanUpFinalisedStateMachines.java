@@ -14,7 +14,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static pure.fsm.core.trait.InitialContext.initialContext;
+import static pure.fsm.core.context.InitialContext.initialContext;
 
 public class CleanUpFinalisedStateMachines {
 

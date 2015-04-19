@@ -18,7 +18,7 @@ public interface StateMachineContextAccessor {
 
     Set<String> getAllNonFinalIds();
 
-    String create(State initialState, Class<? extends StateFactory> stateFactory, List<Context> initialTraits);
+    String create(State initialState, Class<? extends StateFactory> stateFactory, List<Context> initialContexts);
 
     Optional<Lock> tryLock(String stateMachineId, long timeout, TimeUnit timeUnit);
 

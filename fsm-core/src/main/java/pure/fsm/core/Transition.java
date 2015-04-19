@@ -6,10 +6,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import pure.fsm.core.context.CanUnlockContext;
 import pure.fsm.core.event.Event;
 import pure.fsm.core.state.State;
 import pure.fsm.core.state.StateFactory;
-import pure.fsm.core.trait.CanUnlockContext;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,7 +21,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 import static pure.fsm.core.StateFactoryRegistration.getStateFactory;
-import static pure.fsm.core.trait.InitialContext.createInitialContext;
+import static pure.fsm.core.context.InitialContext.createInitialContext;
 
 public class Transition {
 
@@ -114,8 +114,8 @@ public class Transition {
         }
     }
 
-    public Transition appendContext(CanUnlockContext trait) {
-        contexts.add(trait);
+    public Transition appendContext(CanUnlockContext canUnlockContext) {
+        contexts.add(canUnlockContext);
         return this;
     }
 
@@ -144,9 +144,9 @@ public class Transition {
 
     @SuppressWarnings("unchecked")
     public <T extends Context> List<T> getContextsOfType(Class<T> contextClass) {
-        final List<T> traits = (List<T>) contexts.stream()
+        final List<T> contexts = (List<T>) this.contexts.stream()
                 .filter(t -> contextClass.isAssignableFrom(t.getClass()))
                 .collect(toList());
-        return ImmutableList.copyOf(traits);
+        return ImmutableList.copyOf(contexts);
     }
 }

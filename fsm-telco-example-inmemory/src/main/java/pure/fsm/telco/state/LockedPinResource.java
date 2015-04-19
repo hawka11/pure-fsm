@@ -1,6 +1,6 @@
 package pure.fsm.telco.state;
 
-import pure.fsm.core.trait.CanUnlockContext;
+import pure.fsm.core.context.CanUnlockContext;
 
 import java.util.Set;
 

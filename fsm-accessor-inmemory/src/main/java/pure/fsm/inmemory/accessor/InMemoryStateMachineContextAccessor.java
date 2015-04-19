@@ -33,10 +33,10 @@ public class InMemoryStateMachineContextAccessor implements StateMachineContextA
 
     @Override
     @SuppressWarnings("unchecked")
-    public String create(State initialState, Class<? extends StateFactory> stateFactory, List<Context> initialTraits) {
+    public String create(State initialState, Class<? extends StateFactory> stateFactory, List<Context> initialContexts) {
         String id = String.valueOf(idGenerator.getAndIncrement());
 
-        final Transition transition = initialTransition(id, initialState, stateFactory, initialTraits);
+        final Transition transition = initialTransition(id, initialState, stateFactory, initialContexts);
 
         contextByStateMachineId.put(id, transition);
         lockByStateMachineId.put(id, new ReentrantLock());

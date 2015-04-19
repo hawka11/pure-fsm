@@ -1,4 +1,4 @@
-package pure.fsm.core.trait;
+package pure.fsm.core.context;
 
 import pure.fsm.core.Context;
 

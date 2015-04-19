@@ -34,8 +34,8 @@ public class StateMachineTemplate {
         return accessor.getAllIds();
     }
 
-    public String create(State initialState, Class<? extends StateFactory> stateFactory, List<Context> initialTraits) {
-        return accessor.create(initialState, stateFactory, initialTraits);
+    public String create(State initialState, Class<? extends StateFactory> stateFactory, List<Context> initialContexts) {
+        return accessor.create(initialState, stateFactory, initialContexts);
     }
 
     public void tryWithLock(String stateMachineId, StateMachineCallback stateMachineCallback) {

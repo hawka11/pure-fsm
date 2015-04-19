@@ -7,7 +7,7 @@ import pure.fsm.core.StateMachine;
 import pure.fsm.core.state.ErrorFinalState;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static pure.fsm.core.trait.ExceptionContext.withException;
+import static pure.fsm.core.context.ExceptionContext.withException;
 
 public abstract class BaseStateMachineCallback implements StateMachineCallback {
 

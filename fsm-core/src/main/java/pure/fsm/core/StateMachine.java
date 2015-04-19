@@ -7,8 +7,8 @@ import pure.fsm.core.state.ErrorFinalState;
 import pure.fsm.core.state.State;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static pure.fsm.core.trait.ExceptionContext.withException;
-import static pure.fsm.core.trait.InitialContext.initialContext;
+import static pure.fsm.core.context.ExceptionContext.withException;
+import static pure.fsm.core.context.InitialContext.initialContext;
 
 public class StateMachine {
 

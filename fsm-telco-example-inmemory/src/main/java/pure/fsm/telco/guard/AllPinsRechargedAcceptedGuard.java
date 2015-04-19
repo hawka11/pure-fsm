@@ -3,7 +3,7 @@ package pure.fsm.telco.guard;
 import pure.fsm.core.Transition;
 import pure.fsm.telco.TelcoRechargeContext;
 
-import static pure.fsm.core.context.MostRecentTrait.mostRecentOf;
+import static pure.fsm.core.context.MostRecentContext.mostRecentOf;
 import static pure.fsm.telco.TelcoRechargeContext.getRequestedPins;
 
 public class AllPinsRechargedAcceptedGuard implements Guard {

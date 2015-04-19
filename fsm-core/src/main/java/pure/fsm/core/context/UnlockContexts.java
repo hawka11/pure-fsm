@@ -1,7 +1,6 @@
 package pure.fsm.core.context;
 
 import pure.fsm.core.Transition;
-import pure.fsm.core.trait.CanUnlockContext;
 
 import java.util.List;
 

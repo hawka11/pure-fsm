@@ -3,7 +3,7 @@ package pure.fsm.inmemory.resource;
 import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pure.fsm.core.trait.CanUnlockContext;
+import pure.fsm.core.context.CanUnlockContext;
 
 import java.util.Set;
 import java.util.concurrent.locks.Lock;

@@ -11,7 +11,7 @@ import pure.fsm.telco.event.RequestRechargeEvent;
 import pure.fsm.telco.event.TelcoEventVisitor;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static pure.fsm.core.trait.MessageContext.withMessage;
+import static pure.fsm.core.context.MessageContext.withMessage;
 
 public class BaseTelcoState extends BaseNonFinalState implements TelcoEventVisitor {
 
