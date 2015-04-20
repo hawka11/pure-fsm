@@ -8,6 +8,10 @@ import pure.fsm.telco.user.application.api.StateMachineViewFactory;
 import pure.fsm.telco.user.domain.state.TelcoStateFactory;
 import pure.fsm.telco.user.infra.TelcoGateway;
 
+import java.util.List;
+
+import static com.google.common.collect.Lists.newArrayList;
+
 public class TelcoStateMachineBundle extends StateMachineBundle {
 
     private StateMachineViewFactory stateMachineViewFactory;
@@ -23,10 +27,10 @@ public class TelcoStateMachineBundle extends StateMachineBundle {
         stateMachineViewFactory = new StateMachineViewFactory();
     }
 
-    protected StateFactory createStateFactory() {
-        TelcoGateway telcoGateway = new TelcoGateway(getTemplate());
+    protected List<StateFactory> createStateFactories() {
+        final TelcoGateway telcoGateway = new TelcoGateway(getTemplate());
         telcoStateFactory = new TelcoStateFactory(getDistributedResourceFactory(), telcoGateway);
-        return telcoStateFactory;
+        return newArrayList(telcoStateFactory);
     }
 
     public TelcoStateFactory getTelcoStateFactory() {

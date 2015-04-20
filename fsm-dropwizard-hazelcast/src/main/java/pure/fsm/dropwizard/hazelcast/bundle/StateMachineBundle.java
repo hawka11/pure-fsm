@@ -8,6 +8,7 @@ import com.hazelcast.core.HazelcastInstance;
 import io.dropwizard.Bundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import pure.fsm.core.StateFactoryRegistration;
 import pure.fsm.core.Transition;
 import pure.fsm.core.accessor.CleanUpFinalisedStateMachines;
 import pure.fsm.core.accessor.OnCleanupListener;
@@ -21,9 +22,8 @@ import pure.fsm.hazelcast.serialization.StateMachineModule;
 
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import static pure.fsm.core.StateFactoryRegistration.registerStateFactory;
 
 public abstract class StateMachineBundle implements Bundle {
 
@@ -45,14 +45,14 @@ public abstract class StateMachineBundle implements Bundle {
         accessor = new HazelcastStateMachineContextAccessor(hazelcastInstance);
         template = new StateMachineTemplate(accessor);
 
-        registerStateFactory(createStateFactory());
+        createStateFactories().stream().forEach(StateFactoryRegistration::registerStateFactory);
 
         distributedResourceFactory.setInstance(hazelcastInstance);
 
         contextSerializer.registerModule(new StateMachineModule(hazelcastInstance));
     }
 
-    protected abstract StateFactory createStateFactory();
+    protected abstract List<StateFactory> createStateFactories();
 
     private HazelcastInstance createClientHz(ContextSerializer contextSerializer) {
         ClientConfig clientConfig = getClientConfig();
