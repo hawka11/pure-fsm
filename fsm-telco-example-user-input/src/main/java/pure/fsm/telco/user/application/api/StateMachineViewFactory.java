@@ -15,6 +15,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static com.google.common.collect.Maps.newHashMap;
+import static pure.fsm.core.context.InitialContext.initialContext;
 import static pure.fsm.core.context.MostRecentContext.mostRecentOf;
 
 public class StateMachineViewFactory {
@@ -62,6 +63,10 @@ public class StateMachineViewFactory {
 
         public Transition getTransition() {
             return transition;
+        }
+
+        public String getStateMachineId() {
+            return initialContext(transition).stateMachineId;
         }
     }
 

@@ -82,13 +82,12 @@ public class HazelcastStateMachineContextAccessor implements StateMachineContext
         Lock lock = new Lock() {
             @Override
             public Transition getTransition() {
-                final Transition transition = getHolderMap().get(stateMachineId);
-                return transition;
+                return getHolderMap().get(stateMachineId);
             }
 
             @Override
-            public void update(Transition context) {
-                getHolderMap().put(stateMachineId, context);
+            public void update(Transition newTransition) {
+                getHolderMap().put(stateMachineId, newTransition);
             }
 
             @Override

@@ -1,10 +1,10 @@
 <html>
 <body>
-Waiting for pin confirmation for id: {{context.stateMachineId}}
+Waiting for pin confirmation for id: {{stateMachineId}}
 
 <h2>Waiting Confirmation</h2>
 {{#nonConfirmedPins}}
-    <form name="input" action="/sm/{{context.stateMachineId}}/pin/{{.}}/confirm" method="POST">
+    <form name="input" action="/sm/{{stateMachineId}}/pin/{{.}}/confirm" method="POST">
         <input type="submit" value="Confirm {{.}}">
     </form>
 {{/nonConfirmedPins}}

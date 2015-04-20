@@ -28,7 +28,7 @@ public class InMemoryStateMachineContextAccessor implements StateMachineContextA
 
     private final AtomicLong idGenerator = new AtomicLong(1000);
 
-    private final ConcurrentHashMap<String, Transition> contextByStateMachineId = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Transition> transitionByStateMachineId = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, ReentrantLock> lockByStateMachineId = new ConcurrentHashMap<>();
 
     @Override
@@ -38,7 +38,7 @@ public class InMemoryStateMachineContextAccessor implements StateMachineContextA
 
         final Transition transition = initialTransition(id, initialState, stateFactory, initialContexts);
 
-        contextByStateMachineId.put(id, transition);
+        transitionByStateMachineId.put(id, transition);
         lockByStateMachineId.put(id, new ReentrantLock());
 
         return id;
@@ -47,7 +47,7 @@ public class InMemoryStateMachineContextAccessor implements StateMachineContextA
     @Override
     public Transition get(String stateMachineId) {
 
-        return contextByStateMachineId.get(stateMachineId);
+        return transitionByStateMachineId.get(stateMachineId);
     }
 
     @Override
@@ -58,12 +58,12 @@ public class InMemoryStateMachineContextAccessor implements StateMachineContextA
                 Lock lock = new Lock() {
                     @Override
                     public Transition getTransition() {
-                        return contextByStateMachineId.get(stateMachineId);
+                        return transitionByStateMachineId.get(stateMachineId);
                     }
 
                     @Override
-                    public void update(Transition context) {
-                        contextByStateMachineId.put(stateMachineId, context);
+                    public void update(Transition newTransition) {
+                        transitionByStateMachineId.put(stateMachineId, newTransition);
                     }
 
                     @Override
@@ -75,7 +75,7 @@ public class InMemoryStateMachineContextAccessor implements StateMachineContextA
                     @Override
                     public boolean unlockAndRemove() {
                         unlock();
-                        contextByStateMachineId.remove(stateMachineId);
+                        transitionByStateMachineId.remove(stateMachineId);
                         lockByStateMachineId.remove(stateMachineId);
                         return true;
                     }
@@ -93,12 +93,12 @@ public class InMemoryStateMachineContextAccessor implements StateMachineContextA
 
     @Override
     public Set<String> getAllIds() {
-        return ImmutableSet.copyOf(contextByStateMachineId.keySet());
+        return ImmutableSet.copyOf(transitionByStateMachineId.keySet());
     }
 
     @Override
     public Set<String> getAllNonFinalIds() {
-        return contextByStateMachineId.entrySet().stream()
+        return transitionByStateMachineId.entrySet().stream()
                 .filter(e -> !FinalState.class.isAssignableFrom(e.getValue().getState().getClass()))
                 .map(Map.Entry::getKey)
                 .collect(toSet());

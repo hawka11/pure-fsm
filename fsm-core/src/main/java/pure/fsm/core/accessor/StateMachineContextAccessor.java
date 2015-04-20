@@ -26,7 +26,7 @@ public interface StateMachineContextAccessor {
 
         Transition getTransition();
 
-        void update(Transition newStateMachine);
+        void update(Transition newTransition);
 
         boolean unlock();
 
