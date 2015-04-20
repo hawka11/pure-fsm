@@ -15,6 +15,7 @@ import pure.fsm.core.accessor.OnCleanupListener;
 import pure.fsm.core.state.StateFactory;
 import pure.fsm.core.template.StateMachineTemplate;
 import pure.fsm.core.timeout.TimeoutTicker;
+import pure.fsm.core.transition.TransitionOccuredListener;
 import pure.fsm.hazelcast.accessor.HazelcastStateMachineContextAccessor;
 import pure.fsm.hazelcast.resource.DistributedResourceFactory;
 import pure.fsm.hazelcast.serialization.ContextSerializer;
@@ -24,6 +25,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 public abstract class StateMachineBundle implements Bundle {
 
@@ -43,13 +46,17 @@ public abstract class StateMachineBundle implements Bundle {
         distributedResourceFactory = new DistributedResourceFactory();
         hazelcastInstance = createClientHz(contextSerializer);
         accessor = new HazelcastStateMachineContextAccessor(hazelcastInstance);
-        template = new StateMachineTemplate(accessor);
+        template = new StateMachineTemplate(accessor, createTransitionOccuredListeners());
 
         createStateFactories().stream().forEach(StateFactoryRegistration::registerStateFactory);
 
         distributedResourceFactory.setInstance(hazelcastInstance);
 
         contextSerializer.registerModule(new StateMachineModule(hazelcastInstance));
+    }
+
+    protected List<TransitionOccuredListener> createTransitionOccuredListeners() {
+        return newArrayList();
     }
 
     protected abstract List<StateFactory> createStateFactories();

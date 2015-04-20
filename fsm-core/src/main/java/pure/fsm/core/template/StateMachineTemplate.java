@@ -7,6 +7,7 @@ import pure.fsm.core.Transition;
 import pure.fsm.core.accessor.StateMachineContextAccessor;
 import pure.fsm.core.state.State;
 import pure.fsm.core.state.StateFactory;
+import pure.fsm.core.transition.TransitionOccuredListener;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,9 +22,11 @@ public class StateMachineTemplate {
     private final static Logger LOG = LoggerFactory.getLogger(StateMachineTemplate.class);
 
     private final StateMachineContextAccessor accessor;
+    private final List<TransitionOccuredListener> transitionOccuredListeners;
 
-    public StateMachineTemplate(StateMachineContextAccessor accessor) {
+    public StateMachineTemplate(StateMachineContextAccessor accessor, List<TransitionOccuredListener> transitionOccuredListeners) {
         this.accessor = accessor;
+        this.transitionOccuredListeners = transitionOccuredListeners;
     }
 
     public Transition get(String stateMachineId) {
@@ -60,15 +63,24 @@ public class StateMachineTemplate {
         }
 
         if (lock.isPresent()) {
+            final Transition prevTransition = lock.get().getTransition();
+
             try {
-                Transition newTransition = stateMachineCallback.doWith(lock.get().getTransition(), STATE_MACHINE_INSTANCE);
+                final Transition newTransition = stateMachineCallback.doWith(prevTransition, STATE_MACHINE_INSTANCE);
+
                 lock.get().update(newTransition);
+
+                transitionOccuredListeners.forEach(l -> l.onTransition(prevTransition, newTransition));
+
             } catch (Exception e) {
                 LOG.error("Error with currentStateMachine [" + stateMachineId + "]", e);
 
-                Transition newTransition = stateMachineCallback.onError(lock.get().getTransition(), STATE_MACHINE_INSTANCE, e);
+                final Transition newTransition = stateMachineCallback.onError(prevTransition, STATE_MACHINE_INSTANCE, e);
 
                 lock.get().update(newTransition);
+
+                transitionOccuredListeners.forEach(l -> l.onTransition(prevTransition, newTransition));
+
             } finally {
                 lock.get().unlock();
             }

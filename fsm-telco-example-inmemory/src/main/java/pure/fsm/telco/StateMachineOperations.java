@@ -26,7 +26,7 @@ class StateMachineOperations {
     private final static Logger LOG = LoggerFactory.getLogger(StateMachineOperations.class);
 
     final StateMachineContextAccessor accessor = new InMemoryStateMachineContextAccessor();
-    final StateMachineTemplate template = new StateMachineTemplate(accessor);
+    final StateMachineTemplate template = new StateMachineTemplate(accessor, newArrayList());
     final TelcoStateFactory stateFactory = new TelcoStateFactory();
     final TimeoutTicker timeoutTicker = new TimeoutTicker(accessor, template, 1, SECONDS);
     final CleanUpFinalisedStateMachines cleaner = new CleanUpFinalisedStateMachines(accessor, newArrayList(), 5, SECONDS, 5, ChronoUnit.SECONDS);

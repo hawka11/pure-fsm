@@ -10,7 +10,6 @@ import pure.fsm.telco.guard.Guard;
 import static com.google.common.collect.Lists.newArrayList;
 import static pure.fsm.core.context.MessageContext.withMessage;
 import static pure.fsm.core.context.MostRecentContext.mostRecentOf;
-import static pure.fsm.core.transition.UserCancelled.transitionWithUserCancelled;
 
 public class RechargeRequestedState extends BaseTelcoState {
 

@@ -40,7 +40,7 @@ class StateMachineOperations {
         distributedResourceFactory.setInstance(hazelcastInstance);
 
         accessor = new HazelcastStateMachineContextAccessor(hazelcastInstance);
-        template = new StateMachineTemplate(accessor);
+        template = new StateMachineTemplate(accessor, newArrayList());
     }
 
     public void scheduleEventOnThread(String stateMachineId, final Event event) {
