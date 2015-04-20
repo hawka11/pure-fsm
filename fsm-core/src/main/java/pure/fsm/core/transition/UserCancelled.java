@@ -11,11 +11,11 @@ import static pure.fsm.core.context.MessageContext.withMessage;
 
 public class UserCancelled {
 
-    public static Transition transitionWithUserCancelled(Transition transition, Event event) {
-        return transitionWithUserCancelled(transition, event);
+    public static Transition transitionToUserCancelled(Transition transition, Event event) {
+        return transitionToUserCancelled(transition, event);
     }
 
-    public static Transition transitionWithUserCancelled(Transition transition, Event event, List<Context> contexts) {
+    public static Transition transitionToUserCancelled(Transition transition, Event event, List<Context> contexts) {
         final List<Context> allContexts = newArrayList(contexts);
         allContexts.add(withMessage("USER_CANCELED"));
 

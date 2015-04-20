@@ -29,10 +29,10 @@ public abstract class BaseNonFinalState implements State {
     }
 
     @Override
-    public void onExit(Transition prevTransition, Event event) {
+    public void onExit(Transition newTransition, Event event) {
     }
 
     @Override
-    public void onEntry(Transition prevTransition, Event event, State prevState) {
+    public void onEntry(Transition newTransition, Event event, State prevState) {
     }
 }

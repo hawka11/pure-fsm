@@ -1,6 +1,7 @@
 package pure.fsm.telco.state;
 
 import pure.fsm.core.Transition;
+import pure.fsm.core.transition.UserCancelled;
 import pure.fsm.telco.TelcoRechargeContext;
 import pure.fsm.telco.event.CancelRechargeEvent;
 import pure.fsm.telco.event.RechargeAcceptedEvent;
@@ -26,7 +27,7 @@ public class RechargeRequestedState extends BaseTelcoState {
 
         //telcoClientRepository.cancelRechargeProcess();
 
-        return transitionWithUserCancelled(transition, cancelRechargeEvent);
+        return UserCancelled.transitionToUserCancelled(transition, cancelRechargeEvent);
     }
 
     @Override

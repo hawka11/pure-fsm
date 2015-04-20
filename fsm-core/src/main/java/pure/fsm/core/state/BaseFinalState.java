@@ -29,11 +29,11 @@ public abstract class BaseFinalState implements FinalState {
     }
 
     @Override
-    public void onExit(Transition prevTransition, Event event) {
+    public void onExit(Transition newTransition, Event event) {
     }
 
     @Override
-    public void onEntry(Transition prevTransition, Event event, State prevState) {
-        unlockContexts(prevTransition);
+    public void onEntry(Transition newTransition, Event event, State prevState) {
+        unlockContexts(newTransition);
     }
 }

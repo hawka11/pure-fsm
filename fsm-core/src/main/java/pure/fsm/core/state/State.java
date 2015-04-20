@@ -11,7 +11,7 @@ public interface State {
 
     boolean isTimeout(Transition prevTransition);
 
-    void onExit(Transition prevTransition, Event event);
+    void onExit(Transition newTransition, Event event);
 
-    void onEntry(Transition prevTransition, Event event, State prevState);
+    void onEntry(Transition newTransition, Event event, State prevState);
 }

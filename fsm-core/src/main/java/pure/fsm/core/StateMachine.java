@@ -24,23 +24,23 @@ public class StateMachine {
         final State currentState = prevTransition.getState();
         final String stateMachineId = initialContext(prevTransition).stateMachineId;
 
-        Transition transition;
+        Transition newTransition;
 
         try {
-            transition = currentState.handle(prevTransition, event);
+            newTransition = currentState.handle(prevTransition, event);
 
-            currentState.onExit(prevTransition, event);
+            currentState.onExit(newTransition, event);
 
-            transition.getState().onEntry(transition, event, currentState);
+            newTransition.getState().onEntry(newTransition, event, currentState);
         } catch (Exception e) {
             LOG.error("SM [" + stateMachineId + "], Error handling event [" + event + "]", e);
 
-            transition = prevTransition
+            newTransition = prevTransition
                     .transitionTo(new ErrorFinalState(), event, newArrayList(withException(e)));
 
-            transition.getState().onEntry(transition, event, currentState);
+            newTransition.getState().onEntry(newTransition, event, currentState);
         }
 
-        return transition;
+        return newTransition;
     }
 }
