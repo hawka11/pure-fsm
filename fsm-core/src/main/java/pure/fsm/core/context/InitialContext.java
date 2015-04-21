@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import pure.fsm.core.Context;
 import pure.fsm.core.Transition;
 
+import static pure.fsm.core.transition.InitialTransition.initialTransition;
+
 public class InitialContext implements Context {
 
     public final String stateMachineId;
@@ -19,10 +21,7 @@ public class InitialContext implements Context {
     }
 
     public static InitialContext initialContext(Transition transition) {
-        Transition curr = transition;
-        while (curr.previous().isPresent()) {
-            curr = curr.previous().get();
-        }
-        return curr.getContextsOfType(InitialContext.class).get(0);
+        return initialTransition(transition)
+                .getContextsOfType(InitialContext.class).get(0);
     }
 }
