@@ -8,9 +8,9 @@ import static com.google.common.collect.Sets.newHashSet;
 
 public class DistributedResourceFactory {
 
-    private HazelcastInstance instance;
+    private final HazelcastInstance instance;
 
-    public void setInstance(HazelcastInstance instance) {
+    public DistributedResourceFactory(HazelcastInstance instance) {
         this.instance = instance;
     }
 

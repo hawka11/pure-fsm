@@ -33,11 +33,9 @@ class StateMachineOperations {
     }
 
     public StateMachineOperations() {
-        final DistributedResourceFactory distributedResourceFactory = new DistributedResourceFactory();
-        stateFactory = new HzTelcoStateFactory(distributedResourceFactory);
-
         hazelcastInstance = createClientHz();
-        distributedResourceFactory.setInstance(hazelcastInstance);
+        final DistributedResourceFactory distributedResourceFactory = new DistributedResourceFactory(hazelcastInstance);
+        stateFactory = new HzTelcoStateFactory(distributedResourceFactory);
 
         accessor = new HazelcastStateMachineContextAccessor(hazelcastInstance);
         template = new StateMachineTemplate(accessor, newArrayList());

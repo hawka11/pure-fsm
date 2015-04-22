@@ -18,7 +18,7 @@ import pure.fsm.core.timeout.TimeoutTicker;
 import pure.fsm.core.transition.TransitionOccuredListener;
 import pure.fsm.hazelcast.accessor.HazelcastStateMachineContextAccessor;
 import pure.fsm.hazelcast.resource.DistributedResourceFactory;
-import pure.fsm.hazelcast.serialization.ContextSerializer;
+import pure.fsm.hazelcast.serialization.TransitionSerializer;
 import pure.fsm.hazelcast.serialization.StateMachineModule;
 
 import java.time.temporal.ChronoUnit;
@@ -41,18 +41,16 @@ public abstract class StateMachineBundle implements Bundle {
 
     @Override
     public void run(Environment environment) {
-        ContextSerializer contextSerializer = new ContextSerializer();
+        TransitionSerializer transitionSerializer = new TransitionSerializer();
 
-        distributedResourceFactory = new DistributedResourceFactory();
-        hazelcastInstance = createClientHz(contextSerializer);
+        hazelcastInstance = createClientHz(transitionSerializer);
+        distributedResourceFactory = new DistributedResourceFactory(hazelcastInstance);
         accessor = new HazelcastStateMachineContextAccessor(hazelcastInstance);
         template = new StateMachineTemplate(accessor, createTransitionOccuredListeners());
 
         createStateFactories().stream().forEach(StateFactoryRegistration::registerStateFactory);
 
-        distributedResourceFactory.setInstance(hazelcastInstance);
-
-        contextSerializer.registerModule(new StateMachineModule(hazelcastInstance));
+        transitionSerializer.registerModule(new StateMachineModule(hazelcastInstance));
     }
 
     protected List<TransitionOccuredListener> createTransitionOccuredListeners() {
@@ -61,12 +59,12 @@ public abstract class StateMachineBundle implements Bundle {
 
     protected abstract List<StateFactory> createStateFactories();
 
-    private HazelcastInstance createClientHz(ContextSerializer contextSerializer) {
+    private HazelcastInstance createClientHz(TransitionSerializer transitionSerializer) {
         ClientConfig clientConfig = getClientConfig();
 
         SerializationConfig serializationConfig = clientConfig.getSerializationConfig();
         serializationConfig.getSerializerConfigs()
-                .add(new SerializerConfig().setTypeClass(Transition.class).setImplementation(contextSerializer));
+                .add(new SerializerConfig().setTypeClass(Transition.class).setImplementation(transitionSerializer));
 
         return HazelcastClient.newHazelcastClient(clientConfig);
     }

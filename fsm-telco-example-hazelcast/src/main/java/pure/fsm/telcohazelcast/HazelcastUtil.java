@@ -8,7 +8,7 @@ import com.hazelcast.config.SerializerConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import pure.fsm.core.Transition;
-import pure.fsm.hazelcast.serialization.ContextSerializer;
+import pure.fsm.hazelcast.serialization.TransitionSerializer;
 import pure.fsm.hazelcast.serialization.StateMachineModule;
 
 public class HazelcastUtil {
@@ -25,15 +25,15 @@ public class HazelcastUtil {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.addAddress("127.0.0.1:5701");
 
-        final ContextSerializer contextSerializer = new ContextSerializer();
+        final TransitionSerializer transitionSerializer = new TransitionSerializer();
 
         SerializationConfig serializationConfig = clientConfig.getSerializationConfig();
         serializationConfig.getSerializerConfigs()
-                .add(new SerializerConfig().setTypeClass(Transition.class).setImplementation(contextSerializer));
+                .add(new SerializerConfig().setTypeClass(Transition.class).setImplementation(transitionSerializer));
 
         HazelcastInstance hazelcastInstance = HazelcastClient.newHazelcastClient(clientConfig);
 
-        contextSerializer.registerModule(new StateMachineModule(hazelcastInstance));
+        transitionSerializer.registerModule(new StateMachineModule(hazelcastInstance));
 
         return hazelcastInstance;
     }

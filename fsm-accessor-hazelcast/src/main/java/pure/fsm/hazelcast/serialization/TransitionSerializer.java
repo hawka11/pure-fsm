@@ -14,11 +14,11 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @SuppressWarnings("unchecked")
-public class ContextSerializer implements StreamSerializer<Transition> {
+public class TransitionSerializer implements StreamSerializer<Transition> {
 
     public final ObjectMapper mapper;
 
-    public ContextSerializer() {
+    public TransitionSerializer() {
         mapper = new ObjectMapper(new SmileFactory());
         mapper.registerModule(new JSR310Module());
         mapper.registerModule(new Jdk8Module());
