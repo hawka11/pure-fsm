@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import pure.fsm.core.Transition;
 import pure.fsm.hazelcast.serialization.TransitionSerializer;
+import pure.fsm.telco.state.InitialState;
+import pure.fsm.telcohazelcast.state.HzTelcoStateFactory;
 
 import java.io.ByteArrayInputStream;
 
@@ -21,7 +23,8 @@ public class HzTelcoRechargeContextTest {
     public void test() throws Exception {
         final ObjectMapper mapper = new TransitionSerializer().mapper;
 
-        final Transition transition = initialTransition("1", null, null, newArrayList(initialTelcoRecharge().addAcceptedPin("333")));
+        final Transition transition = initialTransition("1", new InitialState(), HzTelcoStateFactory.class,
+                newArrayList(initialTelcoRecharge().addAcceptedPin("333")));
 
         byte[] data = mapper.writeValueAsBytes(transition);
 
