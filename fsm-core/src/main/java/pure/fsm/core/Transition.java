@@ -52,19 +52,19 @@ public class Transition {
             @JsonProperty("event") String event,
             @JsonProperty("previous") Transition previous,
             @JsonProperty("stateFactoryClass") String stateFactoryClass,
-            @JsonProperty("contexts") List<Context> contexts) {
+            @JsonProperty("contexts") List<? extends Context> contexts) {
         this.transitioned = transitioned;
         this.state = state;
         this.event = event;
         this.previous = previous;
         this.stateFactoryClass = stateFactoryClass;
-        this.contexts = contexts;
+        this.contexts = newArrayList(contexts);
     }
 
     public static Transition initialTransition(String stateMachineId,
                                                State initialState,
                                                Class<? extends StateFactory> stateFactory,
-                                               List<Context> initialContexts) {
+                                               List<? extends Context> initialContexts) {
 
         final List<Context> allContexts = newArrayList(createInitialContext(stateMachineId));
         allContexts.addAll(initialContexts);
@@ -128,7 +128,7 @@ public class Transition {
         return transitionTo(state, event, newArrayList());
     }
 
-    public Transition transitionTo(State state, Event event, List<Context> contexts) {
+    public Transition transitionTo(State state, Event event, List<? extends Context> contexts) {
         return new Transition(LocalDateTime.now(), state.getClass().getName(), event.getClass().getName(),
                 this, stateFactoryClass, contexts);
     }
@@ -137,7 +137,7 @@ public class Transition {
         return transitionTo(state, event, newArrayList());
     }
 
-    public Transition transitionTo(Class<? extends State> state, Event event, List<Context> contexts) {
+    public Transition transitionTo(Class<? extends State> state, Event event, List<? extends Context> contexts) {
         final State transitionState = stateFactory().getStateByClass(state);
         return transitionTo(transitionState, event, contexts);
     }
