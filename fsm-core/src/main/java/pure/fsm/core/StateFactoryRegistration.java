@@ -30,7 +30,7 @@ public class StateFactoryRegistration {
         }
     }
 
-    public static synchronized Optional<StateFactory> getStateFactory(Class<StateFactory> stateFactoryKlass) {
+    public static synchronized Optional<StateFactory> getStateFactory(Class<? extends StateFactory> stateFactoryKlass) {
         return ofNullable(stateFactoryByKlass.get(stateFactoryKlass.getName()));
     }
 }
