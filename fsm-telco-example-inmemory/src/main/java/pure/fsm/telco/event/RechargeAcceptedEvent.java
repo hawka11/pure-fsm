@@ -1,5 +1,6 @@
 package pure.fsm.telco.event;
 
+import pure.fsm.core.Context;
 import pure.fsm.core.Transition;
 import pure.fsm.core.event.Event;
 
@@ -16,7 +17,7 @@ public class RechargeAcceptedEvent implements Event<TelcoEventVisitor> {
     }
 
     @Override
-    public Transition accept(Transition transition, TelcoEventVisitor visitor) {
-        return visitor.visit(transition, this);
+    public Transition accept(Context context, TelcoEventVisitor visitor) {
+        return visitor.visit(context, this);
     }
 }

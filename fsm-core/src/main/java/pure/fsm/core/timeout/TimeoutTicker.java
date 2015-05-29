@@ -9,9 +9,12 @@ import pure.fsm.core.event.TimeoutTickEvent;
 import pure.fsm.core.template.StateMachineCallback;
 import pure.fsm.core.template.StateMachineTemplate;
 
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import static java.util.Optional.of;
 
 public class TimeoutTicker {
 
@@ -46,13 +49,13 @@ public class TimeoutTicker {
     public void sendTimeOutTickerEvents() {
         LOG.info("About to send out time out ticker events.");
 
-        accessor.getAllNonFinalIds().stream()
+        accessor.getInProgressIds().stream()
                 .filter(this::stateMachineIsTimedout)
                 .forEach(id -> template.tryWithLock(id, new StateMachineCallback() {
                     @Override
-                    public Transition doWith(Transition prevTransition, StateMachine stateMachine) {
+                    public Optional<Transition> doWith(Transition transition, StateMachine stateMachine) {
 
-                        return stateMachine.handleEvent(prevTransition, new TimeoutTickEvent());
+                        return of(stateMachine.handleEvent(transition, new TimeoutTickEvent()));
                     }
 
                     @Override

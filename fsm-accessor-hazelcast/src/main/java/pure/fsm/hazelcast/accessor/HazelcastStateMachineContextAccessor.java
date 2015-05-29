@@ -5,7 +5,6 @@ import com.hazelcast.core.IAtomicLong;
 import com.hazelcast.core.IMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pure.fsm.core.Context;
 import pure.fsm.core.Transition;
 import pure.fsm.core.accessor.StateMachineContextAccessor;
 import pure.fsm.core.state.FinalState;
@@ -34,11 +33,11 @@ public class HazelcastStateMachineContextAccessor implements StateMachineContext
 
     @Override
     @SuppressWarnings("unchecked")
-    public String create(State initialState, Class<? extends StateFactory> stateFactory, List<Context> initialContexts) {
+    public String create(State initialState, Class<? extends StateFactory> stateFactory, List<Object> initialContextData) {
         IAtomicLong idAtomicLong = getHazel().getAtomicLong("STATE_MACHINE_ID_GENERATOR");
         String id = String.valueOf(idAtomicLong.addAndGet(1));
 
-        final Transition transition = initialTransition(id, initialState, stateFactory, initialContexts);
+        final Transition transition = initialTransition(id, initialState, stateFactory, initialContextData);
 
         getHolderMap().put(id, transition);
 
@@ -70,7 +69,7 @@ public class HazelcastStateMachineContextAccessor implements StateMachineContext
     }
 
     @Override
-    public Set<String> getAllNonFinalIds() {
+    public Set<String> getInProgressIds() {
         return getHolderMap().entrySet().stream()
                 .filter(e -> !FinalState.class.isAssignableFrom(e.getValue().getState().getClass()))
                 .map(Map.Entry::getKey)
@@ -81,7 +80,7 @@ public class HazelcastStateMachineContextAccessor implements StateMachineContext
     private Optional<Lock> createLock(String stateMachineId, java.util.concurrent.locks.Lock distributedLock) {
         Lock lock = new Lock() {
             @Override
-            public Transition getTransition() {
+            public Transition getLatestTransition() {
                 return getHolderMap().get(stateMachineId);
             }
 

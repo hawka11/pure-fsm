@@ -2,7 +2,6 @@ package pure.fsm.core.template;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pure.fsm.core.Context;
 import pure.fsm.core.Transition;
 import pure.fsm.core.accessor.StateMachineContextAccessor;
 import pure.fsm.core.state.State;
@@ -37,8 +36,8 @@ public class StateMachineTemplate {
         return accessor.getAllIds();
     }
 
-    public String create(State initialState, Class<? extends StateFactory> stateFactory, List<Context> initialContexts) {
-        return accessor.create(initialState, stateFactory, initialContexts);
+    public String create(State initialState, Class<? extends StateFactory> stateFactory, List<Object> initialContextData) {
+        return accessor.create(initialState, stateFactory, initialContextData);
     }
 
     public void tryWithLock(String stateMachineId, StateMachineCallback stateMachineCallback) {
@@ -63,14 +62,20 @@ public class StateMachineTemplate {
         }
 
         if (lock.isPresent()) {
-            final Transition prevTransition = lock.get().getTransition();
+            final Transition prevTransition = lock.get().getLatestTransition();
 
             try {
-                final Transition newTransition = stateMachineCallback.doWith(prevTransition, STATE_MACHINE_INSTANCE);
+                final Optional<Transition> transition = stateMachineCallback.doWith(prevTransition, STATE_MACHINE_INSTANCE);
 
-                lock.get().update(newTransition);
+                if (transition.isPresent()) {
 
-                transitionOccuredListeners.forEach(l -> l.onTransition(prevTransition, newTransition));
+                    Transition latestTransition =
+                            prevTransition.setNextTransition(transition.get());
+
+                    lock.get().update(latestTransition);
+
+                    transitionOccuredListeners.forEach(l -> l.onTransition(prevTransition, latestTransition));
+                }
 
             } catch (Exception e) {
                 LOG.error("Error with currentStateMachine [" + stateMachineId + "]", e);

@@ -5,10 +5,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import pure.fsm.core.context.CanUnlockContext;
+import pure.fsm.core.context.CanUnlock;
 import pure.fsm.core.context.InitialContext;
 import pure.fsm.core.fixture.TestAlternateContext;
-import pure.fsm.core.fixture.TestCanUnlockContext;
+import pure.fsm.core.fixture.TestCanUnlock;
 import pure.fsm.core.fixture.TestEvent;
 import pure.fsm.core.fixture.TestInitialContext;
 import pure.fsm.core.fixture.TestNonFinalState;
@@ -33,18 +33,20 @@ public class TransitionTest {
 
     private Transition initialTransition;
     private Transition transitioned;
+    private Context testInitialContext;
 
     @Before
     public void beforeEach() {
         registerStateFactory(new TestStateFactory());
 
-        initialTransition = initialTransition("111", initialState, TestStateFactory.class, newArrayList(new TestInitialContext()));
-        transitioned = initialTransition.transitionTo(new TestNonFinalState(), new TestEvent(), newArrayList(new TestAlternateContext()));
+        testInitialContext = null;
+        initialTransition = initialTransition("111", initialState, TestStateFactory.class, newArrayList(testInitialContext));
+        //transitioned = initialTransition.transitionTo(new TestNonFinalState(), new TestEvent(), newArrayList(new TestAlternateContext()));
     }
 
     @Test
     public void shouldContainInitialBuiltInValues() {
-        final List<InitialContext> testContexts = initialTransition.getContextsOfType(InitialContext.class);
+        final List<InitialContext> testContexts = testInitialContext.getContextsOfType(InitialContext.class);
         assertThat(testContexts.size(), equalTo(1));
         assertThat(initialTransition.getEvent(), equalTo(""));
         assertThat(initialTransition.getState(), nullValue());
@@ -53,7 +55,7 @@ public class TransitionTest {
 
     @Test
     public void shouldContainInitialUserValues() {
-        final List<TestInitialContext> testContexts = initialTransition.getContextsOfType(TestInitialContext.class);
+        final List<TestInitialContext> testContexts = testInitialContext.getContextsOfType(TestInitialContext.class);
         assertThat(testContexts.size(), equalTo(1));
     }
 
@@ -67,14 +69,14 @@ public class TransitionTest {
 
     @Test
     public void shouldMutateAndAppendONLYCanUnlockContextToSupportUnlockingWithinFinalStateOnEnter() {
-        initialTransition.appendContext(new TestCanUnlockContext());
-        final List<CanUnlockContext> contexts = initialTransition.getContextsOfType(CanUnlockContext.class);
+        testInitialContext.addCanUnlock(new TestCanUnlock());
+        final List<CanUnlock> contexts = testInitialContext.getContextsOfType(CanUnlock.class);
         assertThat(contexts.size(), equalTo(1));
     }
 
     @Test
     public void shouldNormalContextsOnlyExistInTransitionedAndNotMutateExisting() {
-        assertThat(initialTransition.getContextsOfType(TestAlternateContext.class).size(), equalTo(0));
-        assertThat(transitioned.getContextsOfType(TestAlternateContext.class).size(), equalTo(1));
+        assertThat(testInitialContext.getContextsOfType(TestAlternateContext.class).size(), equalTo(0));
+        assertThat(testInitialContext.getContextsOfType(TestAlternateContext.class).size(), equalTo(1));
     }
 }

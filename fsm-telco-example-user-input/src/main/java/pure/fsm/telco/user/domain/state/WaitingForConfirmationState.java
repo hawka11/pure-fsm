@@ -2,14 +2,13 @@ package pure.fsm.telco.user.domain.state;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pure.fsm.core.Context;
 import pure.fsm.core.Transition;
 import pure.fsm.hazelcast.resource.DistributedResourceFactory;
 import pure.fsm.telco.user.domain.TelcoRechargeData;
 import pure.fsm.telco.user.domain.event.ConfirmPinEvent;
 
 import java.time.LocalDateTime;
-
-import static pure.fsm.core.context.MostRecentContext.mostRecentOf;
 
 public class WaitingForConfirmationState extends BaseTelcoState {
 
@@ -20,20 +19,20 @@ public class WaitingForConfirmationState extends BaseTelcoState {
     }
 
     @Override
-    public Transition accept(Transition transition, ConfirmPinEvent confirmPinEvent) {
+    public Transition accept(Context context, ConfirmPinEvent confirmPinEvent) {
 
         LOG.info("confirming pin [{}]", confirmPinEvent.getPin());
 
-        final TelcoRechargeData data = mostRecentOf(transition, TelcoRechargeData.class).get();
+        final TelcoRechargeData data = context.mostRecentOf(TelcoRechargeData.class).get();
 
         data.addConfirmedPin(confirmPinEvent.getPin());
 
-        if (data.allPinsConfirmed(transition)) {
+        if (data.allPinsConfirmed(context)) {
             LOG.info("all pins confirmed, transitioning to successful final state");
-            return transition.transitionTo(transition.stateFactory().successFinalState(), confirmPinEvent);
+            return Transition.To(context.stateFactory().successFinalState(), confirmPinEvent, context);
         } else {
             LOG.info("still waiting for more pins to confirm, transitioning back to current state");
-            return transition.transitionTo(this, confirmPinEvent);
+            return Transition.To(this, confirmPinEvent, context);
         }
     }
 

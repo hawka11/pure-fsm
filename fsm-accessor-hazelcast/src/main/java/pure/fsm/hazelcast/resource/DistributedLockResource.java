@@ -6,12 +6,12 @@ import com.hazelcast.core.ILock;
 import com.hazelcast.core.ISet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pure.fsm.core.context.CanUnlockContext;
+import pure.fsm.core.context.CanUnlock;
 
 import java.util.Set;
 import java.util.function.Function;
 
-public class DistributedLockResource implements CanUnlockContext {
+public class DistributedLockResource implements CanUnlock {
 
     private final Logger LOG = LoggerFactory.getLogger(DistributedLockResource.class);
 

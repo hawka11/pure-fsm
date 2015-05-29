@@ -3,15 +3,13 @@ package pure.fsm.telco;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import pure.fsm.core.Context;
-import pure.fsm.core.Transition;
 import pure.fsm.telco.state.LockedPinResource;
 
 import java.util.Set;
 
 import static com.google.common.collect.Sets.newHashSet;
-import static pure.fsm.core.context.MostRecentContext.mostRecentOf;
 
-public class TelcoRechargeContext implements Context {
+public class TelcoRechargeContext {
 
     private final Set<String> acceptedPins;
 
@@ -33,8 +31,8 @@ public class TelcoRechargeContext implements Context {
         return acceptedPins;
     }
 
-    public static Set<String> getRequestedPins(Transition transition) {
-        return mostRecentOf(transition, LockedPinResource.class)
+    public static Set<String> getRequestedPins(Context context) {
+        return context.mostRecentOf(LockedPinResource.class)
                 .map(LockedPinResource::getPinsToLock)
                 .orElse(newHashSet());
     }

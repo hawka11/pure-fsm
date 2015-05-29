@@ -61,9 +61,9 @@ public class CleanUpFinalisedStateMachines {
             if (transition.getState() instanceof FinalState) {
                 try {
                     Optional<StateMachineContextAccessor.Lock> lock = accessor.tryLock(id, 1, SECONDS);
-                    if (lock.isPresent() && shouldCleanup(lock.get().getTransition())) {
+                    if (lock.isPresent() && shouldCleanup(lock.get().getLatestTransition())) {
                         LOG.info("unlocking and removing state machine [{}]",
-                                initialContext(lock.get().getTransition()).stateMachineId);
+                                initialContext(lock.get().getLatestTransition().getContext()).stateMachineId);
 
                         cleanupListeners.forEach(l -> l.onCleanup(transition));
 

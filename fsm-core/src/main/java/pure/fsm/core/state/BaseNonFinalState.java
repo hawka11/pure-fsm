@@ -2,6 +2,7 @@ package pure.fsm.core.state;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pure.fsm.core.Context;
 import pure.fsm.core.Transition;
 import pure.fsm.core.event.Event;
 
@@ -22,17 +23,17 @@ public abstract class BaseNonFinalState implements State {
         return LocalDateTime.now().isAfter(getTimeoutDateTime(prevTransition));
     }
 
-    protected Transition nonHandledEvent(Transition lastTransition, Event event) {
+    protected Transition nonHandledEvent(Context context, Event event) {
         LOG.warn("State [{}] received non handled event [{}], ignoring.",
                 getClass().getName(), event.getClass().getName());
-        return lastTransition.transitionTo(this, event);
+        return Transition.To(this, event, context);
     }
 
     @Override
-    public void onExit(Transition newTransition, Event event) {
+    public void onExit(Context context, Event event) {
     }
 
     @Override
-    public void onEntry(Transition newTransition, Event event, State prevState) {
+    public void onEntry(Context context, Event event, State prevState) {
     }
 }

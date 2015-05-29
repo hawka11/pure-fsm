@@ -4,21 +4,13 @@ import pure.fsm.core.Context;
 import pure.fsm.core.Transition;
 import pure.fsm.core.event.Event;
 
-import java.util.List;
-
-import static com.google.common.collect.Lists.newArrayList;
-import static pure.fsm.core.context.MessageContext.withMessage;
+import static pure.fsm.core.context.ContextMessage.withMessage;
 
 public class UserCancelled {
 
-    public static Transition transitionToUserCancelled(Transition transition, Event event) {
-        return transitionToUserCancelled(transition, event);
-    }
+    public static Transition transitionToUserCancelled(Context context, Event event) {
+        final Context updatedContext = context.appendState(withMessage("USER_CANCELED"));
 
-    public static Transition transitionToUserCancelled(Transition transition, Event event, List<Context> contexts) {
-        final List<Context> allContexts = newArrayList(contexts);
-        allContexts.add(withMessage("USER_CANCELED"));
-
-        return transition.transitionTo(transition.stateFactory().userCanceled(), event, allContexts);
+        return Transition.To(updatedContext.stateFactory().userCanceled(), event, updatedContext);
     }
 }

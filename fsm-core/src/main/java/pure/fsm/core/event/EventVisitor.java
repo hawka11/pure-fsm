@@ -4,5 +4,5 @@ import pure.fsm.core.Transition;
 
 public interface EventVisitor {
 
-    Transition visit(Transition transition, TimeoutTickEvent timeoutTickEvent);
+    Transition visit(Transition prevTransition, TimeoutTickEvent timeoutTickEvent);
 }

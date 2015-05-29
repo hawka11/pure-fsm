@@ -2,7 +2,7 @@ package pure.fsm.telcohazelcast;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import pure.fsm.core.Transition;
+import pure.fsm.core.Context;
 import pure.fsm.hazelcast.resource.DistributedLockResource;
 import pure.fsm.telco.TelcoRechargeContext;
 
@@ -23,8 +23,8 @@ public class HzTelcoRechargeContext extends TelcoRechargeContext {
         return new HzTelcoRechargeContext(newHashSet());
     }
 
-    public static Set<String> getRequestedPins(Transition transition) {
-        return transition.getContextsOfType(DistributedLockResource.class).stream()
+    public static Set<String> getRequestedPins(Context context) {
+        return context.getContextsOfType(DistributedLockResource.class).stream()
                 .flatMap(r -> r.getLockedKeys().stream())
                 .collect(toSet());
     }

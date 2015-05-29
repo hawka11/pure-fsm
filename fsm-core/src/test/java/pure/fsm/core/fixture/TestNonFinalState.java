@@ -1,12 +1,19 @@
 package pure.fsm.core.fixture;
 
+import pure.fsm.core.Context;
 import pure.fsm.core.Transition;
 import pure.fsm.core.event.Event;
+import pure.fsm.core.event.TimeoutTickEvent;
 import pure.fsm.core.state.State;
 
 public class TestNonFinalState implements State {
     @Override
-    public Transition handle(Transition prevTransition, Event event) {
+    public Transition handle(Context context, Event event) {
+        return null;
+    }
+
+    @Override
+    public Transition handle(Transition prevTransition, TimeoutTickEvent event) {
         return null;
     }
 
@@ -16,12 +23,12 @@ public class TestNonFinalState implements State {
     }
 
     @Override
-    public void onExit(Transition newTransition, Event event) {
+    public void onExit(Context context, Event event) {
 
     }
 
     @Override
-    public void onEntry(Transition newTransition, Event event, State prevState) {
+    public void onEntry(Context context, Event event, State prevState) {
 
     }
 }

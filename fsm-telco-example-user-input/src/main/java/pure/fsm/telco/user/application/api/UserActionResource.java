@@ -2,8 +2,6 @@ package pure.fsm.telco.user.application.api;
 
 import io.dropwizard.views.View;
 import pure.fsm.core.Transition;
-import pure.fsm.core.StateMachine;
-import pure.fsm.core.template.BaseStateMachineCallback;
 import pure.fsm.core.template.StateMachineTemplate;
 import pure.fsm.telco.user.domain.event.ConfirmPinEvent;
 import pure.fsm.telco.user.domain.event.RequestPinEvent;
@@ -25,6 +23,7 @@ import java.util.Set;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.stream.Collectors.toList;
+import static pure.fsm.core.template.DefaultStateMachineCallback.handleWithTransition;
 import static pure.fsm.telco.user.domain.TelcoRechargeData.initialTelcoRechargeData;
 
 @Path("/sm")
@@ -62,14 +61,11 @@ public class UserActionResource {
     public View requestPins(@PathParam("id") String id,
                             @FormParam("pin") Set<String> pins) {
 
-        template.tryWithLock(id, new BaseStateMachineCallback() {
-            @Override
-            public Transition doWith(Transition prevTransition, StateMachine stateMachine) {
-                List<String> nonEmptyPins = pins.stream().filter(p -> p.length() > 0).collect(toList());
-
-                return stateMachine.handleEvent(prevTransition, new RequestPinEvent(nonEmptyPins));
-            }
-        });
+        template.tryWithLock(id, handleWithTransition((prevTransition, stateMachine) -> {
+                    List<String> nonEmptyPins = pins.stream().filter(p -> p.length() > 0).collect(toList());
+                    return stateMachine.handleEvent(prevTransition, new RequestPinEvent(nonEmptyPins));
+                }
+        ));
 
         return getStateBasedView(id);
     }
@@ -80,13 +76,9 @@ public class UserActionResource {
     public View confirmPin(@PathParam("id") String id,
                            @PathParam("pin") String pin) {
 
-        template.tryWithLock(id, new BaseStateMachineCallback() {
-            @Override
-            public Transition doWith(Transition prevTransition, StateMachine stateMachine) {
-
-                return stateMachine.handleEvent(prevTransition, new ConfirmPinEvent(pin));
-            }
-        });
+        template.tryWithLock(id, handleWithTransition((prevTransition, stateMachine) ->
+                        stateMachine.handleEvent(prevTransition, new ConfirmPinEvent(pin))
+        ));
 
         return getStateBasedView(id);
     }

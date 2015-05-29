@@ -1,6 +1,5 @@
 package pure.fsm.core.accessor;
 
-import pure.fsm.core.Context;
 import pure.fsm.core.Transition;
 import pure.fsm.core.state.State;
 import pure.fsm.core.state.StateFactory;
@@ -16,15 +15,15 @@ public interface StateMachineContextAccessor {
 
     Set<String> getAllIds();
 
-    Set<String> getAllNonFinalIds();
+    Set<String> getInProgressIds();
 
-    String create(State initialState, Class<? extends StateFactory> stateFactory, List<Context> initialContexts);
+    String create(State initialState, Class<? extends StateFactory> stateFactory, List<Object> initialContextData);
 
     Optional<Lock> tryLock(String stateMachineId, long timeout, TimeUnit timeUnit);
 
-    static interface Lock {
+    interface Lock {
 
-        Transition getTransition();
+        Transition getLatestTransition();
 
         void update(Transition newTransition);
 

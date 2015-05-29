@@ -1,7 +1,7 @@
 package pure.fsm.telco.guard;
 
-import pure.fsm.core.Transition;
+import pure.fsm.core.Context;
 
 public interface Guard {
-    boolean isSatisfied(Transition transition);
+    boolean isSatisfied(Context context);
 }

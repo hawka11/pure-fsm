@@ -16,7 +16,6 @@ import java.util.Set;
 
 import static com.google.common.collect.Maps.newHashMap;
 import static pure.fsm.core.context.InitialContext.initialContext;
-import static pure.fsm.core.context.MostRecentContext.mostRecentOf;
 
 public class StateMachineViewFactory {
 
@@ -66,7 +65,7 @@ public class StateMachineViewFactory {
         }
 
         public String getStateMachineId() {
-            return initialContext(transition).stateMachineId;
+            return initialContext(transition.getContext()).stateMachineId;
         }
     }
 
@@ -76,7 +75,7 @@ public class StateMachineViewFactory {
         }
 
         public Set<String> nonConfirmedPins() {
-            return data().nonConfirmedPins(getTransition());
+            return data().nonConfirmedPins(getTransition().getContext());
         }
 
         public Set<String> confirmedPins() {
@@ -84,7 +83,7 @@ public class StateMachineViewFactory {
         }
 
         private TelcoRechargeData data() {
-            return mostRecentOf(getTransition(), TelcoRechargeData.class).get();
+            return getTransition().getContext().mostRecentOf(TelcoRechargeData.class).get();
         }
     }
 

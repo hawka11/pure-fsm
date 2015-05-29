@@ -1,5 +1,6 @@
 package pure.fsm.telco.user.domain.event;
 
+import pure.fsm.core.Context;
 import pure.fsm.core.Transition;
 import pure.fsm.core.event.Event;
 
@@ -20,8 +21,8 @@ public class RequestAcceptedEvent implements Event<TelcoEventVisitor> {
     }
 
     @Override
-    public Transition accept(Transition transition, TelcoEventVisitor visitor) {
-        return visitor.accept(transition, this);
+    public Transition accept(Context context, TelcoEventVisitor visitor) {
+        return visitor.accept(context, this);
     }
 
     @Override

@@ -3,11 +3,9 @@ package pure.fsm.telcohazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pure.fsm.core.StateMachine;
 import pure.fsm.core.Transition;
 import pure.fsm.core.accessor.StateMachineContextAccessor;
 import pure.fsm.core.event.Event;
-import pure.fsm.core.template.BaseStateMachineCallback;
 import pure.fsm.core.template.StateMachineTemplate;
 import pure.fsm.hazelcast.accessor.HazelcastStateMachineContextAccessor;
 import pure.fsm.hazelcast.resource.DistributedResourceFactory;
@@ -16,6 +14,7 @@ import pure.fsm.telcohazelcast.state.HzTelcoStateFactory;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static pure.fsm.core.StateFactoryRegistration.registerStateFactory;
+import static pure.fsm.core.template.DefaultStateMachineCallback.handleWithTransition;
 import static pure.fsm.telcohazelcast.HazelcastUtil.createClientHz;
 import static pure.fsm.telcohazelcast.HzTelcoRechargeContext.initialTelcoRecharge;
 
@@ -42,12 +41,9 @@ class StateMachineOperations {
     }
 
     public void scheduleEventOnThread(String stateMachineId, final Event event) {
-        new Thread(() -> template.tryWithLock(stateMachineId, new BaseStateMachineCallback() {
-            @Override
-            public Transition doWith(Transition prevTransition, StateMachine stateMachine) {
-                return stateMachine.handleEvent(prevTransition, event);
-            }
-        })).start();
+        new Thread(() -> template.tryWithLock(stateMachineId,
+                handleWithTransition((prevTransition, stateMachine) ->
+                        stateMachine.handleEvent(prevTransition, event)))).start();
     }
 
     public String createStateMachineInInitialState() {

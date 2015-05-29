@@ -1,5 +1,6 @@
 package pure.fsm.telcohazelcast.state;
 
+import pure.fsm.core.Context;
 import pure.fsm.core.Transition;
 import pure.fsm.hazelcast.resource.DistributedLockResource;
 import pure.fsm.hazelcast.resource.DistributedResourceFactory;
@@ -9,8 +10,6 @@ import pure.fsm.telco.state.RechargeRequestedState;
 import java.math.BigDecimal;
 import java.util.Set;
 
-import static com.google.common.collect.Lists.newArrayList;
-
 public class HzInitialState extends BaseHzTelcoState {
 
     HzInitialState(DistributedResourceFactory factory) {
@@ -18,7 +17,7 @@ public class HzInitialState extends BaseHzTelcoState {
     }
 
     @Override
-    public Transition visit(Transition transition, RequestRechargeEvent requestRechargeEvent) {
+    public Transition visit(Context context, RequestRechargeEvent requestRechargeEvent) {
 
         System.out.println("In InitialState, processing RequestRechargeEvent event ");
 
@@ -30,7 +29,7 @@ public class HzInitialState extends BaseHzTelcoState {
 
         //telcoClientRepository.startRechargeProcess(rechargeAmount);
 
-        return transition.transitionTo(RechargeRequestedState.class,
-                requestRechargeEvent, newArrayList(lockResource));
+        return Transition.To(RechargeRequestedState.class,
+                requestRechargeEvent, context.addCanUnlock(lockResource));
     }
 }

@@ -31,7 +31,7 @@ public class HzTelcoRechargeContextTest {
         final Transition desTransition = mapper.readValue(new ByteArrayInputStream(data), Transition.class);
 
         assertThat(desTransition, is(notNullValue()));
-        assertThat(desTransition.getContextsOfType(HzTelcoRechargeContext.class).size(), equalTo(1));
-        assertThat(desTransition.getContextsOfType(HzTelcoRechargeContext.class).get(0).getAcceptedPins().size(), equalTo(1));
+        assertThat(desTransition.getContext().getContextsOfType(HzTelcoRechargeContext.class).size(), equalTo(1));
+        assertThat(desTransition.getContext().getContextsOfType(HzTelcoRechargeContext.class).get(0).getAcceptedPins().size(), equalTo(1));
     }
 }
