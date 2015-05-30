@@ -24,15 +24,15 @@ public class WaitingForConfirmationState extends BaseTelcoState {
         LOG.info("confirming pin [{}]", confirmPinEvent.getPin());
 
         final TelcoRechargeData data = context.mostRecentOf(TelcoRechargeData.class).get();
+        final TelcoRechargeData updatedData = data.addConfirmedPin(confirmPinEvent.getPin());
+        final Context updatedContext = context.appendState(updatedData);
 
-        data.addConfirmedPin(confirmPinEvent.getPin());
-
-        if (data.allPinsConfirmed(context)) {
+        if (updatedData.allPinsConfirmed(updatedContext)) {
             LOG.info("all pins confirmed, transitioning to successful final state");
-            return Transition.To(context.stateFactory().successFinalState(), confirmPinEvent, context);
+            return Transition.To(updatedContext.stateFactory().successFinalState(), confirmPinEvent, updatedContext);
         } else {
             LOG.info("still waiting for more pins to confirm, transitioning back to current state");
-            return Transition.To(this, confirmPinEvent, context);
+            return Transition.To(this, confirmPinEvent, updatedContext);
         }
     }
 

@@ -1,7 +1,10 @@
 package pure.fsm.telco.user.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.google.common.collect.ImmutableSet;
 import pure.fsm.core.Context;
 import pure.fsm.hazelcast.resource.DistributedLockResource;
 
@@ -12,6 +15,7 @@ import static java.util.stream.Collectors.toSet;
 
 public class TelcoRechargeData {
 
+    @JsonSerialize
     private final Set<String> confirmedPins;
 
     @JsonCreator
@@ -23,13 +27,15 @@ public class TelcoRechargeData {
         return new TelcoRechargeData(newHashSet());
     }
 
-    public void addConfirmedPin(String pin) {
-        confirmedPins.add(pin);
+    public TelcoRechargeData addConfirmedPin(String pin) {
+        final Set<String> newPins = newHashSet(confirmedPins);
+        newPins.add(pin);
+        return new TelcoRechargeData(newPins);
     }
 
+    @JsonIgnore
     public Set<String> getConfirmedPins() {
-        //TODO: make this immutable but has serializing issues.
-        return confirmedPins;
+        return ImmutableSet.copyOf(confirmedPins);
     }
 
     public Set<String> requestedPins(Context context) {
