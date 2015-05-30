@@ -14,7 +14,7 @@ import pure.fsm.telcohazelcast.state.HzTelcoStateFactory;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static pure.fsm.core.StateFactoryRegistration.registerStateFactory;
-import static pure.fsm.core.template.DefaultStateMachineCallback.handleWithTransition;
+import static pure.fsm.core.template.DefaultStateMachineCallable.handleWithTransition;
 import static pure.fsm.telcohazelcast.HazelcastUtil.createClientHz;
 import static pure.fsm.telcohazelcast.HzTelcoRechargeContext.initialTelcoRecharge;
 

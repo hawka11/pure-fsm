@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static pure.fsm.core.template.DefaultStateMachineCallback.handleWithTransition;
+import static pure.fsm.core.template.DefaultStateMachineCallable.handleWithTransition;
 
 public class TelcoGateway {
 

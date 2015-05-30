@@ -23,7 +23,7 @@ import java.util.Set;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.stream.Collectors.toList;
-import static pure.fsm.core.template.DefaultStateMachineCallback.handleWithTransition;
+import static pure.fsm.core.template.DefaultStateMachineCallable.handleWithTransition;
 import static pure.fsm.telco.user.domain.TelcoRechargeData.initialTelcoRechargeData;
 
 @Path("/sm")

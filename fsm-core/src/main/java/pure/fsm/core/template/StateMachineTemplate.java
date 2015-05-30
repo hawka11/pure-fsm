@@ -40,9 +40,9 @@ public class StateMachineTemplate {
         return accessor.create(initialState, stateFactory, initialContextData);
     }
 
-    public void tryWithLock(String stateMachineId, StateMachineCallback stateMachineCallback) {
+    public <T> T tryWithLock(String stateMachineId, StateMachineCallable<T> stateMachineCallable) {
 
-        tryWithLock(stateMachineId, stateMachineCallback, 1, SECONDS);
+        return tryWithLock(stateMachineId, stateMachineCallable, 1, SECONDS);
     }
 
     /**
@@ -51,26 +51,27 @@ public class StateMachineTemplate {
      * <p>
      * This does not prevent multiple state machines being sent their own events concurrently
      */
-    public void tryWithLock(String stateMachineId, StateMachineCallback stateMachineCallback, long timeout, TimeUnit timeUnit) {
+    public <T> T tryWithLock(String stateMachineId, StateMachineCallable<T> stateMachineCallable, long timeout, TimeUnit timeUnit) {
+        T result = null;
         Optional<StateMachineContextAccessor.Lock> lock = Optional.empty();
 
         try {
             lock = accessor.tryLock(stateMachineId, timeout, timeUnit);
         } catch (Exception e) {
             LOG.error("Error with currentStateMachine [" + stateMachineId + "]", e);
-            stateMachineCallback.onLockFailed(e);
+            stateMachineCallable.onLockFailed(e);
         }
 
         if (lock.isPresent()) {
             final Transition prevTransition = lock.get().getLatestTransition();
 
             try {
-                final Optional<Transition> transition = stateMachineCallback.doWith(prevTransition, STATE_MACHINE_INSTANCE);
+                result = stateMachineCallable.doWith(prevTransition, STATE_MACHINE_INSTANCE);
 
-                if (transition.isPresent()) {
+                if (Transition.class.isAssignableFrom(result.getClass())) {
 
                     Transition latestTransition =
-                            prevTransition.setNextTransition(transition.get());
+                            prevTransition.setNextTransition((Transition) result);
 
                     lock.get().update(latestTransition);
 
@@ -80,7 +81,7 @@ public class StateMachineTemplate {
             } catch (Exception e) {
                 LOG.error("Error with currentStateMachine [" + stateMachineId + "]", e);
 
-                final Transition newTransition = stateMachineCallback.onError(prevTransition, STATE_MACHINE_INSTANCE, e);
+                final Transition newTransition = stateMachineCallable.onError(prevTransition, STATE_MACHINE_INSTANCE, e);
 
                 lock.get().update(newTransition);
 
@@ -92,5 +93,7 @@ public class StateMachineTemplate {
         } else {
             LOG.error("Could not get state machine lock for [{}]", stateMachineId);
         }
+
+        return result;
     }
 }

@@ -6,7 +6,7 @@ import pure.fsm.core.StateMachine;
 import pure.fsm.core.Transition;
 import pure.fsm.core.accessor.StateMachineContextAccessor;
 import pure.fsm.core.event.TimeoutTickEvent;
-import pure.fsm.core.template.StateMachineCallback;
+import pure.fsm.core.template.StateMachineCallable;
 import pure.fsm.core.template.StateMachineTemplate;
 
 import java.util.Optional;
@@ -51,7 +51,7 @@ public class TimeoutTicker {
 
         accessor.getInProgressIds().stream()
                 .filter(this::stateMachineIsTimedout)
-                .forEach(id -> template.tryWithLock(id, new StateMachineCallback() {
+                .forEach(id -> template.tryWithLock(id, new StateMachineCallable() {
                     @Override
                     public Optional<Transition> doWith(Transition transition, StateMachine stateMachine) {
 

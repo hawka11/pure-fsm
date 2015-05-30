@@ -5,9 +5,9 @@ import pure.fsm.core.Transition;
 
 import java.util.Optional;
 
-public interface StateMachineCallback {
+public interface StateMachineCallable<T> {
 
-    Optional<Transition> doWith(Transition prevTransition, StateMachine stateMachine);
+    T doWith(Transition prevTransition, StateMachine stateMachine);
 
     void onLockFailed(Exception e);
 

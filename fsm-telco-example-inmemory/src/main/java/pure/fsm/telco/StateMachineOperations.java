@@ -17,7 +17,7 @@ import java.time.temporal.ChronoUnit;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static pure.fsm.core.StateFactoryRegistration.registerStateFactory;
-import static pure.fsm.core.template.DefaultStateMachineCallback.handleWithTransition;
+import static pure.fsm.core.template.DefaultStateMachineCallable.handleWithTransition;
 import static pure.fsm.telco.TelcoRechargeContext.initialTelcoRecharge;
 
 class StateMachineOperations {
