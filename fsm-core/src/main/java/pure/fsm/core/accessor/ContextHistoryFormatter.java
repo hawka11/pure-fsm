@@ -6,6 +6,7 @@ import pure.fsm.core.Transition;
 import pure.fsm.core.context.ContextMessage;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static pure.fsm.core.context.InitialContext.initialContext;
@@ -34,11 +35,11 @@ public class ContextHistoryFormatter implements OnCleanupListener {
 
         final List<ContextMessage> msg = lastTransition.getContext().getContextsOfType(ContextMessage.class);
 
-        sb.append(format("%" + indent + "s", " ")).append(format("State[%s], Transitioned[%s], event[%s], msg[%s]",
+        sb.append(format("%" + indent + "s", " ")).append(format("State[%s] ==> event[%s], Transitioned[%s], msg[%s]",
                 lastTransition.getState().getClass().getName(),
-                lastTransition.getTransitioned(),
                 lastTransition.getEvent(),
-                "TODO msg"));
+                lastTransition.getTransitioned(),
+                msg.stream().map(m -> m.message).collect(Collectors.joining(":"))));
 
         return sb.append("\n").toString();
     }
