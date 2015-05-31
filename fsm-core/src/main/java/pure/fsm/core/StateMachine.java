@@ -8,7 +8,6 @@ import pure.fsm.core.state.ErrorFinalState;
 import pure.fsm.core.state.State;
 
 import static pure.fsm.core.context.ExceptionContext.withException;
-import static pure.fsm.core.context.InitialContext.initialContext;
 
 public class StateMachine {
 
@@ -23,7 +22,7 @@ public class StateMachine {
     public Transition handleEvent(Transition prevTransition, Event event) {
         final State currentState = prevTransition.getState();
         final Context context = prevTransition.getContext();
-        final String stateMachineId = initialContext(context).stateMachineId;
+        final String stateMachineId = context.stateMachineId();
 
         Transition newTransition;
 

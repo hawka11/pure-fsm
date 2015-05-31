@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
-import static pure.fsm.core.context.InitialContext.initialContext;
 
 public class ContextHistoryFormatter implements OnCleanupListener {
 
@@ -20,7 +19,7 @@ public class ContextHistoryFormatter implements OnCleanupListener {
     public String toTransitionString(Transition transition) {
 
         return format("\n\n+++++ State Machine Transition history stateMachineId [%s] +++++ =>",
-                initialContext(transition.getContext()).stateMachineId) + "\n" + toContextString(transition, calcNumTransitions(transition, 1));
+                transition.getContext().stateMachineId()) + "\n" + toContextString(transition, calcNumTransitions(transition, 1));
     }
 
     private int calcNumTransitions(Transition transition, int count) {

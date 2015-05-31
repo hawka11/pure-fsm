@@ -14,7 +14,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static pure.fsm.core.context.InitialContext.initialContext;
 
 public class CleanUpFinalisedStateMachines {
 
@@ -63,7 +62,7 @@ public class CleanUpFinalisedStateMachines {
                     Optional<StateMachineContextAccessor.Lock> lock = accessor.tryLock(id, 1, SECONDS);
                     if (lock.isPresent() && shouldCleanup(lock.get().getLatestTransition())) {
                         LOG.info("unlocking and removing state machine [{}]",
-                                initialContext(lock.get().getLatestTransition().getContext()).stateMachineId);
+                                lock.get().getLatestTransition().getContext().stateMachineId());
 
                         cleanupListeners.forEach(l -> l.onCleanup(transition));
 

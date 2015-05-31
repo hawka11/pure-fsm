@@ -13,7 +13,6 @@ import pure.fsm.telco.user.infra.TelcoGateway;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
-import static pure.fsm.core.context.InitialContext.initialContext;
 
 public class InitialState extends BaseTelcoState {
 
@@ -32,7 +31,7 @@ public class InitialState extends BaseTelcoState {
 
         pins.stream().forEach(pin -> context.addCanUnlock(resourceFactory().tryLock("LOCKED_PINS", pin)));
 
-        telcoGateway.requestPinRecharge(initialContext(context).stateMachineId, pins);
+        telcoGateway.requestPinRecharge(context.stateMachineId(), pins);
 
         return Transition.To(this, requestPinEvent, context);
     }

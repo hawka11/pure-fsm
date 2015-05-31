@@ -15,7 +15,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import static com.google.common.collect.Maps.newHashMap;
-import static pure.fsm.core.context.InitialContext.initialContext;
 
 public class StateMachineViewFactory {
 
@@ -65,7 +64,7 @@ public class StateMachineViewFactory {
         }
 
         public String getStateMachineId() {
-            return initialContext(transition.getContext()).stateMachineId;
+            return transition.getContext().stateMachineId();
         }
     }
 

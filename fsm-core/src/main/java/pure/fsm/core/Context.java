@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import pure.fsm.core.context.CanUnlock;
+import pure.fsm.core.context.InitialContext;
 import pure.fsm.core.state.StateFactory;
 
 import java.util.List;
@@ -73,6 +74,10 @@ public class Context {
 
     public <T> Optional<T> mostRecentOf(Class<T> klass) {
         return reverse(getContextsOfType(klass)).stream().findFirst();
+    }
+
+    public String stateMachineId() {
+        return InitialContext.initialContext(this).stateMachineId;
     }
 
     public Context addCanUnlock(CanUnlock canUnlock) {
