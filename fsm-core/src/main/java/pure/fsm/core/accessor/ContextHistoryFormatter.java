@@ -35,9 +35,9 @@ public class ContextHistoryFormatter implements OnCleanupListener {
 
         final List<ContextMessage> msg = lastTransition.getContext().getContextsOfType(ContextMessage.class);
 
-        sb.append(format("%" + indent + "s", " ")).append(format("State[%s] ==> event[%s], Transitioned[%s], msg[%s]",
-                lastTransition.getState().getClass().getName(),
+        sb.append(format("%" + indent + "s", " ")).append(format("event[%s] ==> State[%s], Transitioned[%s], msg[%s]",
                 lastTransition.getEvent(),
+                lastTransition.getState().getClass().getName(),
                 lastTransition.getTransitioned(),
                 msg.stream().map(m -> m.message).collect(Collectors.joining(":"))));
 

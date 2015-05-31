@@ -41,7 +41,7 @@ public class StateMachine {
         } catch (Exception e) {
             LOG.error("SM [" + stateMachineId + "], Error handling event [" + event + "]", e);
 
-            final Context updatedContext = prevTransition.getContext().appendState(withException(e));
+            final Context updatedContext = context.appendState(withException(e));
 
             newTransition = Transition.To(new ErrorFinalState(), event, updatedContext);
 
