@@ -8,4 +8,5 @@ include 'fsm-telco-example-hazelcast'
 include 'fsm-telco-example-user-input'
 
 include 'fsm-dropwizard-hazelcast'
+include 'fsm-dropwizard-inmemory'
 
