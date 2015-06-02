@@ -36,6 +36,11 @@ public class StateMachineTemplate {
         return accessor.getAllIds();
     }
 
+    public String create(Class<? extends State> initialStateClass, StateFactory stateFactory, List<Object> initialContextData) {
+        final State initialState = stateFactory.getStateByClass(initialStateClass);
+        return this.create(initialState, stateFactory.getClass(), initialContextData);
+    }
+
     public String create(State initialState, Class<? extends StateFactory> stateFactory, List<Object> initialContextData) {
         return accessor.create(initialState, stateFactory, initialContextData);
     }
