@@ -1,7 +1,7 @@
 
 dependencies {
     compile project(":fsm-telco-example-inmemory")
-    compile project(":fsm-accessor-hazelcast")
+    compile project(":fsm-repository-hazelcast")
 
     compile "com.hazelcast:hazelcast-all:$hazelcastVersion"
 

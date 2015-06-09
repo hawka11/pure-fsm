@@ -3,7 +3,7 @@ package pure.fsm.core.template;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Transition;
-import pure.fsm.core.accessor.StateMachineContextAccessor;
+import pure.fsm.core.repository.StateMachineRepository;
 import pure.fsm.core.state.State;
 import pure.fsm.core.state.StateFactory;
 import pure.fsm.core.transition.TransitionOccuredListener;
@@ -20,20 +20,20 @@ public class StateMachineTemplate {
 
     private final static Logger LOG = LoggerFactory.getLogger(StateMachineTemplate.class);
 
-    private final StateMachineContextAccessor accessor;
+    private final StateMachineRepository repository;
     private final List<TransitionOccuredListener> transitionOccuredListeners;
 
-    public StateMachineTemplate(StateMachineContextAccessor accessor, List<TransitionOccuredListener> transitionOccuredListeners) {
-        this.accessor = accessor;
+    public StateMachineTemplate(StateMachineRepository repository, List<TransitionOccuredListener> transitionOccuredListeners) {
+        this.repository = repository;
         this.transitionOccuredListeners = transitionOccuredListeners;
     }
 
     public Transition get(String stateMachineId) {
-        return accessor.get(stateMachineId);
+        return repository.get(stateMachineId);
     }
 
     public Set<String> getAllIds() {
-        return accessor.getAllIds();
+        return repository.getAllIds();
     }
 
     public String create(Class<? extends State> initialStateClass, StateFactory stateFactory, List<Object> initialContextData) {
@@ -42,7 +42,7 @@ public class StateMachineTemplate {
     }
 
     public String create(State initialState, Class<? extends StateFactory> stateFactory, List<Object> initialContextData) {
-        return accessor.create(initialState, stateFactory, initialContextData);
+        return repository.create(initialState, stateFactory, initialContextData);
     }
 
     public <T> T tryWithLock(String stateMachineId, StateMachineCallable<T> stateMachineCallable) {
@@ -58,10 +58,10 @@ public class StateMachineTemplate {
      */
     public <T> T tryWithLock(String stateMachineId, StateMachineCallable<T> stateMachineCallable, long timeout, TimeUnit timeUnit) {
         T result = null;
-        Optional<StateMachineContextAccessor.Lock> lock = Optional.empty();
+        Optional<StateMachineRepository.Lock> lock = Optional.empty();
 
         try {
-            lock = accessor.tryLock(stateMachineId, timeout, timeUnit);
+            lock = repository.tryLock(stateMachineId, timeout, timeUnit);
         } catch (Exception e) {
             LOG.error("Error with currentStateMachine [" + stateMachineId + "]", e);
             stateMachineCallable.onLockFailed(e);

@@ -4,13 +4,13 @@ import io.dropwizard.Bundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import pure.fsm.core.StateFactoryRegistration;
-import pure.fsm.core.accessor.CleanUpFinalisedStateMachines;
-import pure.fsm.core.accessor.OnCleanupListener;
+import pure.fsm.core.cleanup.CleanUpFinalisedStateMachines;
+import pure.fsm.core.cleanup.OnCleanupListener;
 import pure.fsm.core.state.StateFactory;
 import pure.fsm.core.template.StateMachineTemplate;
 import pure.fsm.core.timeout.TimeoutTicker;
 import pure.fsm.core.transition.TransitionOccuredListener;
-import pure.fsm.inmemory.accessor.InMemoryStateMachineContextAccessor;
+import pure.fsm.inmemory.repository.InMemoryStateMachineRepository;
 
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
@@ -21,7 +21,7 @@ import static com.google.common.collect.Lists.newArrayList;
 
 public abstract class StateMachineBundle implements Bundle {
 
-    private InMemoryStateMachineContextAccessor accessor;
+    private InMemoryStateMachineRepository repository;
     private StateMachineTemplate template;
 
     @Override
@@ -30,8 +30,8 @@ public abstract class StateMachineBundle implements Bundle {
 
     @Override
     public void run(Environment environment) {
-        accessor = new InMemoryStateMachineContextAccessor();
-        template = new StateMachineTemplate(accessor, createTransitionOccuredListeners());
+        repository = new InMemoryStateMachineRepository();
+        template = new StateMachineTemplate(repository, createTransitionOccuredListeners());
 
         createStateFactories().stream().forEach(StateFactoryRegistration::registerStateFactory);
     }
@@ -47,13 +47,13 @@ public abstract class StateMachineBundle implements Bundle {
     }
 
     public TimeoutTicker getTimeoutTicker(long howOften, TimeUnit timeUnit) {
-        return new TimeoutTicker(accessor, getTemplate(), howOften, timeUnit);
+        return new TimeoutTicker(repository, getTemplate(), howOften, timeUnit);
     }
 
     public CleanUpFinalisedStateMachines getCleaner(Collection<OnCleanupListener> cleanupListeners,
                                                     long scheduleFrequency, TimeUnit scheduleTimeUnit,
                                                     long keepFinalised, ChronoUnit keepFinalisedTimeUnit) {
 
-        return new CleanUpFinalisedStateMachines(accessor, cleanupListeners, scheduleFrequency, scheduleTimeUnit, keepFinalised, keepFinalisedTimeUnit);
+        return new CleanUpFinalisedStateMachines(repository, cleanupListeners, scheduleFrequency, scheduleTimeUnit, keepFinalised, keepFinalisedTimeUnit);
     }
 }

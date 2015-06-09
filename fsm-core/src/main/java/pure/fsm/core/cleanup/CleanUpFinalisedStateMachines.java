@@ -1,8 +1,9 @@
-package pure.fsm.core.accessor;
+package pure.fsm.core.cleanup;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Transition;
+import pure.fsm.core.repository.StateMachineRepository;
 import pure.fsm.core.state.FinalState;
 
 import java.time.LocalDateTime;
@@ -19,7 +20,7 @@ public class CleanUpFinalisedStateMachines {
 
     private final static Logger LOG = LoggerFactory.getLogger(CleanUpFinalisedStateMachines.class);
 
-    private final StateMachineContextAccessor accessor;
+    private final StateMachineRepository repository;
     private final Collection<OnCleanupListener> cleanupListeners;
     private final long scheduleFrequency;
     private final TimeUnit scheduleTimeUnit;
@@ -27,11 +28,11 @@ public class CleanUpFinalisedStateMachines {
     private final ChronoUnit keepFinalisedTimeUnit;
     private final ScheduledExecutorService scheduledExecutorService;
 
-    public CleanUpFinalisedStateMachines(StateMachineContextAccessor accessor,
+    public CleanUpFinalisedStateMachines(StateMachineRepository repository,
                                          Collection<OnCleanupListener> cleanupListeners,
                                          long scheduleFrequency, TimeUnit scheduleTimeUnit,
                                          long keepFinalised, ChronoUnit keepFinalisedTimeUnit) {
-        this.accessor = accessor;
+        this.repository = repository;
         this.cleanupListeners = cleanupListeners;
         this.scheduleFrequency = scheduleFrequency;
         this.scheduleTimeUnit = scheduleTimeUnit;
@@ -55,11 +56,11 @@ public class CleanUpFinalisedStateMachines {
     public void checkForFinalizedStateMachinesAndCleanupIfRequired() {
         LOG.info("About to check for outdated finalized state machines.");
 
-        accessor.getAllIds().forEach(id -> {
-            Transition transition = accessor.get(id);
+        repository.getAllIds().forEach(id -> {
+            Transition transition = repository.get(id);
             if (transition.getState() instanceof FinalState) {
                 try {
-                    Optional<StateMachineContextAccessor.Lock> lock = accessor.tryLock(id, 1, SECONDS);
+                    Optional<StateMachineRepository.Lock> lock = repository.tryLock(id, 1, SECONDS);
                     if (lock.isPresent() && shouldCleanup(lock.get().getLatestTransition())) {
                         LOG.info("unlocking and removing state machine [{}]",
                                 lock.get().getLatestTransition().getContext().stateMachineId());

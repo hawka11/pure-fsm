@@ -1,10 +1,10 @@
-package pure.fsm.inmemory.accessor;
+package pure.fsm.inmemory.repository;
 
 import com.google.common.collect.ImmutableSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Transition;
-import pure.fsm.core.accessor.StateMachineContextAccessor;
+import pure.fsm.core.repository.StateMachineRepository;
 import pure.fsm.core.state.FinalState;
 import pure.fsm.core.state.State;
 import pure.fsm.core.state.StateFactory;
@@ -21,9 +21,9 @@ import java.util.concurrent.locks.ReentrantLock;
 import static java.util.stream.Collectors.toSet;
 import static pure.fsm.core.Transition.initialTransition;
 
-public class InMemoryStateMachineContextAccessor implements StateMachineContextAccessor {
+public class InMemoryStateMachineRepository implements StateMachineRepository {
 
-    private final Logger LOG = LoggerFactory.getLogger(InMemoryStateMachineContextAccessor.class);
+    private final Logger LOG = LoggerFactory.getLogger(InMemoryStateMachineRepository.class);
 
     private final AtomicLong idGenerator = new AtomicLong(1000);
 

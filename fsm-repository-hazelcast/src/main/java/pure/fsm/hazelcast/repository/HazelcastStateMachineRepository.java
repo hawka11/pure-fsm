@@ -1,4 +1,4 @@
-package pure.fsm.hazelcast.accessor;
+package pure.fsm.hazelcast.repository;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IAtomicLong;
@@ -6,7 +6,7 @@ import com.hazelcast.core.IMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Transition;
-import pure.fsm.core.accessor.StateMachineContextAccessor;
+import pure.fsm.core.repository.StateMachineRepository;
 import pure.fsm.core.state.FinalState;
 import pure.fsm.core.state.State;
 import pure.fsm.core.state.StateFactory;
@@ -21,13 +21,13 @@ import static com.google.common.collect.ImmutableSet.copyOf;
 import static java.util.stream.Collectors.toSet;
 import static pure.fsm.core.Transition.initialTransition;
 
-public class HazelcastStateMachineContextAccessor implements StateMachineContextAccessor {
+public class HazelcastStateMachineRepository implements StateMachineRepository {
 
-    private final Logger LOG = LoggerFactory.getLogger(HazelcastStateMachineContextAccessor.class);
+    private final Logger LOG = LoggerFactory.getLogger(HazelcastStateMachineRepository.class);
 
     private final HazelcastInstance hazelcastInstance;
 
-    public HazelcastStateMachineContextAccessor(HazelcastInstance hazelcastInstance) {
+    public HazelcastStateMachineRepository(HazelcastInstance hazelcastInstance) {
         this.hazelcastInstance = hazelcastInstance;
     }
 

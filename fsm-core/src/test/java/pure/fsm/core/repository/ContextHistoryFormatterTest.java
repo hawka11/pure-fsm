@@ -1,4 +1,4 @@
-package pure.fsm.core.accessor;
+package pure.fsm.core.repository;
 
 public class ContextHistoryFormatterTest {
 

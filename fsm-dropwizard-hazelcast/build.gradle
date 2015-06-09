@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-    compile project(":fsm-accessor-hazelcast")
+    compile project(":fsm-repository-hazelcast")
 
     compile "io.dropwizard:dropwizard-core:$dropWizardVersion"
 

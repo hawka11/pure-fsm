@@ -4,10 +4,10 @@ import com.hazelcast.core.HazelcastInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Transition;
-import pure.fsm.core.accessor.StateMachineContextAccessor;
+import pure.fsm.core.repository.StateMachineRepository;
 import pure.fsm.core.event.Event;
 import pure.fsm.core.template.StateMachineTemplate;
-import pure.fsm.hazelcast.accessor.HazelcastStateMachineContextAccessor;
+import pure.fsm.hazelcast.repository.HazelcastStateMachineRepository;
 import pure.fsm.hazelcast.resource.DistributedResourceFactory;
 import pure.fsm.telcohazelcast.state.HzInitialState;
 import pure.fsm.telcohazelcast.state.HzTelcoStateFactory;
@@ -25,10 +25,10 @@ class StateMachineOperations {
     private final StateMachineTemplate template;
     private final HzTelcoStateFactory stateFactory;
     private final HazelcastInstance hazelcastInstance;
-    private final StateMachineContextAccessor accessor;
+    private final StateMachineRepository repository;
 
     public Transition getStateMachine(String stateMachineId) {
-        return accessor.get(stateMachineId);
+        return repository.get(stateMachineId);
     }
 
     public StateMachineOperations() {
@@ -36,8 +36,8 @@ class StateMachineOperations {
         final DistributedResourceFactory distributedResourceFactory = new DistributedResourceFactory(hazelcastInstance);
         stateFactory = new HzTelcoStateFactory(distributedResourceFactory);
 
-        accessor = new HazelcastStateMachineContextAccessor(hazelcastInstance);
-        template = new StateMachineTemplate(accessor, newArrayList());
+        repository = new HazelcastStateMachineRepository(hazelcastInstance);
+        template = new StateMachineTemplate(repository, newArrayList());
     }
 
     public void scheduleEventOnThread(String stateMachineId, final Event event) {
@@ -48,7 +48,7 @@ class StateMachineOperations {
 
     public String createStateMachineInInitialState() {
         registerStateFactory(stateFactory);
-        return accessor.create(
+        return repository.create(
                 stateFactory.getStateByClass(HzInitialState.class), HzTelcoStateFactory.class, newArrayList(initialTelcoRecharge()));
     }
 

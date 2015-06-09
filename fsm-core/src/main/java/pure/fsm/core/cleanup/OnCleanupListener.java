@@ -1,4 +1,4 @@
-package pure.fsm.core.accessor;
+package pure.fsm.core.cleanup;
 
 import pure.fsm.core.Transition;
 

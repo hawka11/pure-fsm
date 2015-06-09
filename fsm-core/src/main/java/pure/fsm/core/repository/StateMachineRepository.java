@@ -1,4 +1,4 @@
-package pure.fsm.core.accessor;
+package pure.fsm.core.repository;
 
 import pure.fsm.core.Transition;
 import pure.fsm.core.state.State;
@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-public interface StateMachineContextAccessor {
+public interface StateMachineRepository {
 
     Transition get(String stateMachineId);
 

@@ -10,13 +10,13 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import pure.fsm.core.StateFactoryRegistration;
 import pure.fsm.core.Transition;
-import pure.fsm.core.accessor.CleanUpFinalisedStateMachines;
-import pure.fsm.core.accessor.OnCleanupListener;
+import pure.fsm.core.cleanup.CleanUpFinalisedStateMachines;
+import pure.fsm.core.cleanup.OnCleanupListener;
 import pure.fsm.core.state.StateFactory;
 import pure.fsm.core.template.StateMachineTemplate;
 import pure.fsm.core.timeout.TimeoutTicker;
 import pure.fsm.core.transition.TransitionOccuredListener;
-import pure.fsm.hazelcast.accessor.HazelcastStateMachineContextAccessor;
+import pure.fsm.hazelcast.repository.HazelcastStateMachineRepository;
 import pure.fsm.hazelcast.resource.DistributedResourceFactory;
 import pure.fsm.hazelcast.serialization.TransitionSerializer;
 import pure.fsm.hazelcast.serialization.StateMachineModule;
@@ -32,7 +32,7 @@ public abstract class StateMachineBundle implements Bundle {
 
     private DistributedResourceFactory distributedResourceFactory;
     private HazelcastInstance hazelcastInstance;
-    private HazelcastStateMachineContextAccessor accessor;
+    private HazelcastStateMachineRepository repository;
     private StateMachineTemplate template;
 
     @Override
@@ -45,8 +45,8 @@ public abstract class StateMachineBundle implements Bundle {
 
         hazelcastInstance = createClientHz(transitionSerializer);
         distributedResourceFactory = new DistributedResourceFactory(hazelcastInstance);
-        accessor = new HazelcastStateMachineContextAccessor(hazelcastInstance);
-        template = new StateMachineTemplate(accessor, createTransitionOccuredListeners());
+        repository = new HazelcastStateMachineRepository(hazelcastInstance);
+        template = new StateMachineTemplate(repository, createTransitionOccuredListeners());
 
         createStateFactories().stream().forEach(StateFactoryRegistration::registerStateFactory);
 
@@ -83,8 +83,8 @@ public abstract class StateMachineBundle implements Bundle {
         return hazelcastInstance;
     }
 
-    public HazelcastStateMachineContextAccessor getAccessor() {
-        return accessor;
+    public HazelcastStateMachineRepository getStateMachineRepository() {
+        return repository;
     }
 
     public StateMachineTemplate getTemplate() {
@@ -92,13 +92,13 @@ public abstract class StateMachineBundle implements Bundle {
     }
 
     public TimeoutTicker getTimeoutTicker(long howOften, TimeUnit timeUnit) {
-        return new TimeoutTicker(getAccessor(), getTemplate(), howOften, timeUnit);
+        return new TimeoutTicker(getStateMachineRepository(), getTemplate(), howOften, timeUnit);
     }
 
     public CleanUpFinalisedStateMachines getCleaner(Collection<OnCleanupListener> cleanupListeners,
                                                     long scheduleFrequency, TimeUnit scheduleTimeUnit,
                                                     long keepFinalised, ChronoUnit keepFinalisedTimeUnit) {
 
-        return new CleanUpFinalisedStateMachines(getAccessor(), cleanupListeners, scheduleFrequency, scheduleTimeUnit, keepFinalised, keepFinalisedTimeUnit);
+        return new CleanUpFinalisedStateMachines(getStateMachineRepository(), cleanupListeners, scheduleFrequency, scheduleTimeUnit, keepFinalised, keepFinalisedTimeUnit);
     }
 }

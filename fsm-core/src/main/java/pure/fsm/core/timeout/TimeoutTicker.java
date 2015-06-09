@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.StateMachine;
 import pure.fsm.core.Transition;
-import pure.fsm.core.accessor.StateMachineContextAccessor;
+import pure.fsm.core.repository.StateMachineRepository;
 import pure.fsm.core.event.TimeoutTickEvent;
 import pure.fsm.core.template.StateMachineCallable;
 import pure.fsm.core.template.StateMachineTemplate;
@@ -20,16 +20,16 @@ public class TimeoutTicker {
 
     private final static Logger LOG = LoggerFactory.getLogger(TimeoutTicker.class);
 
-    private final StateMachineContextAccessor accessor;
+    private final StateMachineRepository repository;
     private final StateMachineTemplate template;
     private final long scheduleFrequency;
     private final TimeUnit timeUnit;
     private final ScheduledExecutorService scheduledExecutorService;
 
-    public TimeoutTicker(StateMachineContextAccessor accessor,
+    public TimeoutTicker(StateMachineRepository repository,
                          StateMachineTemplate template,
                          long scheduleFrequency, TimeUnit timeUnit) {
-        this.accessor = accessor;
+        this.repository = repository;
         this.template = template;
         this.scheduleFrequency = scheduleFrequency;
         this.timeUnit = timeUnit;
@@ -49,7 +49,7 @@ public class TimeoutTicker {
     public void sendTimeOutTickerEvents() {
         LOG.info("About to send out time out ticker events.");
 
-        accessor.getInProgressIds().stream()
+        repository.getInProgressIds().stream()
                 .filter(this::stateMachineIsTimedout)
                 .forEach(id -> template.tryWithLock(id, new StateMachineCallable() {
                     @Override

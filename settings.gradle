@@ -1,7 +1,7 @@
 
 include 'fsm-core'
-include 'fsm-accessor-hazelcast'
-include 'fsm-accessor-inmemory'
+include 'fsm-repository-hazelcast'
+include 'fsm-repository-inmemory'
 include 'fsm-telco-example-inmemory'
 include 'fsm-telco-example-hazelcast'
 

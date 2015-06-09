@@ -10,7 +10,7 @@ import java.time.temporal.ChronoUnit;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static pure.fsm.core.accessor.ContextHistoryFormatter.HISTORY_FORMATTER;
+import static pure.fsm.core.cleanup.ContextHistoryFormatter.HISTORY_FORMATTER;
 
 public class FsmApplication extends Application<FsmConfiguration> {
 
