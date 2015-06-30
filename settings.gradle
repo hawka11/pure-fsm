@@ -9,4 +9,5 @@ include 'fsm-telco-example-user-input'
 
 include 'fsm-dropwizard-hazelcast'
 include 'fsm-dropwizard-inmemory'
+include 'fsm-repository-jdbi'
 

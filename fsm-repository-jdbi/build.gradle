@@ -1,0 +1,13 @@
+
+dependencies {
+    compile (
+            project(":fsm-core"),
+
+            "io.dropwizard:dropwizard-jdbi:$dropWizardVersion",
+            "org.flywaydb:flyway-core:3.2.1",
+            'org.apache.commons:commons-io:1.3.2',
+            "mysql:mysql-connector-java:$mysqlConnectorVersion",
+    )
+
+    testCompile "junit:junit:$junitVersion"
+}
