@@ -11,13 +11,13 @@
     - start
     - shellinit
 
-- name: Remove Pure FSM Mysql existing container
-  docker:
-    name: pure-mysql
-    image: mysql
-    state: absent
-    use_tls: encrypt
-    tls_hostname: boot2docker
+#- name: Remove Pure FSM Mysql existing container
+#  docker:
+#    name: pure-mysql
+#    image: mysql
+#    state: absent
+#    use_tls: encrypt
+#    tls_hostname: boot2docker
 
 - name: Create Pure FSM Mysql container
   environment:

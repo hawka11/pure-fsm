@@ -1,6 +1,5 @@
-
 dependencies {
-    compile (
+    compile(
             project(":fsm-core"),
 
             "io.dropwizard:dropwizard-jdbi:$dropWizardVersion",
@@ -9,5 +8,8 @@ dependencies {
             "mysql:mysql-connector-java:$mysqlConnectorVersion",
     )
 
-    testCompile "junit:junit:$junitVersion"
+    testCompile(
+            "junit:junit:$junitVersion",
+            "org.assertj:assertj-core:$assertJVersion"
+    )
 }
