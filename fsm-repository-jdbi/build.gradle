@@ -6,6 +6,8 @@ dependencies {
             "org.flywaydb:flyway-core:3.2.1",
             'org.apache.commons:commons-io:1.3.2',
             "mysql:mysql-connector-java:$mysqlConnectorVersion",
+            "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion",
+            "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:$jacksonVersion"
     )
 
     testCompile(

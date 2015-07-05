@@ -1,8 +1,14 @@
 package pure.fsm.jdbi.repository;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
+import pure.fsm.core.StateFactoryRegistration;
+import pure.fsm.core.Transition;
+import pure.fsm.core.fixture.TestInitialContext;
+import pure.fsm.core.fixture.TestNonFinalState;
+import pure.fsm.core.fixture.TestStateFactory;
 
 import java.util.List;
 
@@ -10,8 +16,9 @@ import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
+import static pure.fsm.core.Transition.initialTransition;
 
-public class StateMachineIdRepositoryTest {
+public class StateMachineDaoTest {
 
     protected static JdbiRule JDBI_RULE = new JdbiRule("purefsm-test.yml");
 
@@ -23,9 +30,14 @@ public class StateMachineIdRepositoryTest {
             .around(JDBI_RULE)
             .around(FLYWAY_RULE);
 
+    @Before
+    public void beforeEach() {
+        StateFactoryRegistration.registerStateFactory(new TestStateFactory());
+    }
+
     @Test
     public void shouldGetSequentialStateMachineNumbers() {
-        final StateMachineIdRepository repository = JDBI_RULE.DBI.onDemand(StateMachineIdRepository.class);
+        final StateMachineDao repository = JDBI_RULE.DBI.onDemand(StateMachineDao.class);
 
         assertThat(repository.getNextId()).isEqualTo("1");
         assertThat(repository.getNextId()).isEqualTo("2");
@@ -35,7 +47,7 @@ public class StateMachineIdRepositoryTest {
     @Test
     public void shouldMultipleThreadsGetUniqueIdsConcurrently() {
 
-        final StateMachineIdRepository repository = JDBI_RULE.DBI.onDemand(StateMachineIdRepository.class);
+        final StateMachineDao repository = JDBI_RULE.DBI.onDemand(StateMachineDao.class);
 
         final List<String> firstListIds = newArrayList();
         final List<String> secondListIds = newArrayList();
@@ -62,12 +74,36 @@ public class StateMachineIdRepositoryTest {
         assertNotInOtherLists(thirdListIds, secondListIds, firstListIds);
     }
 
+    @Test
+    public void test() {
+        final StateMachineDao repository = JDBI_RULE.DBI.onDemand(StateMachineDao.class);
+
+        final Transition transition = getInitialTestTransition();
+
+        repository.insertStateMachineData("999", transition);
+
+        final Transition retrieved = repository.getStateMachineData("999");
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.getEvent()).isEqualTo(transition.getEvent());
+        assertThat(retrieved.getState()).isEqualToComparingFieldByField(transition.getState());
+        assertThat(retrieved.getTransitioned()).isEqualTo(transition.getTransitioned());
+        assertThat(retrieved.getContext().stateMachineId()).isEqualTo("999");
+        assertThat(retrieved.getContext().stateFactory().getClass()).isEqualTo(TestStateFactory.class);
+    }
+
+    private Transition getInitialTestTransition() {
+        return initialTransition("999",
+                new TestNonFinalState(),
+                TestStateFactory.class,
+                newArrayList(new TestInitialContext("testdata")));
+    }
+
     private void assertNotInOtherLists(List<String> primary, List<String> checkOne, List<String> checkTwo) {
         assertFalse(primary.stream().filter(checkOne::contains).findAny().isPresent());
         assertFalse(primary.stream().filter(checkTwo::contains).findAny().isPresent());
     }
 
-    private Thread getNewThread(StateMachineIdRepository repository, List<String> listIds) {
+    private Thread getNewThread(StateMachineDao repository, List<String> listIds) {
         return new Thread(() -> {
             System.out.println("Started thread");
             for (int i = 0; i < 100; i++) {

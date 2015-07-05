@@ -3,7 +3,6 @@ package pure.fsm.jdbi.repository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Transition;
-import pure.fsm.core.repository.StateMachineRepository;
 import pure.fsm.core.state.State;
 import pure.fsm.core.state.StateFactory;
 
@@ -14,13 +13,13 @@ import java.util.concurrent.TimeUnit;
 
 import static pure.fsm.core.Transition.initialTransition;
 
-public class JdbiStateMachineRepository implements StateMachineRepository{
+public class JdbiStateMachineRepository implements pure.fsm.core.repository.StateMachineRepository {
 
     private final Logger LOG = LoggerFactory.getLogger(JdbiStateMachineRepository.class);
 
-    private final StateMachineIdRepository repository;
+    private final StateMachineDao repository;
 
-    public JdbiStateMachineRepository(StateMachineIdRepository repository) {
+    public JdbiStateMachineRepository(StateMachineDao repository) {
         this.repository = repository;
     }
 
@@ -42,7 +41,11 @@ public class JdbiStateMachineRepository implements StateMachineRepository{
     @Override
     public String create(State initialState, Class<? extends StateFactory> stateFactory, List<Object> initialContextData) {
         final String smId = repository.getNextId();
+
         final Transition transition = initialTransition(smId, initialState, stateFactory, initialContextData);
+
+        repository.insertStateMachineData(smId, transition);
+
         return smId;
     }
 
