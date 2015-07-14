@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
+import org.skife.jdbi.v2.Handle;
 import pure.fsm.core.StateFactoryRegistration;
 import pure.fsm.core.Transition;
 import pure.fsm.core.fixture.TestEvent;
@@ -12,7 +13,6 @@ import pure.fsm.core.fixture.TestNonFinalState;
 import pure.fsm.core.fixture.TestStateFactory;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -142,78 +142,52 @@ public class StateMachineDaoTest {
 
     @Test
     public void shouldOnlyAllowOneHandleToObtainLockAtOneTime() throws InterruptedException {
-        final AtomicBoolean lockOne = new AtomicBoolean(false);
-        final AtomicBoolean lockTwo = new AtomicBoolean(false);
-        final AtomicBoolean lockThree = new AtomicBoolean(false);
-        final AtomicBoolean lockFour = new AtomicBoolean(false);
-        final AtomicBoolean lockFive = new AtomicBoolean(false);
+        final Handle handleOne = JDBI_RULE.DBI.open();
+        final Handle handleTwo = JDBI_RULE.DBI.open();
+        final Handle handleThree = JDBI_RULE.DBI.open();
 
-        final String stateMachineId = "4444";
-        final int holdFirstLockForMillis = 3000;
+        assertTrue(attemptLock(handleOne, "4445"));
+        assertFalse(attemptLock(handleTwo, "4445"));
+        assertFalse(attemptLock(handleTwo, "4445"));
+        assertFalse(attemptLock(handleThree, "4445"));
+        assertFalse(attemptLock(handleThree, "4445"));
 
-        //get initial lock and hold for 3 secs
-        final Thread initialThreadShouldHaveLock = getLockingUnlockingThread(stateMachineId, holdFirstLockForMillis, lockOne);
-        sleep(500);
+        unlock(handleOne, "4445");
 
-        //try times for lock, each waiting 2 secs
-        final Thread threadTwo = getLockingOnlyThread(stateMachineId, 2000, lockTwo);
-        final Thread threadThree = getLockingOnlyThread(stateMachineId, 2000, lockThree);
-        final Thread threadFour = getLockingOnlyThread(stateMachineId, 2000, lockFour);
+        assertTrue(attemptLock(handleTwo, "4445"));
+        assertFalse(attemptLock(handleThree, "4445"));
+        assertFalse(attemptLock(handleThree, "4445"));
 
-        //after releasing first lock, try again and should succeed
-        sleep(holdFirstLockForMillis + 500);
-        final Thread threadFive = getLockingOnlyThread(stateMachineId, 1000, lockFive);
+        unlock(handleTwo, "4445");
 
-        initialThreadShouldHaveLock.join();
-        threadTwo.join();
-        threadThree.join();
-        threadFour.join();
-        threadFive.join();
-
-        assertTrue(lockOne.get());
-        assertFalse(lockTwo.get());
-        assertFalse(lockThree.get());
-        assertFalse(lockFour.get());
-        assertTrue(lockFive.get());
+        assertTrue(attemptLock(handleThree, "4445"));
+        assertFalse(attemptLock(handleOne, "4445"));
+        assertFalse(attemptLock(handleOne, "4445"));
     }
 
-    private Thread getLockingOnlyThread(String lockId, int sleep, AtomicBoolean lockFlag) {
-        final Thread threadOne = new Thread(() -> {
-            JDBI_RULE.DBI.withHandle(handle -> {
-                final StateMachineDao dao = handle.attach(StateMachineDao.class);
-                final boolean gotlock = dao.lock(lockId, 2);
-                System.out.println("in thread, got lock: " + gotlock);
-                System.out.flush();
-                lockFlag.set(gotlock);
-                sleep(sleep);
-                return null;
-            });
-        });
-        threadOne.start();
-        return threadOne;
+
+    @Test
+    public void shouldNotUnlockIfAttemptToUnlockWithHandleThatDidntObtainLock() throws InterruptedException {
+        final Handle handleOne = JDBI_RULE.DBI.open();
+        final Handle handleTwo = JDBI_RULE.DBI.open();
+
+        assertTrue(attemptLock(handleOne, "4446"));
+        assertFalse(attemptLock(handleTwo, "4446"));
+        assertFalse(attemptLock(handleTwo, "4446"));
+
+        unlock(handleTwo, "4446");
+
+        assertTrue(attemptLock(handleOne, "4446"));
+        assertFalse(attemptLock(handleTwo, "4446"));
+        assertFalse(attemptLock(handleTwo, "4446"));
     }
 
-    private Thread getLockingUnlockingThread(String lockId, int sleep, AtomicBoolean lockFlag) {
-        final Thread threadOne = new Thread(() -> {
-            JDBI_RULE.DBI.withHandle(handle -> {
-                final StateMachineDao dao = handle.attach(StateMachineDao.class);
-                lockFlag.set(dao.lock(lockId, 1));
-                sleep(sleep);
-                dao.unlock(lockId);
-                return null;
-            });
-
-        });
-        threadOne.start();
-        return threadOne;
+    private boolean attemptLock(Handle handle, String smId) {
+        return handle.attach(StateMachineDao.class).lock(smId, 1);
     }
 
-    private void sleep(int millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    private boolean unlock(Handle handle, String smId) {
+        return handle.attach(StateMachineDao.class).unlock(smId);
     }
 
     private Transition getInitialTestTransition(String stateMachineId) {
