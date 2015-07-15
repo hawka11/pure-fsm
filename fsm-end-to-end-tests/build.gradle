@@ -1,0 +1,14 @@
+dependencies {
+    compile project(":fsm-core")
+    compile project(":fsm-repository-inmemory")
+    compile project(":fsm-repository-hazelcast")
+    compile project(":fsm-repository-jdbi")
+
+    compile "org.slf4j:slf4j-log4j12:$slf4jVersion"
+
+    testCompile(
+            "org.assertj:assertj-core:$assertJVersion",
+            "junit:junit:$junitVersion",
+            project(":fsm-repository-jdbi").sourceSets.test.output,
+    )
+}
