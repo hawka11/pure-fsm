@@ -13,6 +13,7 @@ import pure.fsm.core.fixture.TestNonFinalState;
 import pure.fsm.core.fixture.TestStateFactory;
 
 import java.util.List;
+import java.util.Set;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -180,6 +181,20 @@ public class StateMachineDaoTest {
         assertTrue(attemptLock(handleOne, "4446"));
         assertFalse(attemptLock(handleTwo, "4446"));
         assertFalse(attemptLock(handleTwo, "4446"));
+    }
+
+    @Test
+    public void shouldRetreiveAllIds() throws InterruptedException {
+        final Handle handle = JDBI_RULE.DBI.open();
+        final StateMachineDao dao = handle.attach(StateMachineDao.class);
+
+        dao.insertStateMachineData("1", getInitialTestTransition("1"));
+        dao.insertStateMachineData("2", getInitialTestTransition("2"));
+        dao.insertStateMachineData("3", getInitialTestTransition("3"));
+
+        final Set<String> ids = dao.getAllIds();
+
+        assertThat(ids).contains("1", "2", "3");
     }
 
     private boolean attemptLock(Handle handle, String smId) {

@@ -10,7 +10,11 @@ import org.skife.jdbi.v2.sqlobject.mixins.GetHandle;
 import pure.fsm.core.Transition;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import static java.util.stream.Collectors.toSet;
 
 public abstract class StateMachineDao implements GetHandle {
 
@@ -24,6 +28,18 @@ public abstract class StateMachineDao implements GetHandle {
         objectMapper.registerModule(new Jdk8Module());
         objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
         return objectMapper;
+    }
+
+    public Set<String> getAllIds() {
+        return getHandle().inTransaction((conn, status) -> {
+            final Query<Map<String, Object>> query = conn.createQuery("SELECT id FROM statemachine");
+            final List<Map<String, Object>> list = query.list();
+
+            return list.stream()
+                    .map(i -> i.get("id"))
+                    .map(Object::toString)
+                    .collect(toSet());
+        });
     }
 
     public String getNextId() {

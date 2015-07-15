@@ -31,8 +31,10 @@ public class TestStateFactory implements StateFactory {
     @Override
     @SuppressWarnings("unchecked")
     public <T extends State> T getStateByClass(Class<T> stateClass) {
-        if(TestNonFinalState.class.equals(stateClass)) {
+        if (TestNonFinalState.class.equals(stateClass)) {
             return (T) new TestNonFinalState();
+        } else if (TestFinalState.class.equals(stateClass)) {
+            return (T) new TestFinalState();
         }
         return null;
     }
