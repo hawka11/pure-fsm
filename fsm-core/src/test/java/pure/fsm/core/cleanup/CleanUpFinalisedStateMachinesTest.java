@@ -48,7 +48,7 @@ public class CleanUpFinalisedStateMachinesTest {
 
     @Test
     public void shouldNotAttemptCleanupWhenNonFinalState() {
-        cleaner.cleanupStateMachineIfRequired("1", createTransitionInState(new TestNonFinalState()));
+        cleaner.cleanupIfFinalState("1", createTransitionInState(new TestNonFinalState()));
 
         verify(repository, never()).tryLock(eq("1"), anyLong(), any(TimeUnit.class));
     }
@@ -57,7 +57,7 @@ public class CleanUpFinalisedStateMachinesTest {
     public void shouldAttemptCleanupWhenFinalState() {
         when(repository.tryLock("2", 1, SECONDS)).thenReturn(Optional.of(lock));
 
-        cleaner.cleanupStateMachineIfRequired("2", createTransitionInState(new TestFinalState()));
+        cleaner.cleanupIfFinalState("2", createTransitionInState(new TestFinalState()));
 
         verify(repository).tryLock(eq("2"), anyLong(), any(TimeUnit.class));
     }

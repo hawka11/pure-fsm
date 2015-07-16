@@ -60,26 +60,35 @@ public class CleanUpFinalisedStateMachines {
 
         repository.getAllIds().forEach(id -> {
             Transition transition = repository.get(id);
-            cleanupStateMachineIfRequired(id, transition);
+            cleanupIfFinalState(id, transition);
         });
     }
 
     @VisibleForTesting
-    void cleanupStateMachineIfRequired(String id, Transition transition) {
+    void cleanupIfFinalState(String id, Transition transition) {
         if (transition.getState() instanceof FinalState) {
+            Optional<Lock> lock = repository.tryLock(id, 1, SECONDS);
             try {
-                Optional<Lock> lock = repository.tryLock(id, 1, SECONDS);
-                if (lock.isPresent() && shouldCleanup(lock.get().getLatestTransition())) {
-                    LOG.info("unlocking and removing state machine [{}]",
-                            lock.get().getLatestTransition().getContext().stateMachineId());
-
-                    cleanupListeners.forEach(l -> l.onCleanup(transition));
-
-                    lock.get().unlockAndRemove();
+                if (lock.isPresent()) {
+                    cleanupIfFinalizedTimeHasExpired(transition, lock.get());
                 }
             } catch (Exception e) {
                 LOG.error("Error with sm [" + id + "]", e);
             }
+        }
+    }
+
+    private void cleanupIfFinalizedTimeHasExpired(Transition transition, Lock lock) {
+        if (shouldCleanup(lock.getLatestTransition())) {
+
+            LOG.info("unlocking and removing state machine [{}]",
+                    lock.getLatestTransition().getContext().stateMachineId());
+
+            lock.unlockAndRemove();
+
+            cleanupListeners.forEach(l -> l.onCleanup(transition));
+        } else {
+            lock.unlock();
         }
     }
 

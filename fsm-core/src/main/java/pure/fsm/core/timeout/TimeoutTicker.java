@@ -54,6 +54,8 @@ public class TimeoutTicker {
                     @Override
                     public Transition doWith(Transition transition, StateMachine stateMachine) {
 
+                        LOG.info("Determined State Machine [{}] is timed out, sending timeout tick event", id);
+
                         return stateMachine.handleEvent(transition, new TimeoutTickEvent());
                     }
 
