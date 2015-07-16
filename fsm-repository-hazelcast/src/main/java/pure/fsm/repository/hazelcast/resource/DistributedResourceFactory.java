@@ -1,4 +1,4 @@
-package pure.fsm.hazelcast.resource;
+package pure.fsm.repository.hazelcast.resource;
 
 import com.hazelcast.core.HazelcastInstance;
 

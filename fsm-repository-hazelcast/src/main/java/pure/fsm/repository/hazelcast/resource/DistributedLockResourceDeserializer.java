@@ -1,4 +1,4 @@
-package pure.fsm.hazelcast.resource;
+package pure.fsm.repository.hazelcast.resource;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;

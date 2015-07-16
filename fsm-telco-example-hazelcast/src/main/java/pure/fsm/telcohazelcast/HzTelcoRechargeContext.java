@@ -3,7 +3,7 @@ package pure.fsm.telcohazelcast;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import pure.fsm.core.Context;
-import pure.fsm.hazelcast.resource.DistributedLockResource;
+import pure.fsm.repository.hazelcast.resource.DistributedLockResource;
 import pure.fsm.telco.TelcoRechargeContext;
 
 import java.util.Set;

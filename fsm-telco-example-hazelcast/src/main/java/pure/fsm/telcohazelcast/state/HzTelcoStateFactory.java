@@ -2,7 +2,7 @@ package pure.fsm.telcohazelcast.state;
 
 import pure.fsm.core.state.BaseStateFactory;
 import pure.fsm.core.state.State;
-import pure.fsm.hazelcast.resource.DistributedResourceFactory;
+import pure.fsm.repository.hazelcast.resource.DistributedResourceFactory;
 import pure.fsm.telco.state.RechargeRequestedState;
 import pure.fsm.telcohazelcast.guard.AllPinsRechargedAcceptedGuard;
 

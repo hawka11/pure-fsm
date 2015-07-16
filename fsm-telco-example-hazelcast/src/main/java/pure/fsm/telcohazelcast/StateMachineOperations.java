@@ -7,8 +7,8 @@ import pure.fsm.core.Transition;
 import pure.fsm.core.repository.StateMachineRepository;
 import pure.fsm.core.event.Event;
 import pure.fsm.core.template.StateMachineTemplate;
-import pure.fsm.hazelcast.repository.HazelcastStateMachineRepository;
-import pure.fsm.hazelcast.resource.DistributedResourceFactory;
+import pure.fsm.repository.hazelcast.HazelcastStateMachineRepository;
+import pure.fsm.repository.hazelcast.resource.DistributedResourceFactory;
 import pure.fsm.telcohazelcast.state.HzInitialState;
 import pure.fsm.telcohazelcast.state.HzTelcoStateFactory;
 

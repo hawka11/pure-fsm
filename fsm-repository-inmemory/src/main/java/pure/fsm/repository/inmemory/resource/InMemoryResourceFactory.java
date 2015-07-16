@@ -1,4 +1,4 @@
-package pure.fsm.inmemory.resource;
+package pure.fsm.repository.inmemory.resource;
 
 import java.util.Set;
 

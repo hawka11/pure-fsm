@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Context;
 import pure.fsm.core.Transition;
-import pure.fsm.hazelcast.resource.DistributedResourceFactory;
+import pure.fsm.repository.hazelcast.resource.DistributedResourceFactory;
 import pure.fsm.telco.user.domain.TelcoRechargeData;
 import pure.fsm.telco.user.domain.event.RequestAcceptedEvent;
 import pure.fsm.telco.user.domain.event.RequestPinEvent;

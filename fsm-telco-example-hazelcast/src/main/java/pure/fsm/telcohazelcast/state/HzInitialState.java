@@ -2,8 +2,8 @@ package pure.fsm.telcohazelcast.state;
 
 import pure.fsm.core.Context;
 import pure.fsm.core.Transition;
-import pure.fsm.hazelcast.resource.DistributedLockResource;
-import pure.fsm.hazelcast.resource.DistributedResourceFactory;
+import pure.fsm.repository.hazelcast.resource.DistributedLockResource;
+import pure.fsm.repository.hazelcast.resource.DistributedResourceFactory;
 import pure.fsm.telco.event.RequestRechargeEvent;
 import pure.fsm.telco.state.RechargeRequestedState;
 

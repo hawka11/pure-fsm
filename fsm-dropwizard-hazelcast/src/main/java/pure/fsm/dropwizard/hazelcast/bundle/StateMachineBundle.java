@@ -16,10 +16,10 @@ import pure.fsm.core.state.StateFactory;
 import pure.fsm.core.template.StateMachineTemplate;
 import pure.fsm.core.timeout.TimeoutTicker;
 import pure.fsm.core.transition.TransitionOccuredListener;
-import pure.fsm.hazelcast.repository.HazelcastStateMachineRepository;
-import pure.fsm.hazelcast.resource.DistributedResourceFactory;
-import pure.fsm.hazelcast.serialization.TransitionSerializer;
-import pure.fsm.hazelcast.serialization.StateMachineModule;
+import pure.fsm.repository.hazelcast.HazelcastStateMachineRepository;
+import pure.fsm.repository.hazelcast.resource.DistributedResourceFactory;
+import pure.fsm.repository.hazelcast.serialization.TransitionSerializer;
+import pure.fsm.repository.hazelcast.serialization.StateMachineModule;
 
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;

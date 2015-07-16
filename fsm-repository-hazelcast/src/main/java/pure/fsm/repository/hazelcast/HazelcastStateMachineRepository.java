@@ -1,4 +1,4 @@
-package pure.fsm.hazelcast.repository;
+package pure.fsm.repository.hazelcast;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IAtomicLong;

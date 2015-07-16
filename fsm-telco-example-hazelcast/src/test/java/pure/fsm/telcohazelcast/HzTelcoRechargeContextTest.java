@@ -3,7 +3,7 @@ package pure.fsm.telcohazelcast;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import pure.fsm.core.Transition;
-import pure.fsm.hazelcast.serialization.TransitionSerializer;
+import pure.fsm.repository.hazelcast.serialization.TransitionSerializer;
 import pure.fsm.telco.state.InitialState;
 import pure.fsm.telcohazelcast.state.HzTelcoStateFactory;
 

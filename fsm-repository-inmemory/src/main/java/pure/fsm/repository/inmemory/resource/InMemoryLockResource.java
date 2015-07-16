@@ -1,26 +1,22 @@
-package pure.fsm.hazelcast.resource;
+package pure.fsm.repository.inmemory.resource;
 
 import com.google.common.base.Preconditions;
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.ILock;
-import com.hazelcast.core.ISet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.context.CanUnlock;
 
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
 import java.util.function.Function;
 
-public class DistributedLockResource implements CanUnlock {
+public class InMemoryLockResource implements CanUnlock {
 
-    private final Logger LOG = LoggerFactory.getLogger(DistributedLockResource.class);
+    private final Logger LOG = LoggerFactory.getLogger(InMemoryLockResource.class);
 
-    private final HazelcastInstance hazelcastInstance;
     private final String setName;
     private final Set<String> lockedKeys;
 
-    DistributedLockResource(HazelcastInstance hazelcastInstance, String setName, Set<String> lockedKeys) {
-        this.hazelcastInstance = hazelcastInstance;
+    InMemoryLockResource(String setName, Set<String> lockedKeys) {
         this.setName = setName;
         this.lockedKeys = lockedKeys;
     }
@@ -57,11 +53,11 @@ public class DistributedLockResource implements CanUnlock {
         return lockedKeys;
     }
 
-    private void doWithinLock(Function<ISet<Object>, Void> function) {
-        ILock lock = hazelcastInstance.getLock("DistributedLockResource_" + setName);
+    private void doWithinLock(Function<Set<Object>, Void> function) {
+        Lock lock = null;
         lock.lock();
         try {
-            ISet<Object> distributedSet = hazelcastInstance.getSet(setName);
+            Set<Object> distributedSet = null;
             function.apply(distributedSet);
         } finally {
             lock.unlock();

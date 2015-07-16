@@ -2,8 +2,7 @@ package pure.fsm.telco.user.domain.state;
 
 import pure.fsm.core.state.BaseStateFactory;
 import pure.fsm.core.state.State;
-import pure.fsm.core.template.StateMachineTemplate;
-import pure.fsm.hazelcast.resource.DistributedResourceFactory;
+import pure.fsm.repository.hazelcast.resource.DistributedResourceFactory;
 import pure.fsm.telco.user.infra.TelcoGateway;
 
 import java.util.Map;

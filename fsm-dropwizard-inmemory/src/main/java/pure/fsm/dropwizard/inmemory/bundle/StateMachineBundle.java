@@ -10,7 +10,7 @@ import pure.fsm.core.state.StateFactory;
 import pure.fsm.core.template.StateMachineTemplate;
 import pure.fsm.core.timeout.TimeoutTicker;
 import pure.fsm.core.transition.TransitionOccuredListener;
-import pure.fsm.inmemory.repository.InMemoryStateMachineRepository;
+import pure.fsm.repository.inmemory.InMemoryStateMachineRepository;
 
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;

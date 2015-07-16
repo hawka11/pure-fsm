@@ -6,7 +6,7 @@ import pure.fsm.core.event.Event;
 import pure.fsm.core.event.TimeoutTickEvent;
 import pure.fsm.core.state.BaseNonFinalState;
 import pure.fsm.core.state.TimedOutFinalState;
-import pure.fsm.hazelcast.resource.DistributedResourceFactory;
+import pure.fsm.repository.hazelcast.resource.DistributedResourceFactory;
 import pure.fsm.telco.user.domain.event.ConfirmPinEvent;
 import pure.fsm.telco.user.domain.event.RequestAcceptedEvent;
 import pure.fsm.telco.user.domain.event.RequestPinEvent;

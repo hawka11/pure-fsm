@@ -1,6 +1,6 @@
 package pure.fsm.telcohazelcast.state;
 
-import pure.fsm.hazelcast.resource.DistributedResourceFactory;
+import pure.fsm.repository.hazelcast.resource.DistributedResourceFactory;
 import pure.fsm.telco.state.BaseTelcoState;
 
 public class BaseHzTelcoState extends BaseTelcoState {

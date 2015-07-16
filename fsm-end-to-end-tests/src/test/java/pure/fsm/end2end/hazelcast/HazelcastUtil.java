@@ -8,8 +8,8 @@ import com.hazelcast.config.SerializerConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import pure.fsm.core.Transition;
-import pure.fsm.hazelcast.serialization.StateMachineModule;
-import pure.fsm.hazelcast.serialization.TransitionSerializer;
+import pure.fsm.repository.hazelcast.serialization.StateMachineModule;
+import pure.fsm.repository.hazelcast.serialization.TransitionSerializer;
 
 public class HazelcastUtil {
 

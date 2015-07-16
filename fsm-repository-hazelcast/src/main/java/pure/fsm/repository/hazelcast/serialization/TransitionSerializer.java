@@ -1,4 +1,4 @@
-package pure.fsm.hazelcast.serialization;
+package pure.fsm.repository.hazelcast.serialization;
 
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;

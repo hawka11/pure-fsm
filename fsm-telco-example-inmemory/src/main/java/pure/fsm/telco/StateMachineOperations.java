@@ -8,7 +8,7 @@ import pure.fsm.core.repository.StateMachineRepository;
 import pure.fsm.core.event.Event;
 import pure.fsm.core.template.StateMachineTemplate;
 import pure.fsm.core.timeout.TimeoutTicker;
-import pure.fsm.inmemory.repository.InMemoryStateMachineRepository;
+import pure.fsm.repository.inmemory.InMemoryStateMachineRepository;
 import pure.fsm.telco.state.InitialState;
 import pure.fsm.telco.state.TelcoStateFactory;
 

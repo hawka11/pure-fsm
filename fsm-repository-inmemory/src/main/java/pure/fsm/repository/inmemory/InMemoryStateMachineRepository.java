@@ -1,4 +1,4 @@
-package pure.fsm.inmemory.repository;
+package pure.fsm.repository.inmemory;
 
 import com.google.common.collect.ImmutableSet;
 import org.slf4j.Logger;
