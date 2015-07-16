@@ -1,2 +1,3 @@
 
-INSERT INTO next_statemachine_id VALUES ('1')
+/** INIT **/
+INSERT INTO purefsm_statemachine_id VALUES ('1');

@@ -1,6 +1,7 @@
 package pure.fsm.dropwizard.mysql.bundle;
 
-import io.dropwizard.Bundle;
+import io.dropwizard.ConfiguredBundle;
+import io.dropwizard.jdbi.DBIFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.skife.jdbi.v2.DBI;
@@ -21,27 +22,26 @@ import java.util.concurrent.TimeUnit;
 
 import static com.google.common.collect.Lists.newArrayList;
 
-public abstract class StateMachineBundle implements Bundle {
+public abstract class StateMachineBundle implements ConfiguredBundle<PureFsmMysqlConfig> {
 
     private StateMachineRepository repository;
     private StateMachineTemplate template;
-    private final DBI dbi;
-
-    protected StateMachineBundle(DBI dbi) {
-        this.dbi = dbi;
-    }
+    private DBI dbi;
 
     @Override
     public void initialize(Bootstrap<?> bootstrap) {
     }
 
     @Override
-    public void run(Environment environment) {
+    public void run(PureFsmMysqlConfig configuration, Environment environment) {
+
+        DBIFactory dbiFactory = new DBIFactory();
+
+        dbi = dbiFactory.build(environment, configuration.database, "mysql");
         repository = new MysqlStateMachineRepository(dbi);
         template = new StateMachineTemplate(repository, createTransitionOccuredListeners());
 
         createStateFactories().stream().forEach(StateFactoryRegistration::registerStateFactory);
-
     }
 
     protected List<TransitionOccuredListener> createTransitionOccuredListeners() {
@@ -50,6 +50,9 @@ public abstract class StateMachineBundle implements Bundle {
 
     protected abstract List<StateFactory> createStateFactories();
 
+    public DBI getDbi() {
+        return dbi;
+    }
 
     public StateMachineRepository getStateMachineRepository() {
         return repository;
