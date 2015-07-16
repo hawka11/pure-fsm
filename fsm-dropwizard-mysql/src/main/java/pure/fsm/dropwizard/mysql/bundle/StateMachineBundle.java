@@ -37,7 +37,7 @@ public abstract class StateMachineBundle implements ConfiguredBundle<PureFsmMysq
 
         DBIFactory dbiFactory = new DBIFactory();
 
-        dbi = dbiFactory.build(environment, configuration.database, "mysql");
+        dbi = dbiFactory.build(environment, configuration.getPureFsmDatabase(), "purefsm-mysql");
         repository = new MysqlStateMachineRepository(dbi);
         template = new StateMachineTemplate(repository, createTransitionOccuredListeners());
 
