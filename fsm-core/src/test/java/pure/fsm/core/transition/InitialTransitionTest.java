@@ -6,7 +6,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import pure.fsm.core.Transition;
+import pure.fsm.core.fixture.TestAlternateContext;
+import pure.fsm.core.fixture.TestEvent;
 import pure.fsm.core.fixture.TestInitialContext;
+import pure.fsm.core.fixture.TestNonFinalState;
 import pure.fsm.core.fixture.TestStateFactory;
 import pure.fsm.core.state.State;
 
@@ -31,7 +34,10 @@ public class InitialTransitionTest {
         registerStateFactory(new TestStateFactory());
 
         initialTransition = initialTransition("111", initialState, TestStateFactory.class, newArrayList(new TestInitialContext("data")));
-        //transitioned = initialTransition.transitionTo(new TestNonFinalState(), new TestEvent(), newArrayList(new TestAlternateContext()));
+
+        transitioned = initialTransition.setNextTransition(Transition.To(
+                new TestNonFinalState(), new TestEvent(),
+                initialTransition.getContext().appendState(new TestAlternateContext())));
     }
 
     @Test

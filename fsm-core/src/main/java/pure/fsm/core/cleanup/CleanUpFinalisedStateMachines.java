@@ -1,9 +1,11 @@
 package pure.fsm.core.cleanup;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Transition;
 import pure.fsm.core.repository.StateMachineRepository;
+import pure.fsm.core.repository.StateMachineRepository.Lock;
 import pure.fsm.core.state.FinalState;
 
 import java.time.LocalDateTime;
@@ -58,22 +60,27 @@ public class CleanUpFinalisedStateMachines {
 
         repository.getAllIds().forEach(id -> {
             Transition transition = repository.get(id);
-            if (transition.getState() instanceof FinalState) {
-                try {
-                    Optional<StateMachineRepository.Lock> lock = repository.tryLock(id, 1, SECONDS);
-                    if (lock.isPresent() && shouldCleanup(lock.get().getLatestTransition())) {
-                        LOG.info("unlocking and removing state machine [{}]",
-                                lock.get().getLatestTransition().getContext().stateMachineId());
-
-                        cleanupListeners.forEach(l -> l.onCleanup(transition));
-
-                        lock.get().unlockAndRemove();
-                    }
-                } catch (Exception e) {
-                    LOG.error("Error with sm [" + id + "]", e);
-                }
-            }
+            cleanupStateMachineIfRequired(id, transition);
         });
+    }
+
+    @VisibleForTesting
+    void cleanupStateMachineIfRequired(String id, Transition transition) {
+        if (transition.getState() instanceof FinalState) {
+            try {
+                Optional<Lock> lock = repository.tryLock(id, 1, SECONDS);
+                if (lock.isPresent() && shouldCleanup(lock.get().getLatestTransition())) {
+                    LOG.info("unlocking and removing state machine [{}]",
+                            lock.get().getLatestTransition().getContext().stateMachineId());
+
+                    cleanupListeners.forEach(l -> l.onCleanup(transition));
+
+                    lock.get().unlockAndRemove();
+                }
+            } catch (Exception e) {
+                LOG.error("Error with sm [" + id + "]", e);
+            }
+        }
     }
 
     protected boolean shouldCleanup(Transition transition) {

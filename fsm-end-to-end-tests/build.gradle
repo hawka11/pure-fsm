@@ -9,6 +9,7 @@ dependencies {
     testCompile(
             "org.assertj:assertj-core:$assertJVersion",
             "junit:junit:$junitVersion",
-            project(":fsm-repository-jdbi").sourceSets.test.output,
+            project(":fsm-core").sourceSets.test.output,
+            project(":fsm-repository-jdbi").sourceSets.test.output
     )
 }

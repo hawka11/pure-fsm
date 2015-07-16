@@ -1,0 +1,68 @@
+package pure.fsm.core.cleanup;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import pure.fsm.core.StateFactoryRegistration;
+import pure.fsm.core.Transition;
+import pure.fsm.core.fixture.TestEvent;
+import pure.fsm.core.fixture.TestFinalState;
+import pure.fsm.core.fixture.TestNonFinalState;
+import pure.fsm.core.fixture.TestStateFactory;
+import pure.fsm.core.repository.StateMachineRepository;
+import pure.fsm.core.repository.StateMachineRepository.Lock;
+import pure.fsm.core.state.State;
+
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+
+import static com.google.common.collect.Lists.newArrayList;
+import static java.time.temporal.ChronoUnit.MILLIS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static pure.fsm.core.Context.initialContext;
+
+@RunWith(MockitoJUnitRunner.class)
+public class CleanUpFinalisedStateMachinesTest {
+
+    @Mock
+    private StateMachineRepository repository;
+
+    @Mock
+    private Lock lock;
+
+    private CleanUpFinalisedStateMachines cleaner;
+
+    @Before
+    public void beforeEach() {
+        StateFactoryRegistration.registerStateFactory(new TestStateFactory());
+        cleaner = new CleanUpFinalisedStateMachines(repository, newArrayList(), 1, SECONDS, 1, MILLIS);
+    }
+
+    @Test
+    public void shouldNotAttemptCleanupWhenNonFinalState() {
+        cleaner.cleanupStateMachineIfRequired("1", createTransitionInState(new TestNonFinalState()));
+
+        verify(repository, never()).tryLock(eq("1"), anyLong(), any(TimeUnit.class));
+    }
+
+    @Test
+    public void shouldAttemptCleanupWhenFinalState() {
+        when(repository.tryLock("2", 1, SECONDS)).thenReturn(Optional.of(lock));
+
+        cleaner.cleanupStateMachineIfRequired("2", createTransitionInState(new TestFinalState()));
+
+        verify(repository).tryLock(eq("2"), anyLong(), any(TimeUnit.class));
+    }
+
+    private Transition createTransitionInState(State state) {
+        return Transition.To(state, new TestEvent(), initialContext("1", TestStateFactory.class, newArrayList()));
+    }
+}

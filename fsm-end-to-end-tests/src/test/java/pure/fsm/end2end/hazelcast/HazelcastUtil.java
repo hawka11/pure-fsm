@@ -1,4 +1,4 @@
-package pure.fsm.end2end.test;
+package pure.fsm.end2end.hazelcast;
 
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.client.config.ClientConfig;
@@ -13,7 +13,7 @@ import pure.fsm.hazelcast.serialization.TransitionSerializer;
 
 public class HazelcastUtil {
 
-    static void startHzNodeOnThread() {
+    public static void startHzNodeOnThread() {
         new Thread(() -> {
             //Distributed HZ server cluster running somewhere
             Config config = new Config();
@@ -21,7 +21,7 @@ public class HazelcastUtil {
         }).run();
     }
 
-    static HazelcastInstance createClientHz() {
+    public static HazelcastInstance createClientHz() {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.addAddress("127.0.0.1:5701");
 

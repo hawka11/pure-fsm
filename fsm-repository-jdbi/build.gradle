@@ -12,6 +12,7 @@ dependencies {
 
     testCompile(
             "junit:junit:$junitVersion",
-            "org.assertj:assertj-core:$assertJVersion"
+            "org.assertj:assertj-core:$assertJVersion",
+            project(":fsm-core").sourceSets.test.output
     )
 }

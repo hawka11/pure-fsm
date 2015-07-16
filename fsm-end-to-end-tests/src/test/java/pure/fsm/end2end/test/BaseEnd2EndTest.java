@@ -5,6 +5,7 @@ import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import pure.fsm.core.repository.StateMachineRepository;
+import pure.fsm.end2end.hazelcast.HazelcastUtil;
 import pure.fsm.hazelcast.repository.HazelcastStateMachineRepository;
 import pure.fsm.inmemory.repository.InMemoryStateMachineRepository;
 import pure.fsm.jdbi.repository.FlywayRule;
@@ -15,10 +16,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.function.Supplier;
 
-import static pure.fsm.end2end.test.HazelcastUtil.createClientHz;
+import static pure.fsm.end2end.hazelcast.HazelcastUtil.createClientHz;
 
 @RunWith(Parameterized.class)
-public class BaseEnd2EndTest {
+public abstract class BaseEnd2EndTest {
 
     static {
         HazelcastUtil.startHzNodeOnThread();
@@ -33,9 +34,9 @@ public class BaseEnd2EndTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {(Supplier<StateMachineRepository>) InMemoryStateMachineRepository::new},
-                {(Supplier<StateMachineRepository>) () -> new JdbiStateMachineRepository(JDBI_RULE.DBI)},
-                {(Supplier<StateMachineRepository>) () -> new HazelcastStateMachineRepository(createClientHz())}
+                {(Supplier<StateMachineRepository>) InMemoryStateMachineRepository::new}
+                , {(Supplier<StateMachineRepository>) () -> new JdbiStateMachineRepository(JDBI_RULE.DBI)}
+                , {(Supplier<StateMachineRepository>) () -> new HazelcastStateMachineRepository(createClientHz())}
         });
     }
 

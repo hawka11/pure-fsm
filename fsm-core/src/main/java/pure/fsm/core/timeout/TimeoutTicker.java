@@ -4,17 +4,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.StateMachine;
 import pure.fsm.core.Transition;
-import pure.fsm.core.repository.StateMachineRepository;
 import pure.fsm.core.event.TimeoutTickEvent;
+import pure.fsm.core.repository.StateMachineRepository;
 import pure.fsm.core.template.StateMachineCallable;
 import pure.fsm.core.template.StateMachineTemplate;
 
-import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import static java.util.Optional.of;
 
 public class TimeoutTicker {
 
@@ -49,13 +47,14 @@ public class TimeoutTicker {
     public void sendTimeOutTickerEvents() {
         LOG.info("About to send out time out ticker events.");
 
-        repository.getInProgressIds().stream()
-                .filter(this::stateMachineIsTimedout)
+        final Set<String> inProgressIds = repository.getInProgressIds();
+        inProgressIds.stream()
+                .filter(this::stateMachineIsTimedOut)
                 .forEach(id -> template.tryWithLock(id, new StateMachineCallable() {
                     @Override
-                    public Optional<Transition> doWith(Transition transition, StateMachine stateMachine) {
+                    public Transition doWith(Transition transition, StateMachine stateMachine) {
 
-                        return of(stateMachine.handleEvent(transition, new TimeoutTickEvent()));
+                        return stateMachine.handleEvent(transition, new TimeoutTickEvent());
                     }
 
                     @Override
@@ -71,8 +70,12 @@ public class TimeoutTicker {
                 }));
     }
 
-    private boolean stateMachineIsTimedout(String id) {
+    private boolean stateMachineIsTimedOut(String id) {
         final Transition transition = template.get(id);
-        return transition.getState().isTimeout(transition);
+        final boolean timeout = transition.getState().isTimeout(transition);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("state machine [{}] timeout is [{}]", id, timeout);
+        }
+        return timeout;
     }
 }

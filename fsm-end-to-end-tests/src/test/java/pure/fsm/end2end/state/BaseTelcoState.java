@@ -11,6 +11,8 @@ import pure.fsm.end2end.event.RechargeAcceptedEvent;
 import pure.fsm.end2end.event.RequestRechargeEvent;
 import pure.fsm.end2end.event.TelcoEventVisitor;
 
+import java.time.LocalDateTime;
+
 import static pure.fsm.core.context.ContextMessage.withMessage;
 
 public class BaseTelcoState extends BaseNonFinalState implements TelcoEventVisitor {
@@ -48,5 +50,10 @@ public class BaseTelcoState extends BaseNonFinalState implements TelcoEventVisit
         return isTimeout(transition)
                 ? Transition.To(new TimedOutFinalState(), timeoutTickEvent, transition.getContext().appendState(withMessage("because timedout")))
                 : transition;
+    }
+
+    protected LocalDateTime getTimeoutDateTime(Transition prevTransition) {
+        //example timeout is 1 second
+        return prevTransition.getTransitioned().plusSeconds(1);
     }
 }
