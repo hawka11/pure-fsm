@@ -19,6 +19,8 @@ import static java.util.stream.Collectors.toSet;
 public abstract class StateMachineDao implements GetHandle {
 
     private static final Long LOCK_SUCCEEDED = 1L;
+    private static final String PURE_FSM_LOCK_PREFIX = "PURE_FSM_LOCK_";
+
     private final ObjectMapper objectMapper = getObjectMapper();
 
     private static ObjectMapper getObjectMapper() {
@@ -82,7 +84,7 @@ public abstract class StateMachineDao implements GetHandle {
     public boolean lock(String smId, long timeout) {
         return getHandle().inTransaction((conn, status) -> {
             final Query<Map<String, Object>> query = conn.createQuery("SELECT GET_LOCK(:lock, :timeout);");
-            query.bind("lock", "PURE_FSM_LOCK_" + smId);
+            query.bind("lock", PURE_FSM_LOCK_PREFIX + smId);
             query.bind("timeout", timeout);
             final Long result = (Long) query.first().values().stream().findFirst().get();
 
@@ -95,7 +97,7 @@ public abstract class StateMachineDao implements GetHandle {
     public boolean unlock(String smId) {
         return getHandle().inTransaction((conn, status) -> {
             final Update statement = conn.createStatement("DO RELEASE_LOCK(:lock);");
-            statement.bind("lock", "PURE_FSM_LOCK_" + smId);
+            statement.bind("lock", PURE_FSM_LOCK_PREFIX + smId);
             statement.execute();
             return true;
         });

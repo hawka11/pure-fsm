@@ -1,14 +1,16 @@
 
 include 'fsm-core'
-include 'fsm-repository-hazelcast'
+
 include 'fsm-repository-inmemory'
-include 'fsm-telco-example-inmemory'
-include 'fsm-telco-example-hazelcast'
-
-include 'fsm-telco-example-user-input'
-
-include 'fsm-dropwizard-hazelcast'
-include 'fsm-dropwizard-inmemory'
+include 'fsm-repository-hazelcast'
 include 'fsm-repository-mysql'
+
 include 'fsm-end-to-end-tests'
 
+include 'fsm-telco-example-inmemory'
+include 'fsm-telco-example-hazelcast'
+include 'fsm-telco-example-user-input'
+
+include 'fsm-dropwizard-inmemory'
+include 'fsm-dropwizard-hazelcast'
+include 'fsm-dropwizard-mysql'

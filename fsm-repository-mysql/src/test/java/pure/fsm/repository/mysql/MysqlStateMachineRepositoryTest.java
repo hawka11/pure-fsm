@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class JdbiStateMachineRepositoryTest {
+public class MysqlStateMachineRepositoryTest {
 
     protected static JdbiRule JDBI_RULE = new JdbiRule("purefsm-test.yml");
 
@@ -33,12 +33,12 @@ public class JdbiStateMachineRepositoryTest {
             .around(JDBI_RULE)
             .around(FLYWAY_RULE);
 
-    private JdbiStateMachineRepository repository;
+    private MysqlStateMachineRepository repository;
 
     @Before
     public void beforeEach() {
         StateFactoryRegistration.registerStateFactory(new TestStateFactory());
-        repository = new JdbiStateMachineRepository(JDBI_RULE.DBI);
+        repository = new MysqlStateMachineRepository(JDBI_RULE.DBI);
     }
 
     @Test

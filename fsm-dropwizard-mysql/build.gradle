@@ -1,0 +1,11 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '1.2.0'
+}
+
+dependencies {
+    compile project(":fsm-repository-mysql")
+
+    compile "io.dropwizard:dropwizard-core:$dropWizardVersion"
+
+    testCompile "junit:junit:$junitVersion"
+}

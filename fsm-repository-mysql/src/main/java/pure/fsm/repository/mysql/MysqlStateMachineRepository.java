@@ -19,13 +19,13 @@ import static java.util.stream.Collectors.toSet;
 import static pure.fsm.core.Transition.initialTransition;
 import static pure.fsm.core.context.InitialContext.initialContext;
 
-public class JdbiStateMachineRepository implements StateMachineRepository {
+public class MysqlStateMachineRepository implements StateMachineRepository {
 
-    private static final Logger LOG = LoggerFactory.getLogger(JdbiStateMachineRepository.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MysqlStateMachineRepository.class);
 
     private final DBI jdbi;
 
-    public JdbiStateMachineRepository(DBI jdbi) {
+    public MysqlStateMachineRepository(DBI jdbi) {
         this.jdbi = jdbi;
     }
 

@@ -10,7 +10,7 @@ import pure.fsm.repository.hazelcast.HazelcastStateMachineRepository;
 import pure.fsm.repository.inmemory.InMemoryStateMachineRepository;
 import pure.fsm.repository.mysql.FlywayRule;
 import pure.fsm.repository.mysql.JdbiRule;
-import pure.fsm.repository.mysql.JdbiStateMachineRepository;
+import pure.fsm.repository.mysql.MysqlStateMachineRepository;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,7 +35,7 @@ public abstract class BaseEnd2EndTest {
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {(Supplier<StateMachineRepository>) InMemoryStateMachineRepository::new}
-                , {(Supplier<StateMachineRepository>) () -> new JdbiStateMachineRepository(JDBI_RULE.DBI)}
+                , {(Supplier<StateMachineRepository>) () -> new MysqlStateMachineRepository(JDBI_RULE.DBI)}
                 , {(Supplier<StateMachineRepository>) () -> new HazelcastStateMachineRepository(createClientHz())}
         });
     }
