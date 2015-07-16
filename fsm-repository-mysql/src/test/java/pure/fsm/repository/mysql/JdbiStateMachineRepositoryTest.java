@@ -1,4 +1,4 @@
-package pure.fsm.jdbi.repository;
+package pure.fsm.repository.mysql;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -26,8 +26,8 @@ public class JdbiStateMachineRepositoryTest {
     protected static JdbiRule JDBI_RULE = new JdbiRule("purefsm-test.yml");
 
     protected static FlywayRule FLYWAY_RULE = new FlywayRule(
-            "fsm-repository-jdbi/src/main/database/flyway-conf/flyway.fsm.properties",
-            "fsm-repository-jdbi/src/main/database/flyway-sql", () -> JDBI_RULE.DATA_SOURCE);
+            "fsm-repository-mysql/src/main/database/flyway-conf/flyway.fsm.properties",
+            "fsm-repository-mysql/src/main/database/flyway-sql", () -> JDBI_RULE.DATA_SOURCE);
     @Rule
     public RuleChain chain = RuleChain.emptyRuleChain()
             .around(JDBI_RULE)

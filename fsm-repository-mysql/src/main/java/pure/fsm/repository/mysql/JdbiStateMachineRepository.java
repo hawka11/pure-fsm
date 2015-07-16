@@ -1,4 +1,4 @@
-package pure.fsm.jdbi.repository;
+package pure.fsm.repository.mysql;
 
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;

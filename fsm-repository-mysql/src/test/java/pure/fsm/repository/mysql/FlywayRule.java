@@ -1,4 +1,4 @@
-package pure.fsm.jdbi.repository;
+package pure.fsm.repository.mysql;
 
 import org.flywaydb.core.Flyway;
 import org.glassfish.jersey.internal.util.Producer;

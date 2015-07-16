@@ -1,4 +1,4 @@
-package pure.fsm.jdbi.repository;
+package pure.fsm.repository.mysql;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -8,9 +8,9 @@ import pure.fsm.core.repository.StateMachineRepository;
 import pure.fsm.end2end.hazelcast.HazelcastUtil;
 import pure.fsm.hazelcast.repository.HazelcastStateMachineRepository;
 import pure.fsm.inmemory.repository.InMemoryStateMachineRepository;
-import pure.fsm.jdbi.repository.FlywayRule;
-import pure.fsm.jdbi.repository.JdbiRule;
-import pure.fsm.jdbi.repository.JdbiStateMachineRepository;
+import pure.fsm.repository.mysql.FlywayRule;
+import pure.fsm.repository.mysql.JdbiRule;
+import pure.fsm.repository.mysql.JdbiStateMachineRepository;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -43,8 +43,8 @@ public abstract class BaseEnd2EndTest {
     protected static JdbiRule JDBI_RULE = new JdbiRule("purefsm-test.yml");
 
     protected static FlywayRule FLYWAY_RULE = new FlywayRule(
-            "fsm-repository-jdbi/src/main/database/flyway-conf/flyway.fsm.properties",
-            "fsm-repository-jdbi/src/main/database/flyway-sql", () -> JDBI_RULE.DATA_SOURCE);
+            "fsm-repository-mysql/src/main/database/flyway-conf/flyway.fsm.properties",
+            "fsm-repository-mysql/src/main/database/flyway-sql", () -> JDBI_RULE.DATA_SOURCE);
     @Rule
     public RuleChain chain = RuleChain.emptyRuleChain()
             .around(JDBI_RULE)

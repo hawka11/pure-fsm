@@ -1,4 +1,4 @@
-package pure.fsm.jdbi.repository;
+package pure.fsm.repository.mysql;
 
 import com.codahale.metrics.MetricRegistry;
 import com.fasterxml.jackson.databind.ObjectMapper;
