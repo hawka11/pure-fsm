@@ -79,14 +79,17 @@ public class CleanUpFinalisedStateMachines {
     }
 
     private void cleanupIfFinalizedTimeHasExpired(Transition transition, Lock lock) {
-        if (shouldCleanup(lock.getLatestTransition())) {
+        final Transition latestTransition = lock.getLatestTransition();
 
-            LOG.info("unlocking and removing state machine [{}]",
-                    lock.getLatestTransition().getContext().stateMachineId());
+        if (shouldCleanup(latestTransition)) {
+            try {
+                LOG.info("unlocking and removing state machine [{}]",
+                        latestTransition.getContext().stateMachineId());
 
-            lock.unlockAndRemove();
-
-            cleanupListeners.forEach(l -> l.onCleanup(transition));
+                cleanupListeners.forEach(l -> l.onCleanup(transition));
+            } finally {
+                lock.unlockAndRemove();
+            }
         } else {
             lock.unlock();
         }
