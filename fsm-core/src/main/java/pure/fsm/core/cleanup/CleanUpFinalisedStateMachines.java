@@ -83,16 +83,21 @@ public class CleanUpFinalisedStateMachines {
 
         if (shouldCleanup(latestTransition)) {
             try {
-                LOG.info("unlocking and removing state machine [{}]",
-                        latestTransition.getContext().stateMachineId());
-
                 cleanupListeners.forEach(l -> l.onCleanup(transition));
+
+                LOG.info("unlocking and removing state machine [{}]", stateMachineId(latestTransition));
             } finally {
                 lock.unlockAndRemove();
             }
         } else {
             lock.unlock();
         }
+    }
+
+    private String stateMachineId(Transition latestTransition) {
+        return (latestTransition.getContext() != null)
+                ? latestTransition.getContext().stateMachineId()
+                : "";
     }
 
     protected boolean shouldCleanup(Transition transition) {
