@@ -26,5 +26,5 @@ Basic concepts that exist are:
    that you wish to maintain a lock for the lifetime of a single state machine.
    By default, they are unlocked in the 'onEnter' call of a final state.
 
-Initial Example: https://github.com/hawka11/PureFSM/blob/master/fsm-telco-example-inmemory/src/main/java/pure/fsm/telco/MainSuccessful.java
+Initial Example: https://github.com/hawka11/PureFSM/blob/master/fsm-telco-example-inmemory/src/main/java/pure/fsm/example/inmemory/MainSuccessful.java
 
