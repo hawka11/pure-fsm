@@ -7,6 +7,8 @@ There are more advanced FSM / BPM frameworks out there but sometimes they can be
 
 The intention of this project is a simple FSM, with influences from AKKA FSM.
 
+The main problem that it is trying to solve is to handle technical process flows between one or more systems.
+
 Main objectives:
  - Pure Java
  - Stateless States / Events / State Machine, all except state machine transition / context
