@@ -19,7 +19,13 @@ public class ContextHistoryFormatter implements OnCleanupListener {
     public String toTransitionString(Transition transition) {
 
         return format("\n\n+++++ State Machine Transition history stateMachineId [%s] +++++ =>",
-                transition.getContext().stateMachineId()) + "\n" + toContextString(transition, calcNumTransitions(transition, 1));
+                transition.getContext().stateMachineId()) +
+                toCustomTransitionLog(transition) +
+                "\n" + toContextString(transition, calcNumTransitions(transition, 1));
+    }
+
+    protected String toCustomTransitionLog(Transition transition) {
+        return "";
     }
 
     private int calcNumTransitions(Transition transition, int count) {
