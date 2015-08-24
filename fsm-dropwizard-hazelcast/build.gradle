@@ -3,6 +3,8 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '1.2.0'
 }
 
+apply from: file("${rootDir}/gradle/publish-shadow-jar.gradle")
+
 dependencies {
     compile project(":fsm-repository-hazelcast")
 
