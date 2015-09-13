@@ -168,6 +168,25 @@ public class StateMachineDaoTest {
 
 
     @Test
+    public void unlockShouldBeIdempotent() {
+        final Handle handleOne = JDBI_RULE.DBI.open();
+        final Handle handleTwo = JDBI_RULE.DBI.open();
+        final Handle handleThree = JDBI_RULE.DBI.open();
+
+        assertTrue(attemptLock(handleOne, "4450"));
+        unlock(handleOne, "4450");
+        unlock(handleOne, "4450");
+
+        assertTrue(attemptLock(handleTwo, "4450"));
+        unlock(handleTwo, "4450");
+        unlock(handleTwo, "4450");
+
+        assertTrue(attemptLock(handleThree, "4450"));
+        unlock(handleThree, "4450");
+        unlock(handleThree, "4450");
+    }
+
+    @Test
     public void shouldNotUnlockIfAttemptToUnlockWithHandleThatDidntObtainLock() throws InterruptedException {
         final Handle handleOne = JDBI_RULE.DBI.open();
         final Handle handleTwo = JDBI_RULE.DBI.open();

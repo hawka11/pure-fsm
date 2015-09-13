@@ -1,5 +1,6 @@
 package pure.fsm.core.timeout;
 
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.StateMachine;
@@ -32,7 +33,7 @@ public class TimeoutTicker {
         this.scheduleFrequency = scheduleFrequency;
         this.timeUnit = timeUnit;
 
-        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(new BasicThreadFactory.Builder().namingPattern("pure-fsm-ticker").build());
     }
 
     public void startTickScheduler() {
@@ -47,6 +48,14 @@ public class TimeoutTicker {
     public void sendTimeOutTickerEvents() {
         LOG.info("About to send out time out ticker events.");
 
+        try {
+            doSendEvents();
+        } catch (Exception e) {
+            LOG.warn("Something went bad", e);
+        }
+    }
+
+    private void doSendEvents() {
         final Set<String> inProgressIds = repository.getInProgressIds();
         inProgressIds.stream()
                 .filter(this::stateMachineIsTimedOut)

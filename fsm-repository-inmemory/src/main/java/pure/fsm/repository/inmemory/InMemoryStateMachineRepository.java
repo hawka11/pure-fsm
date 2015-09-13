@@ -67,16 +67,28 @@ public class InMemoryStateMachineRepository implements StateMachineRepository {
 
                     @Override
                     public boolean unlock() {
-                        lockByStateMachineId.get(stateMachineId).unlock();
-                        return true;
+                        final ReentrantLock lock = lockByStateMachineId.get(stateMachineId);
+
+                        boolean didUnlock = false;
+
+                        if (lock != null) {
+                            try {
+                                lock.unlock();
+                                didUnlock = true;
+                            } catch (IllegalMonitorStateException e) {
+                                didUnlock = false;
+                            }
+                        }
+
+                        return didUnlock;
                     }
 
                     @Override
                     public boolean unlockAndRemove() {
-                        unlock();
+                        final boolean didUnlock = unlock();
                         transitionByStateMachineId.remove(stateMachineId);
                         lockByStateMachineId.remove(stateMachineId);
-                        return true;
+                        return didUnlock;
                     }
                 };
 

@@ -91,15 +91,18 @@ public class HazelcastStateMachineRepository implements StateMachineRepository {
 
             @Override
             public boolean unlock() {
-                distributedLock.unlock();
-                return true;
+                try {
+                    distributedLock.unlock();
+                    return true;
+                } catch (IllegalMonitorStateException e) {
+                    return false;
+                }
             }
 
             @Override
             public boolean unlockAndRemove() {
-                unlock();
                 getHolderMap().remove(stateMachineId);
-                return true;
+                return unlock();
             }
         };
 

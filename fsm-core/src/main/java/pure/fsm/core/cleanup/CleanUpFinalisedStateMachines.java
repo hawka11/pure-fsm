@@ -1,6 +1,7 @@
 package pure.fsm.core.cleanup;
 
 import com.google.common.annotations.VisibleForTesting;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Transition;
@@ -16,6 +17,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static java.lang.String.format;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class CleanUpFinalisedStateMachines {
@@ -41,7 +43,7 @@ public class CleanUpFinalisedStateMachines {
         this.keepFinalised = keepFinalised;
         this.keepFinalisedTimeUnit = keepFinalisedTimeUnit;
 
-        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(new BasicThreadFactory.Builder().namingPattern("pure-fsm-cleaner").build());
     }
 
     public void startScheduler() {
@@ -58,22 +60,38 @@ public class CleanUpFinalisedStateMachines {
     public void checkForFinalizedStateMachinesAndCleanupIfRequired() {
         LOG.info("About to check for outdated finalized state machines.");
 
-        repository.getAllIds().forEach(id -> {
-            Transition transition = repository.get(id);
-            cleanupIfFinalState(id, transition);
-        });
+        try {
+
+            repository.getAllIds().forEach(id -> {
+                try {
+                    final Transition transition = repository.get(id);
+                    cleanupIfFinalState(id, transition);
+                } catch (Exception e) {
+                    LOG.warn(format("Something went bad with id [%s]", id), e);
+                }
+            });
+
+        } catch (Exception e) {
+            LOG.warn("Something went bad", e);
+        }
     }
 
     @VisibleForTesting
     void cleanupIfFinalState(String id, Transition transition) {
         if (transition.getState() instanceof FinalState) {
+
             Optional<Lock> lock = repository.tryLock(id, 1, SECONDS);
+
             try {
-                if (lock.isPresent()) {
-                    cleanupIfFinalizedTimeHasExpired(transition, lock.get());
-                }
+
+                lock.ifPresent(l -> cleanupIfFinalizedTimeHasExpired(transition, l));
+
             } catch (Exception e) {
+
                 LOG.error("Error with sm [" + id + "]", e);
+            } finally {
+
+                lock.ifPresent(Lock::unlock);
             }
         }
     }
@@ -89,8 +107,6 @@ public class CleanUpFinalisedStateMachines {
             } finally {
                 lock.unlockAndRemove();
             }
-        } else {
-            lock.unlock();
         }
     }
 

@@ -2,6 +2,7 @@ package pure.fsm.repository.mysql;
 
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
+import org.skife.jdbi.v2.exceptions.TransactionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Transition;
@@ -108,18 +109,26 @@ public class MysqlStateMachineRepository implements StateMachineRepository {
 
         @Override
         public boolean unlock() {
-            attachDao(handle).unlock(stateMachineId);
-            handle.close();
-            return true;
+            try {
+                attachDao(handle).unlock(stateMachineId);
+                handle.close();
+                return true;
+            } catch (TransactionException e) {
+                return false;
+            }
         }
 
         @Override
         public boolean unlockAndRemove() {
-            final StateMachineDao dao = attachDao(handle);
-            dao.unlock(stateMachineId);
-            dao.removeStateMachineData(stateMachineId);
-            handle.close();
-            return true;
+            try {
+                final StateMachineDao dao = attachDao(handle);
+                dao.unlock(stateMachineId);
+                dao.removeStateMachineData(stateMachineId);
+                handle.close();
+                return true;
+            } catch (TransactionException e) {
+                return false;
+            }
         }
     }
 }

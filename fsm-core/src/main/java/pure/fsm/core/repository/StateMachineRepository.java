@@ -27,8 +27,14 @@ public interface StateMachineRepository {
 
         void update(Transition newTransition);
 
+        /**
+         * Must be idempotent
+         */
         boolean unlock();
 
+        /**
+         * Must be idempotent
+         */
         boolean unlockAndRemove();
     }
 }
