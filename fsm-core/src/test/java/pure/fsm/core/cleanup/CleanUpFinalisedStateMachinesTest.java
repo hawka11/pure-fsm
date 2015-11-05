@@ -55,11 +55,24 @@ public class CleanUpFinalisedStateMachinesTest {
 
     @Test
     public void shouldAttemptCleanupWhenFinalState() {
-        when(repository.tryLock("2", 1, SECONDS)).thenReturn(Optional.of(lock));
+        final Transition transition = createTransitionInState(new TestFinalState());
 
-        cleaner.cleanupIfFinalState("2", createTransitionInState(new TestFinalState()));
+        when(repository.tryLock("2", 1, SECONDS)).thenReturn(Optional.of(lock));
+        when(lock.getLatestTransition()).thenReturn(transition);
+
+        cleaner.cleanupIfFinalState("2", transition);
 
         verify(repository).tryLock(eq("2"), anyLong(), any(TimeUnit.class));
+    }
+
+    @Test
+    public void shouldFORCECleanupIfCannotGetTransitionMostLikelyFromJsonStructureChange() {
+        when(repository.get("2")).thenThrow(new IllegalStateException(""));
+        when(repository.tryLock("2", 1, SECONDS)).thenReturn(Optional.of(lock));
+
+        cleaner.processStateMachineId("2");
+
+        verify(lock).unlockAndRemove();
     }
 
     private Transition createTransitionInState(State state) {

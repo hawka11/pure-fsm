@@ -62,18 +62,39 @@ public class CleanUpFinalisedStateMachines {
 
         try {
 
-            repository.getAllIds().forEach(id -> {
-                try {
-                    final Transition transition = repository.get(id);
-                    cleanupIfFinalState(id, transition);
-                } catch (Exception e) {
-                    LOG.warn(format("Something went bad with id [%s]", id), e);
-                }
-            });
+            repository.getAllIds().forEach(this::processStateMachineId);
 
         } catch (Exception e) {
             LOG.warn("Something went bad", e);
         }
+    }
+
+    @VisibleForTesting
+    void processStateMachineId(String id) {
+        try {
+            final Optional<Transition> transition = getTransition(id);
+            if (transition.isPresent()) {
+                cleanupIfFinalState(id, transition.get());
+            } else {
+                LOG.warn("Could not retrieve transition [{}], json format might of changed? Forcing cleanup!!", id);
+                forceCleanup(repository, id);
+            }
+        } catch (Exception e) {
+            LOG.warn(format("Something went bad with id, ignoring. [%s]", id), e);
+        }
+    }
+
+    private Optional<Transition> getTransition(String id) {
+        try {
+            return Optional.ofNullable(repository.get(id));
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
+    private void forceCleanup(StateMachineRepository repository, String smId) {
+        final Optional<Lock> lock = repository.tryLock(smId, 1, SECONDS);
+        lock.ifPresent(Lock::unlockAndRemove);
     }
 
     @VisibleForTesting
@@ -84,11 +105,8 @@ public class CleanUpFinalisedStateMachines {
 
             try {
 
-                lock.ifPresent(l -> cleanupIfFinalizedTimeHasExpired(transition, l));
+                lock.ifPresent(this::cleanupIfFinalizedTimeHasExpired);
 
-            } catch (Exception e) {
-
-                LOG.error("Error with sm [" + id + "]", e);
             } finally {
 
                 lock.ifPresent(Lock::unlock);
@@ -96,12 +114,12 @@ public class CleanUpFinalisedStateMachines {
         }
     }
 
-    private void cleanupIfFinalizedTimeHasExpired(Transition transition, Lock lock) {
+    private void cleanupIfFinalizedTimeHasExpired(Lock lock) {
         final Transition latestTransition = lock.getLatestTransition();
 
         if (shouldCleanup(latestTransition)) {
             try {
-                cleanupListeners.forEach(l -> l.onCleanup(transition));
+                cleanupListeners.forEach(l -> l.onCleanup(latestTransition));
 
                 LOG.info("unlocking and removing state machine [{}]", stateMachineId(latestTransition));
             } finally {

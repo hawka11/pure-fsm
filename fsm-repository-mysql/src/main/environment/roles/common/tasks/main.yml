@@ -2,7 +2,7 @@
   pip:
     name: "{{ item }}"
   with_items:
-    - six==1.4
+    - six==1.4.1
     - docker-py==1.1.0
 
 - name: Init Boot2docker VM
