@@ -80,7 +80,8 @@ public class CleanUpFinalisedStateMachines {
                 forceCleanup(repository, id);
             }
         } catch (Exception e) {
-            LOG.warn(format("Something went bad with id, ignoring. [%s]", id), e);
+            LOG.warn(format("Retrieved transition [%s], but something else went wrong. Forcing cleanup!!", id), e);
+            forceCleanup(repository, id);
         }
     }
 
@@ -94,7 +95,10 @@ public class CleanUpFinalisedStateMachines {
 
     private void forceCleanup(StateMachineRepository repository, String smId) {
         final Optional<Lock> lock = repository.tryLock(smId, 1, SECONDS);
-        lock.ifPresent(Lock::unlockAndRemove);
+        lock.ifPresent((lock1) -> {
+            LOG.info("Got lock for [{}], removing from db", smId);
+            lock1.unlockAndRemove();
+        });
     }
 
     @VisibleForTesting
