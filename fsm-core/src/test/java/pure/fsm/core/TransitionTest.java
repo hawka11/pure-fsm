@@ -12,8 +12,6 @@ import pure.fsm.core.fixture.TestCanUnlock;
 import pure.fsm.core.fixture.TestEvent;
 import pure.fsm.core.fixture.TestInitialContext;
 import pure.fsm.core.fixture.TestNonFinalState;
-import pure.fsm.core.fixture.TestStateFactory;
-import pure.fsm.core.state.State;
 
 import java.util.List;
 
@@ -22,26 +20,24 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static pure.fsm.core.StateFactoryRegistration.registerStateFactory;
 import static pure.fsm.core.Transition.initialTransition;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TransitionTest {
 
     @Mock
-    private State initialState;
+    private Object initialState;
 
     private Transition initialTransition;
     private Transition transitioned;
 
     @Before
     public void beforeEach() {
-        registerStateFactory(new TestStateFactory());
-
-        initialTransition = initialTransition("111", initialState, TestStateFactory.class, newArrayList(new TestInitialContext("12344334")));
+        initialTransition = initialTransition("111", initialState, newArrayList(new TestInitialContext("12344334")));
         transitioned = initialTransition.setNextTransition(Transition.To(
                 new TestNonFinalState(), new TestEvent(),
-                initialTransition.getContext().appendState(new TestAlternateContext()))); }
+                initialTransition.getContext().appendState(new TestAlternateContext())));
+    }
 
     @Test
     public void shouldContainInitialBuiltInValues() {

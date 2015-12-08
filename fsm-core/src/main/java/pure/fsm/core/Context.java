@@ -1,72 +1,40 @@
 package pure.fsm.core;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import pure.fsm.core.context.CanUnlock;
 import pure.fsm.core.context.InitialContext;
-import pure.fsm.core.state.StateFactory;
 
 import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Lists.reverse;
-import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
-import static pure.fsm.core.StateFactoryRegistration.getStateFactory;
 import static pure.fsm.core.context.InitialContext.createInitialContext;
 
 public class Context {
 
     @JsonSerialize
-    private final String stateFactoryClass;
-    @JsonSerialize
-    private final List<Object> contextState;
-
-    private transient StateFactory stateFactory;
+    private final List<Object> data;
 
     @JsonCreator
-    private Context(
-            @JsonProperty("stateFactoryClass") String stateFactoryClass,
-            @JsonProperty("contextState") List<Object> contextState) {
-        this.stateFactoryClass = stateFactoryClass;
-        this.contextState = contextState;
+    private Context(@JsonProperty("data") List<Object> data) {
+        this.data = data;
     }
 
-    public static Context initialContext(String stateMachineId,
-                                         Class<? extends StateFactory> stateFactory,
-                                         List<Object> initialContexts) {
+    public static Context initialContext(String stateMachineId, List<Object> initialContexts) {
+        final List<Object> allData = newArrayList(createInitialContext(stateMachineId));
+        allData.addAll(initialContexts);
 
-        final List<Object> allContexts = newArrayList(createInitialContext(stateMachineId));
-        allContexts.addAll(initialContexts);
-
-        return new Context(stateFactory.getName(), allContexts);
-    }
-
-    @JsonIgnore
-    public synchronized StateFactory stateFactory() {
-        if (stateFactory == null) {
-            initStateFactory();
-        }
-        return stateFactory;
-    }
-
-    private void initStateFactory() {
-        final Optional<StateFactory> optional = getStateFactory(stateFactoryClass);
-
-        Preconditions.checkArgument(optional.isPresent(),
-                format("State factory class [%s] has not been registered via StateFactoryRegistration", stateFactoryClass));
-
-        stateFactory = optional.get();
+        return new Context(allData);
     }
 
     @SuppressWarnings("unchecked")
     public <T> List<T> getContextsOfType(Class<T> contextClass) {
-        final List<T> contexts = (List<T>) this.contextState.stream()
+        final List<T> contexts = (List<T>) this.data.stream()
                 .filter(t -> contextClass.isAssignableFrom(t.getClass()))
                 .collect(toList());
         return ImmutableList.copyOf(contexts);
@@ -81,14 +49,14 @@ public class Context {
     }
 
     public Context addCanUnlock(CanUnlock canUnlock) {
-        contextState.add(canUnlock);
+        data.add(canUnlock);
         return this;
     }
 
     public Context appendState(Object state) {
         final List<Object> newData = newArrayList();
-        newData.addAll(this.contextState);
+        newData.addAll(this.data);
         newData.add(state);
-        return new Context(stateFactoryClass, newData);
+        return new Context(newData);
     }
 }

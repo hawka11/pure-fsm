@@ -1,8 +1,6 @@
-package pure.fsm.core.repository;
+package pure.fsm.core;
 
 import pure.fsm.core.Transition;
-import pure.fsm.core.state.State;
-import pure.fsm.core.state.StateFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,13 +15,13 @@ public interface StateMachineRepository {
 
     Set<String> getInProgressIds();
 
-    String create(State initialState, Class<? extends StateFactory> stateFactory, List<Object> initialContextData);
+    String create(Object initialState, List<Object> initialContextData);
 
     Optional<Lock> tryLock(String stateMachineId, long timeout, TimeUnit timeUnit);
 
     interface Lock {
 
-        Transition getLatestTransition();
+        Transition getLastTransition();
 
         void update(Transition newTransition);
 

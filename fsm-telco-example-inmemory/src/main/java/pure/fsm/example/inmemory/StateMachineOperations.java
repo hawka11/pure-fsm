@@ -5,10 +5,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Transition;
 import pure.fsm.core.cleanup.CleanUpFinalisedStateMachines;
-import pure.fsm.core.repository.StateMachineRepository;
+import pure.fsm.core.StateMachineRepository;
 import pure.fsm.core.event.Event;
-import pure.fsm.core.template.StateMachineTemplate;
-import pure.fsm.core.timeout.TimeoutTicker;
+import pure.fsm.core.WithinLock;
+import pure.fsm.core.timeout.EventTicker;
 import pure.fsm.repository.inmemory.InMemoryStateMachineRepository;
 import pure.fsm.example.inmemory.state.InitialState;
 import pure.fsm.example.inmemory.state.TelcoStateFactory;
@@ -25,9 +25,9 @@ class StateMachineOperations {
     private final static Logger LOG = LoggerFactory.getLogger(StateMachineOperations.class);
 
     final StateMachineRepository repository = new InMemoryStateMachineRepository();
-    final StateMachineTemplate template = new StateMachineTemplate(repository, newArrayList());
+    final WithinLock template = new WithinLock(repository, newArrayList());
     final TelcoStateFactory stateFactory = new TelcoStateFactory();
-    final TimeoutTicker timeoutTicker = new TimeoutTicker(repository, template, 1, SECONDS);
+    final EventTicker eventTicker = new EventTicker(repository, template, handleEvent, 1, SECONDS);
     final CleanUpFinalisedStateMachines cleaner = new CleanUpFinalisedStateMachines(repository, newArrayList(), 5, SECONDS, 5, ChronoUnit.SECONDS);
 
     public Transition getStateMachine(String stateMachineId) {
@@ -54,7 +54,7 @@ class StateMachineOperations {
         return repository;
     }
 
-    public StateMachineTemplate getTemplate() {
+    public WithinLock getTemplate() {
         return template;
     }
 
@@ -62,8 +62,8 @@ class StateMachineOperations {
         return stateFactory;
     }
 
-    public TimeoutTicker getTimeoutTicker() {
-        return timeoutTicker;
+    public EventTicker getEventTicker() {
+        return eventTicker;
     }
 
     public CleanUpFinalisedStateMachines getCleaner() {

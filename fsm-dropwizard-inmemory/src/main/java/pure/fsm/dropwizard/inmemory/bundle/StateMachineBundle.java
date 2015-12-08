@@ -7,8 +7,8 @@ import pure.fsm.core.StateFactoryRegistration;
 import pure.fsm.core.cleanup.CleanUpFinalisedStateMachines;
 import pure.fsm.core.cleanup.OnCleanupListener;
 import pure.fsm.core.state.StateFactory;
-import pure.fsm.core.template.StateMachineTemplate;
-import pure.fsm.core.timeout.TimeoutTicker;
+import pure.fsm.core.WithinLock;
+import pure.fsm.core.timeout.EventTicker;
 import pure.fsm.core.transition.TransitionOccuredListener;
 import pure.fsm.repository.inmemory.InMemoryStateMachineRepository;
 
@@ -22,7 +22,7 @@ import static com.google.common.collect.Lists.newArrayList;
 public abstract class StateMachineBundle implements Bundle {
 
     private InMemoryStateMachineRepository repository;
-    private StateMachineTemplate template;
+    private WithinLock template;
 
     @Override
     public void initialize(Bootstrap<?> bootstrap) {
@@ -31,7 +31,7 @@ public abstract class StateMachineBundle implements Bundle {
     @Override
     public void run(Environment environment) {
         repository = new InMemoryStateMachineRepository();
-        template = new StateMachineTemplate(repository, createTransitionOccuredListeners());
+        template = new WithinLock(repository, createTransitionOccuredListeners());
 
         createStateFactories().stream().forEach(StateFactoryRegistration::registerStateFactory);
     }
@@ -42,12 +42,12 @@ public abstract class StateMachineBundle implements Bundle {
 
     protected abstract List<StateFactory> createStateFactories();
 
-    public StateMachineTemplate getTemplate() {
+    public WithinLock getTemplate() {
         return template;
     }
 
-    public TimeoutTicker getTimeoutTicker(long howOften, TimeUnit timeUnit) {
-        return new TimeoutTicker(repository, getTemplate(), howOften, timeUnit);
+    public EventTicker getTimeoutTicker(long howOften, TimeUnit timeUnit) {
+        return new EventTicker(repository, getTemplate(), handleEvent, howOften, timeUnit);
     }
 
     public CleanUpFinalisedStateMachines getCleaner(Collection<OnCleanupListener> cleanupListeners,

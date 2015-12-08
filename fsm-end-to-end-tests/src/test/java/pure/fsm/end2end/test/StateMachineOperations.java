@@ -5,9 +5,9 @@ import org.slf4j.LoggerFactory;
 import pure.fsm.core.Transition;
 import pure.fsm.core.cleanup.CleanUpFinalisedStateMachines;
 import pure.fsm.core.event.Event;
-import pure.fsm.core.repository.StateMachineRepository;
-import pure.fsm.core.template.StateMachineTemplate;
-import pure.fsm.core.timeout.TimeoutTicker;
+import pure.fsm.core.StateMachineRepository;
+import pure.fsm.core.WithinLock;
+import pure.fsm.core.timeout.EventTicker;
 import pure.fsm.end2end.state.InitialState;
 import pure.fsm.end2end.state.TelcoStateFactory;
 
@@ -25,16 +25,16 @@ public class StateMachineOperations {
     public static final int KEEP_AROUND_B4_REMOVING = 1000;
 
     final StateMachineRepository repository;
-    final StateMachineTemplate template;
+    final WithinLock template;
     final TelcoStateFactory stateFactory;
-    final TimeoutTicker timeoutTicker;
+    final EventTicker eventTicker;
     final CleanUpFinalisedStateMachines cleaner;
 
     public StateMachineOperations(StateMachineRepository repository) {
         this.repository = repository;
-        this.template = new StateMachineTemplate(repository, newArrayList());
+        this.template = new WithinLock(repository, newArrayList());
         this.stateFactory = new TelcoStateFactory();
-        this.timeoutTicker = new TimeoutTicker(repository, template, 1, SECONDS);
+        this.eventTicker = new EventTicker(repository, template, handleEvent, 1, SECONDS);
         this.cleaner = new CleanUpFinalisedStateMachines(repository, newArrayList(), 1, SECONDS, KEEP_AROUND_B4_REMOVING, MILLIS);
     }
 
@@ -62,7 +62,7 @@ public class StateMachineOperations {
         return repository;
     }
 
-    public StateMachineTemplate getTemplate() {
+    public WithinLock getTemplate() {
         return template;
     }
 
@@ -70,8 +70,8 @@ public class StateMachineOperations {
         return stateFactory;
     }
 
-    public TimeoutTicker getTimeoutTicker() {
-        return timeoutTicker;
+    public EventTicker getEventTicker() {
+        return eventTicker;
     }
 
     public CleanUpFinalisedStateMachines getCleaner() {

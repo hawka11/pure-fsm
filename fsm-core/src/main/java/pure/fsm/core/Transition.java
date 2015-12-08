@@ -4,20 +4,20 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import pure.fsm.core.event.Event;
-import pure.fsm.core.state.State;
-import pure.fsm.core.state.StateFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 import static pure.fsm.core.Context.initialContext;
 
 public class Transition {
+
+    private final static Logger LOG = LoggerFactory.getLogger(Transition.class);
 
     @JsonSerialize
     private final LocalDateTime transitioned;
@@ -49,11 +49,10 @@ public class Transition {
     }
 
     public static Transition initialTransition(String stateMachineId,
-                                               State initialState,
-                                               Class<? extends StateFactory> stateFactory,
+                                               Object initialState,
                                                List<Object> initialContexts) {
 
-        final Context context = initialContext(stateMachineId, stateFactory, initialContexts);
+        final Context context = initialContext(stateMachineId, initialContexts);
 
         return new Transition(LocalDateTime.now(),
                 initialState.getClass().getName(),
@@ -65,8 +64,24 @@ public class Transition {
         return ofNullable(previous);
     }
 
-    public String getEvent() {
-        return event;
+    @JsonIgnore
+    public Object getEvent() {
+        final String event = this.event;
+        return toInstance(event);
+    }
+
+    @JsonIgnore
+    public Object getState() {
+        final String state = this.state;
+        return toInstance(state);
+    }
+
+    private Class<?> toInstance(String event) {
+        try {
+            return Class.forName(event);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public LocalDateTime getTransitioned() {
@@ -82,28 +97,13 @@ public class Transition {
         return reflectionToString(this);
     }
 
-    public static Transition To(State state, Event event, Context context) {
+    public static Transition To(Object state, Object event, Context context) {
         return new Transition(LocalDateTime.now(),
                 state.getClass().getName(),
                 event.getClass().getName(),
                 null, context);
     }
 
-    public static Transition To(Class<? extends State> state, Event event, Context context) {
-        final State stateByClass = context.stateFactory().getStateByClass(state);
-        return To(stateByClass, event, context);
-    }
-
-    @JsonIgnore
-    @SuppressWarnings("unchecked")
-    public State getState() {
-        try {
-            final Class<? extends State> stateClass = (Class<? extends State>) Class.forName(state);
-            return context.stateFactory().getStateByClass(stateClass);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalStateException(format("Could not find state of class [%s]", state));
-        }
-    }
 
     public Transition setNextTransition(Transition nextTransition) {
         return new Transition(nextTransition.transitioned, nextTransition.state,

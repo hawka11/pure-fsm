@@ -10,7 +10,7 @@ public class MainWithCleanup {
         Thread.sleep(5000);
 
         //something should configure this to run periodically
-        ops.getTimeoutTicker().sendTimeOutTickerEvents();
+        ops.getEventTicker().sendTimeOutTickerEvents();
         Thread.sleep(6000);
 
         //something should configure this to run periodically

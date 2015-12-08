@@ -6,7 +6,7 @@ import com.hazelcast.core.IMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Transition;
-import pure.fsm.core.repository.StateMachineRepository;
+import pure.fsm.core.StateMachineRepository;
 import pure.fsm.core.state.FinalState;
 import pure.fsm.core.state.State;
 import pure.fsm.core.state.StateFactory;
@@ -80,7 +80,7 @@ public class HazelcastStateMachineRepository implements StateMachineRepository {
     private Optional<Lock> createLock(String stateMachineId, java.util.concurrent.locks.Lock distributedLock) {
         Lock lock = new Lock() {
             @Override
-            public Transition getLatestTransition() {
+            public Transition getLastTransition() {
                 return getHolderMap().get(stateMachineId);
             }
 

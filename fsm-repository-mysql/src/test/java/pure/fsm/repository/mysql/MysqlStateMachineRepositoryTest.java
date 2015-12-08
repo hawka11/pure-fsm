@@ -10,7 +10,7 @@ import pure.fsm.core.fixture.TestEvent;
 import pure.fsm.core.fixture.TestFinalState;
 import pure.fsm.core.fixture.TestNonFinalState;
 import pure.fsm.core.fixture.TestStateFactory;
-import pure.fsm.core.repository.StateMachineRepository.Lock;
+import pure.fsm.core.StateMachineRepository.Lock;
 
 import java.util.Optional;
 import java.util.Set;

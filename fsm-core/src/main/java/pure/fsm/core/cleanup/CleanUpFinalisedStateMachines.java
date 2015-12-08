@@ -5,8 +5,8 @@ import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Transition;
-import pure.fsm.core.repository.StateMachineRepository;
-import pure.fsm.core.repository.StateMachineRepository.Lock;
+import pure.fsm.core.StateMachineRepository;
+import pure.fsm.core.StateMachineRepository.Lock;
 import pure.fsm.core.state.FinalState;
 
 import java.time.LocalDateTime;
@@ -119,7 +119,7 @@ public class CleanUpFinalisedStateMachines {
     }
 
     private void cleanupIfFinalizedTimeHasExpired(Lock lock) {
-        final Transition latestTransition = lock.getLatestTransition();
+        final Transition latestTransition = lock.getLastTransition();
 
         if (shouldCleanup(latestTransition)) {
             try {

@@ -2,7 +2,7 @@ package pure.fsm.end2end.test;
 
 import pure.fsm.core.Transition;
 import pure.fsm.core.event.Event;
-import pure.fsm.core.event.TimeoutTickEvent;
+import pure.fsm.core.timeout.TimeoutTickEvent;
 import pure.fsm.core.state.State;
 import pure.fsm.core.state.SuccessFinalState;
 import pure.fsm.core.state.TimedOutFinalState;

@@ -13,8 +13,8 @@ import pure.fsm.core.Transition;
 import pure.fsm.core.cleanup.CleanUpFinalisedStateMachines;
 import pure.fsm.core.cleanup.OnCleanupListener;
 import pure.fsm.core.state.StateFactory;
-import pure.fsm.core.template.StateMachineTemplate;
-import pure.fsm.core.timeout.TimeoutTicker;
+import pure.fsm.core.WithinLock;
+import pure.fsm.core.timeout.EventTicker;
 import pure.fsm.core.transition.TransitionOccuredListener;
 import pure.fsm.repository.hazelcast.HazelcastStateMachineRepository;
 import pure.fsm.repository.hazelcast.resource.DistributedResourceFactory;
@@ -33,7 +33,7 @@ public abstract class StateMachineBundle implements Bundle {
     private DistributedResourceFactory distributedResourceFactory;
     private HazelcastInstance hazelcastInstance;
     private HazelcastStateMachineRepository repository;
-    private StateMachineTemplate template;
+    private WithinLock template;
 
     @Override
     public void initialize(Bootstrap<?> bootstrap) {
@@ -46,7 +46,7 @@ public abstract class StateMachineBundle implements Bundle {
         hazelcastInstance = createClientHz(transitionSerializer);
         distributedResourceFactory = new DistributedResourceFactory(hazelcastInstance);
         repository = new HazelcastStateMachineRepository(hazelcastInstance);
-        template = new StateMachineTemplate(repository, createTransitionOccuredListeners());
+        template = new WithinLock(repository, createTransitionOccuredListeners());
 
         createStateFactories().stream().forEach(StateFactoryRegistration::registerStateFactory);
 
@@ -87,12 +87,12 @@ public abstract class StateMachineBundle implements Bundle {
         return repository;
     }
 
-    public StateMachineTemplate getTemplate() {
+    public WithinLock getTemplate() {
         return template;
     }
 
-    public TimeoutTicker getTimeoutTicker(long howOften, TimeUnit timeUnit) {
-        return new TimeoutTicker(getStateMachineRepository(), getTemplate(), howOften, timeUnit);
+    public EventTicker getTimeoutTicker(long howOften, TimeUnit timeUnit) {
+        return new EventTicker(getStateMachineRepository(), getTemplate(), handleEvent, howOften, timeUnit);
     }
 
     public CleanUpFinalisedStateMachines getCleaner(Collection<OnCleanupListener> cleanupListeners,

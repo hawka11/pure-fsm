@@ -1,7 +1,7 @@
 package pure.fsm.end2end.test;
 
 import org.junit.Test;
-import pure.fsm.core.repository.StateMachineRepository;
+import pure.fsm.core.StateMachineRepository;
 
 import java.util.Optional;
 import java.util.function.Supplier;

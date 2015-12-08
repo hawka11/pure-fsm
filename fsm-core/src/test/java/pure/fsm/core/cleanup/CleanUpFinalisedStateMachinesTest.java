@@ -5,15 +5,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import pure.fsm.core.StateFactoryRegistration;
+import pure.fsm.core.StateMachineRepository;
+import pure.fsm.core.StateMachineRepository.Lock;
 import pure.fsm.core.Transition;
 import pure.fsm.core.fixture.TestEvent;
 import pure.fsm.core.fixture.TestFinalState;
 import pure.fsm.core.fixture.TestNonFinalState;
-import pure.fsm.core.fixture.TestStateFactory;
-import pure.fsm.core.repository.StateMachineRepository;
-import pure.fsm.core.repository.StateMachineRepository.Lock;
-import pure.fsm.core.state.State;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -42,7 +39,6 @@ public class CleanUpFinalisedStateMachinesTest {
 
     @Before
     public void beforeEach() {
-        StateFactoryRegistration.registerStateFactory(new TestStateFactory());
         cleaner = new CleanUpFinalisedStateMachines(repository, newArrayList(), 1, SECONDS, 1, MILLIS);
     }
 
@@ -58,7 +54,7 @@ public class CleanUpFinalisedStateMachinesTest {
         final Transition transition = createTransitionInState(new TestFinalState());
 
         when(repository.tryLock("2", 1, SECONDS)).thenReturn(Optional.of(lock));
-        when(lock.getLatestTransition()).thenReturn(transition);
+        when(lock.getLastTransition()).thenReturn(transition);
 
         cleaner.cleanupIfFinalState("2", transition);
 
@@ -75,7 +71,7 @@ public class CleanUpFinalisedStateMachinesTest {
         verify(lock).unlockAndRemove();
     }
 
-    private Transition createTransitionInState(State state) {
-        return Transition.To(state, new TestEvent(), initialContext("1", TestStateFactory.class, newArrayList()));
+    private Transition createTransitionInState(Object state) {
+        return Transition.To(state, new TestEvent(), initialContext("1", newArrayList()));
     }
 }

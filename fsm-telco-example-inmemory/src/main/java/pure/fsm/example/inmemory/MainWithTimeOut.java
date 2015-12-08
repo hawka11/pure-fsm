@@ -19,7 +19,7 @@ public class MainWithTimeOut {
         Thread.sleep(6000);
 
         //something should configure this to run periodically
-        ops.getTimeoutTicker().sendTimeOutTickerEvents();
+        ops.getEventTicker().sendTimeOutTickerEvents();
 
         Thread.sleep(1000);
 

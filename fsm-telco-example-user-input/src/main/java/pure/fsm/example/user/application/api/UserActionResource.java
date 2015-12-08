@@ -2,7 +2,7 @@ package pure.fsm.example.user.application.api;
 
 import io.dropwizard.views.View;
 import pure.fsm.core.Transition;
-import pure.fsm.core.template.StateMachineTemplate;
+import pure.fsm.core.WithinLock;
 import pure.fsm.example.user.domain.event.ConfirmPinEvent;
 import pure.fsm.example.user.domain.event.RequestPinEvent;
 import pure.fsm.example.user.domain.state.InitialState;
@@ -29,11 +29,11 @@ import static pure.fsm.example.user.domain.TelcoRechargeData.initialTelcoRecharg
 @Path("/sm")
 public class UserActionResource {
 
-    private final StateMachineTemplate template;
+    private final WithinLock template;
     private final StateMachineViewFactory viewFactory;
     private final TelcoStateFactory stateFactory;
 
-    public UserActionResource(StateMachineTemplate template,
+    public UserActionResource(WithinLock template,
                               StateMachineViewFactory viewFactory,
                               TelcoStateFactory stateFactory) {
         this.template = template;

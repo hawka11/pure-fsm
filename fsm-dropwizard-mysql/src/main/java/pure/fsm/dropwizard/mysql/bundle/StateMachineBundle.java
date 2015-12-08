@@ -8,10 +8,10 @@ import org.skife.jdbi.v2.DBI;
 import pure.fsm.core.StateFactoryRegistration;
 import pure.fsm.core.cleanup.CleanUpFinalisedStateMachines;
 import pure.fsm.core.cleanup.OnCleanupListener;
-import pure.fsm.core.repository.StateMachineRepository;
+import pure.fsm.core.StateMachineRepository;
 import pure.fsm.core.state.StateFactory;
-import pure.fsm.core.template.StateMachineTemplate;
-import pure.fsm.core.timeout.TimeoutTicker;
+import pure.fsm.core.WithinLock;
+import pure.fsm.core.timeout.EventTicker;
 import pure.fsm.core.transition.TransitionOccuredListener;
 import pure.fsm.repository.mysql.MysqlStateMachineRepository;
 
@@ -25,7 +25,7 @@ import static com.google.common.collect.Lists.newArrayList;
 public abstract class StateMachineBundle implements ConfiguredBundle<PureFsmMysqlConfig> {
 
     private StateMachineRepository repository;
-    private StateMachineTemplate template;
+    private WithinLock template;
     private DBI dbi;
 
     @Override
@@ -39,7 +39,7 @@ public abstract class StateMachineBundle implements ConfiguredBundle<PureFsmMysq
 
         dbi = dbiFactory.build(environment, configuration.getPureFsmDatabase(), "purefsm-mysql");
         repository = new MysqlStateMachineRepository(dbi);
-        template = new StateMachineTemplate(repository, createTransitionOccuredListeners());
+        template = new WithinLock(repository, createTransitionOccuredListeners());
 
         createStateFactories().stream().forEach(StateFactoryRegistration::registerStateFactory);
     }
@@ -58,12 +58,12 @@ public abstract class StateMachineBundle implements ConfiguredBundle<PureFsmMysq
         return repository;
     }
 
-    public StateMachineTemplate getTemplate() {
+    public WithinLock getTemplate() {
         return template;
     }
 
-    public TimeoutTicker getTimeoutTicker(long howOften, TimeUnit timeUnit) {
-        return new TimeoutTicker(getStateMachineRepository(), getTemplate(), howOften, timeUnit);
+    public EventTicker getTimeoutTicker(long howOften, TimeUnit timeUnit) {
+        return new EventTicker(getStateMachineRepository(), getTemplate(), handleEvent, howOften, timeUnit);
     }
 
     public CleanUpFinalisedStateMachines getCleaner(Collection<OnCleanupListener> cleanupListeners,

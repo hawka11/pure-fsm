@@ -6,7 +6,7 @@ import org.skife.jdbi.v2.exceptions.TransactionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Transition;
-import pure.fsm.core.repository.StateMachineRepository;
+import pure.fsm.core.StateMachineRepository;
 import pure.fsm.core.state.FinalState;
 import pure.fsm.core.state.State;
 import pure.fsm.core.state.StateFactory;
@@ -98,7 +98,7 @@ public class MysqlStateMachineRepository implements StateMachineRepository {
         }
 
         @Override
-        public Transition getLatestTransition() {
+        public Transition getLastTransition() {
             return attachDao(handle).getStateMachineData(stateMachineId);
         }
 

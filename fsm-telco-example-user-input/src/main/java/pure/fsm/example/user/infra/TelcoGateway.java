@@ -2,7 +2,7 @@ package pure.fsm.example.user.infra;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pure.fsm.core.template.StateMachineTemplate;
+import pure.fsm.core.WithinLock;
 import pure.fsm.example.user.domain.event.RequestAcceptedEvent;
 
 import java.util.List;
@@ -18,9 +18,9 @@ public class TelcoGateway {
     private static final Logger LOG = LoggerFactory.getLogger(TelcoGateway.class);
 
     private final ScheduledExecutorService service;
-    private final StateMachineTemplate template;
+    private final WithinLock template;
 
-    public TelcoGateway(StateMachineTemplate template) {
+    public TelcoGateway(WithinLock template) {
         this.template = template;
         service = Executors.newSingleThreadScheduledExecutor();
     }

@@ -4,7 +4,7 @@ import org.junit.Rule;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import pure.fsm.core.repository.StateMachineRepository;
+import pure.fsm.core.StateMachineRepository;
 import pure.fsm.end2end.hazelcast.HazelcastUtil;
 import pure.fsm.repository.hazelcast.HazelcastStateMachineRepository;
 import pure.fsm.repository.inmemory.InMemoryStateMachineRepository;
