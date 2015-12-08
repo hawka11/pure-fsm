@@ -5,20 +5,15 @@ import org.skife.jdbi.v2.Handle;
 import org.skife.jdbi.v2.exceptions.TransactionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pure.fsm.core.Transition;
 import pure.fsm.core.StateMachineRepository;
-import pure.fsm.core.state.FinalState;
-import pure.fsm.core.state.State;
-import pure.fsm.core.state.StateFactory;
+import pure.fsm.core.Transition;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import static java.util.stream.Collectors.toSet;
 import static pure.fsm.core.Transition.initialTransition;
-import static pure.fsm.core.context.InitialContext.initialContext;
 
 public class MysqlStateMachineRepository implements StateMachineRepository {
 
@@ -37,31 +32,19 @@ public class MysqlStateMachineRepository implements StateMachineRepository {
     }
 
     @Override
-    public Set<String> getAllIds() {
+    public Set<String> getIds() {
         return jdbi.withHandle(handle ->
                 attachDao(handle).getAllIds());
     }
 
     @Override
-    public Set<String> getInProgressIds() {
-        return jdbi.withHandle(handle -> {
-            final StateMachineDao dao = attachDao(handle);
-            return dao.getAllIds().stream()
-                    .map(dao::getStateMachineData)
-                    .filter(transition -> !FinalState.class.isAssignableFrom(transition.getState().getClass()))
-                    .map(transition -> initialContext(transition.getContext()).stateMachineId)
-                    .collect(toSet());
-        });
-    }
-
-    @Override
-    public String create(State initialState, Class<? extends StateFactory> stateFactory, List<Object> initialContextData) {
+    public String create(Object initialState, List<Object> initialContextData) {
         return jdbi.withHandle(handle -> {
             final StateMachineDao dao = attachDao(handle);
 
             final String smId = dao.getNextId();
 
-            final Transition transition = initialTransition(smId, initialState, stateFactory, initialContextData);
+            final Transition transition = initialTransition(smId, initialState, initialContextData);
 
             dao.insertStateMachineData(smId, transition);
 
@@ -98,13 +81,13 @@ public class MysqlStateMachineRepository implements StateMachineRepository {
         }
 
         @Override
-        public Transition getLastTransition() {
+        public Transition getLast() {
             return attachDao(handle).getStateMachineData(stateMachineId);
         }
 
         @Override
-        public void update(Transition newTransition) {
-            attachDao(handle).updateStateMachineData(stateMachineId, newTransition);
+        public void update(Transition next) {
+            attachDao(handle).updateStateMachineData(stateMachineId, next);
         }
 
         @Override

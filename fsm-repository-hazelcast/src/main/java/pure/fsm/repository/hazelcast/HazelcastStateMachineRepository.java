@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Transition;
 import pure.fsm.core.StateMachineRepository;
-import pure.fsm.core.state.FinalState;
+import pure.fsm.core.FinalState;
 import pure.fsm.core.state.State;
 import pure.fsm.core.state.StateFactory;
 
@@ -64,7 +64,7 @@ public class HazelcastStateMachineRepository implements StateMachineRepository {
     }
 
     @Override
-    public Set<String> getAllIds() {
+    public Set<String> getIds() {
         return copyOf(getHolderMap().keySet());
     }
 
@@ -80,13 +80,13 @@ public class HazelcastStateMachineRepository implements StateMachineRepository {
     private Optional<Lock> createLock(String stateMachineId, java.util.concurrent.locks.Lock distributedLock) {
         Lock lock = new Lock() {
             @Override
-            public Transition getLastTransition() {
+            public Transition getLast() {
                 return getHolderMap().get(stateMachineId);
             }
 
             @Override
-            public void update(Transition newTransition) {
-                getHolderMap().put(stateMachineId, newTransition);
+            public void update(Transition next) {
+                getHolderMap().put(stateMachineId, next);
             }
 
             @Override

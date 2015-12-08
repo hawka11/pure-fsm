@@ -8,9 +8,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import pure.fsm.core.StateMachineRepository;
 import pure.fsm.core.StateMachineRepository.Lock;
 import pure.fsm.core.Transition;
-import pure.fsm.core.fixture.TestEvent;
-import pure.fsm.core.fixture.TestFinalState;
-import pure.fsm.core.fixture.TestNonFinalState;
+import pure.fsm.core.fixture.TestEvent.RechargeEvent;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -25,6 +23,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static pure.fsm.core.Context.initialContext;
+import static pure.fsm.core.fixture.TestState.RECHARGE_ACCEPTED_FINAL_STATE;
+import static pure.fsm.core.fixture.TestState.RECHARGE_REQUESTED_STATE;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CleanUpFinalisedStateMachinesTest {
@@ -44,17 +44,17 @@ public class CleanUpFinalisedStateMachinesTest {
 
     @Test
     public void shouldNotAttemptCleanupWhenNonFinalState() {
-        cleaner.cleanupIfFinalState("1", createTransitionInState(new TestNonFinalState()));
+        cleaner.cleanupIfFinalState("1", createTransitionInState(RECHARGE_REQUESTED_STATE));
 
         verify(repository, never()).tryLock(eq("1"), anyLong(), any(TimeUnit.class));
     }
 
     @Test
     public void shouldAttemptCleanupWhenFinalState() {
-        final Transition transition = createTransitionInState(new TestFinalState());
+        final Transition transition = createTransitionInState(RECHARGE_ACCEPTED_FINAL_STATE);
 
         when(repository.tryLock("2", 1, SECONDS)).thenReturn(Optional.of(lock));
-        when(lock.getLastTransition()).thenReturn(transition);
+        when(lock.getLast()).thenReturn(transition);
 
         cleaner.cleanupIfFinalState("2", transition);
 
@@ -72,6 +72,6 @@ public class CleanUpFinalisedStateMachinesTest {
     }
 
     private Transition createTransitionInState(Object state) {
-        return Transition.To(state, new TestEvent(), initialContext("1", newArrayList()));
+        return Transition.To(state, new RechargeEvent(), initialContext("1", newArrayList()));
     }
 }

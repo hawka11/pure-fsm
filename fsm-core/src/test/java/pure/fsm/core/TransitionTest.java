@@ -3,15 +3,13 @@ package pure.fsm.core;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import pure.fsm.core.context.CanUnlock;
 import pure.fsm.core.context.InitialContext;
-import pure.fsm.core.fixture.TestAlternateContext;
+import pure.fsm.core.fixture.PinRechargedContext;
 import pure.fsm.core.fixture.TestCanUnlock;
-import pure.fsm.core.fixture.TestEvent;
+import pure.fsm.core.fixture.TestEvent.RechargeEvent;
 import pure.fsm.core.fixture.TestInitialContext;
-import pure.fsm.core.fixture.TestNonFinalState;
 
 import java.util.List;
 
@@ -21,30 +19,29 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static pure.fsm.core.Transition.initialTransition;
+import static pure.fsm.core.fixture.TestState.INITIAL_STATE;
+import static pure.fsm.core.fixture.TestState.RECHARGE_REQUESTED_STATE;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TransitionTest {
-
-    @Mock
-    private Object initialState;
 
     private Transition initialTransition;
     private Transition transitioned;
 
     @Before
     public void beforeEach() {
-        initialTransition = initialTransition("111", initialState, newArrayList(new TestInitialContext("12344334")));
+        initialTransition = initialTransition("111", INITIAL_STATE, newArrayList(new TestInitialContext("12344334")));
         transitioned = initialTransition.setNextTransition(Transition.To(
-                new TestNonFinalState(), new TestEvent(),
-                initialTransition.getContext().appendState(new TestAlternateContext())));
+                RECHARGE_REQUESTED_STATE, new RechargeEvent(),
+                initialTransition.getContext().appendState(new PinRechargedContext())));
     }
 
     @Test
     public void shouldContainInitialBuiltInValues() {
         final List<InitialContext> testContexts = initialTransition.getContext().getContextsOfType(InitialContext.class);
         assertThat(testContexts.size(), equalTo(1));
-        assertThat(initialTransition.getEvent(), equalTo(""));
-        assertThat(initialTransition.getState(), nullValue());
+        assertThat(initialTransition.getEvent(), equalTo("InitialEvent"));
+        assertThat(initialTransition.getState().getClass(), equalTo(INITIAL_STATE.getClass()));
         assertThat(initialTransition.getTransitioned(), notNullValue());
     }
 
@@ -56,9 +53,9 @@ public class TransitionTest {
 
     @Test
     public void shouldTransitionedFieldsBeCorrect() {
-        assertThat(transitioned.getEvent(), equalTo("pure.fsm.core.fixture.TestEvent"));
+        assertThat(transitioned.getEvent(), equalTo("pure.fsm.core.fixture.TestEvent$RechargeEvent"));
         assertThat(transitioned.getState(), notNullValue());
-        assertThat(transitioned.getState().getClass(), equalTo(TestNonFinalState.class));
+        assertThat(transitioned.getState().getClass(), equalTo(RECHARGE_REQUESTED_STATE.getClass()));
         assertThat(transitioned.getTransitioned(), notNullValue());
     }
 
@@ -71,7 +68,7 @@ public class TransitionTest {
 
     @Test
     public void shouldNormalContextsOnlyExistInTransitionedAndNotMutateExisting() {
-        assertThat(initialTransition.getContext().getContextsOfType(TestAlternateContext.class).size(), equalTo(0));
-        assertThat(transitioned.getContext().getContextsOfType(TestAlternateContext.class).size(), equalTo(1));
+        assertThat(initialTransition.getContext().getContextsOfType(PinRechargedContext.class).size(), equalTo(0));
+        assertThat(transitioned.getContext().getContextsOfType(PinRechargedContext.class).size(), equalTo(1));
     }
 }

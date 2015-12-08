@@ -2,21 +2,20 @@ package pure.fsm.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pure.fsm.core.StateMachine.HandleEvent;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static pure.fsm.core.StateMachine.STATE_MACHINE_INSTANCE;
-import static pure.fsm.core.state.FinalState.DefaultFinalStates.ERROR_FINAL_STATE;
+import static pure.fsm.core.FinalState.ERROR_FINAL_STATE;
 
 public class WithinLock {
 
     private final static Logger LOG = LoggerFactory.getLogger(WithinLock.class);
 
-    public static Transition tryWithLock(String stateMachineId, StateMachineRepository repository, HandleEvent handleEvent) {
-        return tryWithLock(stateMachineId, repository, handleEvent, 1, SECONDS);
+    public static Transition tryWithLock(String stateMachineId, StateMachineRepository repository, Function<Transition, Transition> f) {
+        return tryWithLock(stateMachineId, repository, f, 1, SECONDS);
     }
 
     /**
@@ -25,7 +24,7 @@ public class WithinLock {
      * <p>
      * This does not prevent multiple state machines being sent their own events concurrently
      */
-    public static Transition tryWithLock(String stateMachineId, StateMachineRepository repository, HandleEvent handleEvent, long timeout, TimeUnit timeUnit) {
+    public static Transition tryWithLock(String stateMachineId, StateMachineRepository repository, Function<Transition, Transition> f, long timeout, TimeUnit timeUnit) {
         Transition result = null;
         Optional<StateMachineRepository.Lock> lock = Optional.empty();
 
@@ -36,15 +35,14 @@ public class WithinLock {
         }
 
         if (lock.isPresent()) {
-            final Transition last = lock.get().getLastTransition();
+            final Transition last = lock.get().getLast();
 
             try {
-                result = handleEvent.handle(last, STATE_MACHINE_INSTANCE);
+                result = f.apply(last);
 
-                Transition latestTransition =
-                        last.setNextTransition(result);
+                Transition next = last.setNextTransition(result);
 
-                lock.get().update(latestTransition);
+                lock.get().update(next);
 
             } catch (Exception e) {
                 LOG.error("Error with currentStateMachine [" + stateMachineId + "]", e);

@@ -40,7 +40,7 @@ public class Transition {
             @JsonProperty("state") String state,
             @JsonProperty("event") String event,
             @JsonProperty("previous") Transition previous,
-            @JsonProperty("contexts") Context context) {
+            @JsonProperty("context") Context context) {
         this.transitioned = transitioned;
         this.state = state;
         this.event = event;
@@ -56,7 +56,7 @@ public class Transition {
 
         return new Transition(LocalDateTime.now(),
                 initialState.getClass().getName(),
-                "", null, context);
+                "InitialEvent", null, context);
     }
 
     @JsonIgnore
@@ -65,9 +65,8 @@ public class Transition {
     }
 
     @JsonIgnore
-    public Object getEvent() {
-        final String event = this.event;
-        return toInstance(event);
+    public String getEvent() {
+        return event;
     }
 
     @JsonIgnore
@@ -76,10 +75,10 @@ public class Transition {
         return toInstance(state);
     }
 
-    private Class<?> toInstance(String event) {
+    private Object toInstance(String event) {
         try {
-            return Class.forName(event);
-        } catch (ClassNotFoundException e) {
+            return Class.forName(event).newInstance();
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -104,10 +103,8 @@ public class Transition {
                 null, context);
     }
 
-
     public Transition setNextTransition(Transition nextTransition) {
         return new Transition(nextTransition.transitioned, nextTransition.state,
                 nextTransition.event, this, nextTransition.context);
     }
-
 }

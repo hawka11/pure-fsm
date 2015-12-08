@@ -6,14 +6,12 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 import static com.google.common.collect.Maps.newHashMap;
+import static pure.fsm.core.FinalState.ERROR_FINAL_STATE;
 import static pure.fsm.core.context.ExceptionContext.withException;
-import static pure.fsm.core.state.FinalState.DefaultFinalStates.ERROR_FINAL_STATE;
 
-public class StateMachine {
+public abstract class StateMachine {
 
     private final static Logger LOG = LoggerFactory.getLogger(StateMachine.class);
-
-    public final static StateMachine STATE_MACHINE_INSTANCE = new StateMachine();
 
     private Map<Class<?>, HandleEvent> defByState = newHashMap();
 
@@ -42,6 +40,10 @@ public class StateMachine {
         return next;
     }
 
+    protected void when(Object state, HandleEvent handleEvent) {
+        defByState.put(state.getClass(), handleEvent);
+    }
+
     protected void when(Class<?> state, HandleEvent handleEvent) {
         defByState.put(state, handleEvent);
     }
@@ -52,6 +54,10 @@ public class StateMachine {
 
     protected Transition stay(Object state, Object event, Context context) {
         return go(state, event, context);
+    }
+
+    protected Transition error(Object event, Context context) {
+        return Transition.To(ERROR_FINAL_STATE, event, context);
     }
 
     @FunctionalInterface

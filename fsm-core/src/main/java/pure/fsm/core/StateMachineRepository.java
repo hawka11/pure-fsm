@@ -1,7 +1,5 @@
 package pure.fsm.core;
 
-import pure.fsm.core.Transition;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -11,9 +9,7 @@ public interface StateMachineRepository {
 
     Transition get(String stateMachineId);
 
-    Set<String> getAllIds();
-
-    Set<String> getInProgressIds();
+    Set<String> getIds();
 
     String create(Object initialState, List<Object> initialContextData);
 
@@ -21,9 +17,9 @@ public interface StateMachineRepository {
 
     interface Lock {
 
-        Transition getLastTransition();
+        Transition getLast();
 
-        void update(Transition newTransition);
+        void update(Transition next);
 
         /**
          * Must be idempotent

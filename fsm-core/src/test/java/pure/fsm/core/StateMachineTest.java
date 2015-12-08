@@ -1,37 +1,50 @@
 package pure.fsm.core;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.mockito.Mock;
-import pure.fsm.core.fixture.TestAlternateContext;
-import pure.fsm.core.fixture.TestEvent;
+import pure.fsm.core.fixture.PinRechargedContext;
+import pure.fsm.core.fixture.TestEvent.RechargeAcceptedEvent;
+import pure.fsm.core.fixture.TestEvent.RechargeEvent;
 import pure.fsm.core.fixture.TestInitialContext;
-import pure.fsm.core.fixture.TestNonFinalState;
+
+import java.util.Optional;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static pure.fsm.core.StateMachine.STATE_MACHINE_INSTANCE;
+import static org.assertj.core.api.Assertions.assertThat;
+import static pure.fsm.core.FinalState.ERROR_FINAL_STATE;
 import static pure.fsm.core.Transition.initialTransition;
+import static pure.fsm.core.fixture.TestState.INITIAL_STATE;
+import static pure.fsm.core.fixture.TestState.RECHARGE_ACCEPTED_FINAL_STATE;
+import static pure.fsm.core.fixture.TestState.RECHARGE_REQUESTED_STATE;
+import static pure.fsm.core.fixture.TestStateMachine.TEST_STATE_MACHINE;
 
 public class StateMachineTest {
 
-    @Mock
-    private Object initialState;
-
     private Transition initialTransition;
-    private Transition transitioned;
 
     @Before
     public void beforeEach() {
-        initialTransition = initialTransition("111", initialState, newArrayList(new TestInitialContext("data")));
-        transitioned = initialTransition.setNextTransition(Transition.To(
-                new TestNonFinalState(), new TestEvent(),
-                initialTransition.getContext().appendState(new TestAlternateContext())));
+        initialTransition = initialTransition("111", INITIAL_STATE, newArrayList(new TestInitialContext("data")));
     }
 
     @Test
-    @Ignore
-    public void test() {
-        final Transition transitioned = STATE_MACHINE_INSTANCE.handleEvent(initialTransition, new TestEvent());
+    public void shouldRequestAndAcceptSuccessfully() {
+        final Transition requested = TEST_STATE_MACHINE.handleEvent(initialTransition, new RechargeEvent());
+        assertThat(requested).isNotNull();
+        assertThat(requested.getState().getClass()).isEqualTo(RECHARGE_REQUESTED_STATE.getClass());
+
+        final Optional<PinRechargedContext> pinRechagedContext = requested.getContext().mostRecentOf(PinRechargedContext.class);
+        assertThat(pinRechagedContext.isPresent()).isEqualTo(true);
+
+        final Transition accepted = TEST_STATE_MACHINE.handleEvent(requested, new RechargeAcceptedEvent());
+        assertThat(accepted).isNotNull();
+        assertThat(accepted.getState().getClass()).isEqualTo(RECHARGE_ACCEPTED_FINAL_STATE.getClass());
+    }
+
+    @Test
+    public void shouldErrorWhenUnknownEvent() {
+        final Transition requested = TEST_STATE_MACHINE.handleEvent(initialTransition, new Object());
+        assertThat(requested).isNotNull();
+        assertThat(requested.getState().getClass()).isEqualTo(ERROR_FINAL_STATE.getClass());
     }
 }

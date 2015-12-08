@@ -8,9 +8,7 @@ public class TestInitialContext {
     public final String data;
 
     @JsonCreator
-    public TestInitialContext(
-            @JsonProperty("data") String data
-    ) {
+    public TestInitialContext(@JsonProperty("data") String data) {
         this.data = data;
     }
 }

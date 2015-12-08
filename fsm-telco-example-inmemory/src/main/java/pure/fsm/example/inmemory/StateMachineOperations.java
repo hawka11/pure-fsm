@@ -8,7 +8,7 @@ import pure.fsm.core.cleanup.CleanUpFinalisedStateMachines;
 import pure.fsm.core.StateMachineRepository;
 import pure.fsm.core.event.Event;
 import pure.fsm.core.WithinLock;
-import pure.fsm.core.timeout.EventTicker;
+import pure.fsm.core.EventTicker;
 import pure.fsm.repository.inmemory.InMemoryStateMachineRepository;
 import pure.fsm.example.inmemory.state.InitialState;
 import pure.fsm.example.inmemory.state.TelcoStateFactory;

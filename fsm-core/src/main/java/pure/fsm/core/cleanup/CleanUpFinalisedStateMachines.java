@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import pure.fsm.core.Transition;
 import pure.fsm.core.StateMachineRepository;
 import pure.fsm.core.StateMachineRepository.Lock;
-import pure.fsm.core.state.FinalState;
+import pure.fsm.core.FinalState;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -62,7 +62,7 @@ public class CleanUpFinalisedStateMachines {
 
         try {
 
-            repository.getAllIds().forEach(this::processStateMachineId);
+            repository.getIds().forEach(this::processStateMachineId);
 
         } catch (Exception e) {
             LOG.warn("Something went bad", e);
@@ -119,7 +119,7 @@ public class CleanUpFinalisedStateMachines {
     }
 
     private void cleanupIfFinalizedTimeHasExpired(Lock lock) {
-        final Transition latestTransition = lock.getLastTransition();
+        final Transition latestTransition = lock.getLast();
 
         if (shouldCleanup(latestTransition)) {
             try {

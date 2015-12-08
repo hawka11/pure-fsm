@@ -1,4 +1,4 @@
-package pure.fsm.core.repository;
+package pure.fsm.core.cleanup;
 
 public class ContextHistoryFormatterTest {
 

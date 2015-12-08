@@ -3,36 +3,33 @@ package pure.fsm.core.transition;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import pure.fsm.core.Transition;
-import pure.fsm.core.fixture.TestAlternateContext;
-import pure.fsm.core.fixture.TestEvent;
+import pure.fsm.core.fixture.PinRechargedContext;
+import pure.fsm.core.fixture.TestEvent.RechargeEvent;
 import pure.fsm.core.fixture.TestInitialContext;
-import pure.fsm.core.fixture.TestNonFinalState;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static pure.fsm.core.Transition.initialTransition;
+import static pure.fsm.core.fixture.TestState.INITIAL_STATE;
+import static pure.fsm.core.fixture.TestState.RECHARGE_REQUESTED_STATE;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InitialTransitionTest {
-
-    @Mock
-    private Object initialState;
 
     private Transition initialTransition;
     private Transition transitioned;
 
     @Before
     public void beforeEach() {
-        initialTransition = initialTransition("111", initialState, newArrayList(new TestInitialContext("data")));
+        initialTransition = initialTransition("111", INITIAL_STATE, newArrayList(new TestInitialContext("data")));
 
         transitioned = initialTransition.setNextTransition(Transition.To(
-                new TestNonFinalState(), new TestEvent(),
-                initialTransition.getContext().appendState(new TestAlternateContext())));
+                RECHARGE_REQUESTED_STATE, new RechargeEvent(),
+                initialTransition.getContext().appendState(new PinRechargedContext())));
     }
 
     @Test

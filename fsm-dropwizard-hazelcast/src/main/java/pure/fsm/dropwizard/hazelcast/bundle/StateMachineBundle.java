@@ -14,7 +14,7 @@ import pure.fsm.core.cleanup.CleanUpFinalisedStateMachines;
 import pure.fsm.core.cleanup.OnCleanupListener;
 import pure.fsm.core.state.StateFactory;
 import pure.fsm.core.WithinLock;
-import pure.fsm.core.timeout.EventTicker;
+import pure.fsm.core.EventTicker;
 import pure.fsm.core.transition.TransitionOccuredListener;
 import pure.fsm.repository.hazelcast.HazelcastStateMachineRepository;
 import pure.fsm.repository.hazelcast.resource.DistributedResourceFactory;
