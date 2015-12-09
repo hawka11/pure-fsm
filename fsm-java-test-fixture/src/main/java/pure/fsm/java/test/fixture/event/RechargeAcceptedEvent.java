@@ -1,4 +1,4 @@
-package pure.fsm.core.test.fixture.event;
+package pure.fsm.java.test.fixture.event;
 
 import pure.fsm.core.Transition;
 

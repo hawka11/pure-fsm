@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.StateMachineRepository;
 import pure.fsm.core.Transition;
-import pure.fsm.core.test.fixture.event.TelcoEvent;
+import pure.fsm.java.test.fixture.event.TelcoEvent;
 import pure.fsm.example.telcohazelcast.guard.AllPinsRechargedAcceptedGuard;
 import pure.fsm.repository.hazelcast.HazelcastStateMachineRepository;
 import pure.fsm.repository.hazelcast.resource.DistributedResourceFactory;

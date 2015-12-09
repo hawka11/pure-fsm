@@ -2,11 +2,11 @@ package pure.fsm.example.telcohazelcast;
 
 import pure.fsm.core.FinalState;
 import pure.fsm.core.StateMachine;
-import pure.fsm.core.test.fixture.event.TelcoEvent;
-import pure.fsm.core.test.fixture.guard.Guard;
+import pure.fsm.java.test.fixture.event.TelcoEvent;
+import pure.fsm.java.test.fixture.guard.Guard;
 import pure.fsm.repository.hazelcast.resource.DistributedResourceFactory;
 
-import static pure.fsm.core.test.fixture.state.RechargeRequestedState.RECHARGE_REQUESTED_STATE;
+import static pure.fsm.java.test.fixture.state.RechargeRequestedState.RECHARGE_REQUESTED_STATE;
 import static pure.fsm.core.unlock.UnlockContexts.unlockContexts;
 import static pure.fsm.example.telcohazelcast.state.HzInitialState.INITIAL_STATE;
 

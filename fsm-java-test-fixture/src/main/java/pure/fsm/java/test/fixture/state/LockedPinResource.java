@@ -1,4 +1,4 @@
-package pure.fsm.core.test.fixture.state;
+package pure.fsm.java.test.fixture.state;
 
 import pure.fsm.core.unlock.CanUnlock;
 

@@ -1,7 +1,7 @@
-package pure.fsm.core.test.fixture.guard;
+package pure.fsm.java.test.fixture.guard;
 
 import pure.fsm.core.Context;
-import pure.fsm.core.test.fixture.TelcoRechargeContext;
+import pure.fsm.java.test.fixture.TelcoRechargeContext;
 
 public class AllPinsRechargedAcceptedGuard implements Guard {
 

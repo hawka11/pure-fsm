@@ -1,14 +1,14 @@
-package pure.fsm.core.test.fixture.state;
+package pure.fsm.java.test.fixture.state;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Transition;
-import pure.fsm.core.test.fixture.event.CancelRechargeEvent;
-import pure.fsm.core.test.fixture.event.RechargeAcceptedEvent;
-import pure.fsm.core.test.fixture.event.RequestRechargeEvent;
-import pure.fsm.core.test.fixture.event.TelcoEventVisitor;
-import pure.fsm.core.test.fixture.event.TimeoutTickEvent;
-import pure.fsm.core.test.fixture.event.TelcoEvent;
+import pure.fsm.java.test.fixture.event.CancelRechargeEvent;
+import pure.fsm.java.test.fixture.event.RechargeAcceptedEvent;
+import pure.fsm.java.test.fixture.event.RequestRechargeEvent;
+import pure.fsm.java.test.fixture.event.TelcoEventVisitor;
+import pure.fsm.java.test.fixture.event.TimeoutTickEvent;
+import pure.fsm.java.test.fixture.event.TelcoEvent;
 
 import java.time.LocalDateTime;
 
@@ -17,7 +17,7 @@ import static pure.fsm.core.context.ContextMessage.withMessage;
 
 public class BaseTelcoState implements TelcoEventVisitor {
 
-    public static final int TIMEOUT_SECS = 5;
+    public static final int TIMEOUT_SECS = 2;
 
     private final static Logger LOG = LoggerFactory.getLogger(BaseTelcoState.class);
 

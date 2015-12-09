@@ -1,7 +1,7 @@
 package pure.fsm.example.telcohazelcast;
 
-import pure.fsm.core.test.fixture.event.RechargeAcceptedEvent;
-import pure.fsm.core.test.fixture.event.RequestRechargeEvent;
+import pure.fsm.java.test.fixture.event.RechargeAcceptedEvent;
+import pure.fsm.java.test.fixture.event.RequestRechargeEvent;
 
 import java.math.BigDecimal;
 

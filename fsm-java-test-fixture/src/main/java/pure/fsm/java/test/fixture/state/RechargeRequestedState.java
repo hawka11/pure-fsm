@@ -1,11 +1,11 @@
-package pure.fsm.core.test.fixture.state;
+package pure.fsm.java.test.fixture.state;
 
 import pure.fsm.core.Context;
 import pure.fsm.core.Transition;
-import pure.fsm.core.test.fixture.TelcoRechargeContext;
-import pure.fsm.core.test.fixture.event.CancelRechargeEvent;
-import pure.fsm.core.test.fixture.event.RechargeAcceptedEvent;
-import pure.fsm.core.test.fixture.guard.Guard;
+import pure.fsm.java.test.fixture.TelcoRechargeContext;
+import pure.fsm.java.test.fixture.event.CancelRechargeEvent;
+import pure.fsm.java.test.fixture.event.RechargeAcceptedEvent;
+import pure.fsm.java.test.fixture.guard.Guard;
 
 import static pure.fsm.core.FinalState.SUCCESS_FINAL_STATE;
 import static pure.fsm.core.FinalState.USER_CANCELLED_FINAL_STATE;

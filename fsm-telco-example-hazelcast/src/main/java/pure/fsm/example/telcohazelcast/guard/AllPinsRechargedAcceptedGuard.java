@@ -1,7 +1,7 @@
 package pure.fsm.example.telcohazelcast.guard;
 
 import pure.fsm.core.Context;
-import pure.fsm.core.test.fixture.guard.Guard;
+import pure.fsm.java.test.fixture.guard.Guard;
 import pure.fsm.example.telcohazelcast.HzTelcoRechargeContext;
 
 import java.util.Set;

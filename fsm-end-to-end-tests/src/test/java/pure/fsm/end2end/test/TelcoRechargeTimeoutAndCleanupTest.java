@@ -2,18 +2,22 @@ package pure.fsm.end2end.test;
 
 import org.junit.Test;
 import pure.fsm.core.StateMachineRepository;
-import pure.fsm.core.test.fixture.event.RequestRechargeEvent;
+import pure.fsm.java.test.fixture.event.RequestRechargeEvent;
+import pure.fsm.java.test.fixture.state.BaseTelcoState;
 
 import java.math.BigDecimal;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import static com.google.common.collect.Sets.newHashSet;
 import static java.lang.Thread.sleep;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static pure.fsm.end2end.test.StateMachineOperations.KEEP_AROUND_B4_REMOVING;
 import static pure.fsm.end2end.test.TelcoStateAssertions.assertInitialState;
 import static pure.fsm.end2end.test.TelcoStateAssertions.assertRechargeRequestedState;
 import static pure.fsm.end2end.test.TelcoStateAssertions.assertStateMachineHasTimedout;
+import static pure.fsm.java.test.fixture.state.BaseTelcoState.TIMEOUT_SECS;
 
 
 public class TelcoRechargeTimeoutAndCleanupTest extends BaseEnd2EndTest {
@@ -21,8 +25,6 @@ public class TelcoRechargeTimeoutAndCleanupTest extends BaseEnd2EndTest {
     public TelcoRechargeTimeoutAndCleanupTest(Supplier<StateMachineRepository> repository) {
         super(repository);
     }
-
-    private static final int STATE_TIMEOUT = 1000;
 
     @Test
     public void runTest() throws InterruptedException {
@@ -36,7 +38,7 @@ public class TelcoRechargeTimeoutAndCleanupTest extends BaseEnd2EndTest {
         sleep(500);
         assertRechargeRequestedState(stateMachineId, ops.getStateMachine(stateMachineId));
 
-        sleep(STATE_TIMEOUT);
+        sleep(SECONDS.toMillis(TIMEOUT_SECS) + 500);
 
         //something should configure this to run periodically
         ops.timeoutEventTicker.tick();

@@ -1,4 +1,4 @@
-package pure.fsm.core.test.fixture.guard;
+package pure.fsm.java.test.fixture.guard;
 
 import pure.fsm.core.Context;
 

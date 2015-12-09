@@ -2,13 +2,13 @@ package pure.fsm.end2end.test;
 
 import pure.fsm.core.FinalState;
 import pure.fsm.core.Transition;
-import pure.fsm.core.test.fixture.TelcoRechargeContext;
-import pure.fsm.core.test.fixture.event.RechargeAcceptedEvent;
-import pure.fsm.core.test.fixture.event.RequestRechargeEvent;
-import pure.fsm.core.test.fixture.event.TelcoEvent;
-import pure.fsm.core.test.fixture.event.TimeoutTickEvent;
-import pure.fsm.core.test.fixture.state.InitialState;
-import pure.fsm.core.test.fixture.state.RechargeRequestedState;
+import pure.fsm.java.test.fixture.TelcoRechargeContext;
+import pure.fsm.java.test.fixture.event.RechargeAcceptedEvent;
+import pure.fsm.java.test.fixture.event.RequestRechargeEvent;
+import pure.fsm.java.test.fixture.event.TelcoEvent;
+import pure.fsm.java.test.fixture.event.TimeoutTickEvent;
+import pure.fsm.java.test.fixture.state.InitialState;
+import pure.fsm.java.test.fixture.state.RechargeRequestedState;
 
 import java.util.List;
 import java.util.Set;
@@ -95,7 +95,7 @@ public class TelcoStateAssertions {
         assertThat(current).isNotNull();
         assertThat(current.getState()).isNotNull();
         assertThat(current.getState().getClass()).isEqualTo(InitialState.class);
-        assertThat(current.getEvent()).isNullOrEmpty();
+        assertThat(current.getEvent()).isEqualTo("InitialEvent");
         assertThat(current.previous().isPresent()).isEqualTo(false);
         assertThat(current.getContext()).isNotNull();
         assertThat(current.getContext().stateMachineId()).isEqualTo(stateMachineId);
