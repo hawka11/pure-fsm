@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
+import java.util.function.Consumer;
 
 import static com.google.common.collect.Maps.newHashMap;
 import static pure.fsm.core.FinalState.ERROR_FINAL_STATE;
@@ -14,6 +15,7 @@ public abstract class StateMachine<T> {
     private final static Logger LOG = LoggerFactory.getLogger(StateMachine.class);
 
     private Map<Class<?>, HandleEvent<T>> defByState = newHashMap();
+    private Map<Class<?>, Map<Class<?>, Consumer<Transition>>> defByTransition = newHashMap();
 
     @SuppressWarnings("unchecked")
     public Transition handleEvent(Transition last, T event) {
@@ -37,6 +39,17 @@ public abstract class StateMachine<T> {
             next = Transition.To(ERROR_FINAL_STATE, event, updatedContext);
         }
 
+        final Transition nextForTransitionCallback = next; //needs to be final
+        defByTransition.entrySet().stream().forEach(it -> {
+            if (it.getKey().isAssignableFrom(last.getState().getClass())) {
+                it.getValue().entrySet().stream().forEach(ij -> {
+                    if (ij.getKey().isAssignableFrom(nextForTransitionCallback.getState().getClass())) {
+                        ij.getValue().accept(nextForTransitionCallback);
+                    }
+                });
+            }
+        });
+
         return next;
     }
 
@@ -46,6 +59,15 @@ public abstract class StateMachine<T> {
 
     protected void when(Class<?> state, HandleEvent<T> handleEvent) {
         defByState.put(state, handleEvent);
+    }
+
+    protected void onTransition(Object state, Object next, Consumer<Transition> f) {
+        onTransition(state.getClass(), next.getClass(), f);
+    }
+
+    protected void onTransition(Class<?> state, Class<?> next, Consumer<Transition> f) {
+        if (!defByTransition.containsKey(state)) defByTransition.put(state, newHashMap());
+        defByTransition.get(state).put(next, f);
     }
 
     protected Transition go(Object state, T event, Context context) {
