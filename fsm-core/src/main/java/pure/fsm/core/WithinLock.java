@@ -25,7 +25,7 @@ public class WithinLock {
      * This does not prevent multiple state machines being sent their own events concurrently
      */
     public static Transition tryWithLock(String stateMachineId, StateMachineRepository repository, Function<Transition, Transition> f, long timeout, TimeUnit timeUnit) {
-        Transition result = null;
+        Transition next = null;
         Optional<StateMachineRepository.Lock> lock = Optional.empty();
 
         try {
@@ -38,9 +38,7 @@ public class WithinLock {
             final Transition last = lock.get().getLast();
 
             try {
-                result = f.apply(last);
-
-                Transition next = last.setNextTransition(result);
+                next = f.apply(last);
 
                 lock.get().update(next);
 
@@ -58,6 +56,6 @@ public class WithinLock {
             LOG.error("Could not get state machine lock for [{}]", stateMachineId);
         }
 
-        return result;
+        return next;
     }
 }

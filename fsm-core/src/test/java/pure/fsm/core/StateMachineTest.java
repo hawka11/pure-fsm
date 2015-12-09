@@ -7,6 +7,7 @@ import pure.fsm.core.fixture.TestEvent.RechargeAcceptedEvent;
 import pure.fsm.core.fixture.TestEvent.RechargeEvent;
 import pure.fsm.core.fixture.TestInitialContext;
 import pure.fsm.core.fixture.TestState.RechargeAcceptedFinalState;
+import pure.fsm.core.fixture.TestState.RechargeRequestedState;
 import pure.fsm.core.fixture.TestStateMachine;
 
 import java.util.List;
@@ -24,7 +25,6 @@ public class StateMachineTest {
     private Transition initialTransition;
     private TestStateMachine stateMachine;
     private List<Transition> onTransitionStack;
-
 
     @Before
     public void beforeEach() {
@@ -48,7 +48,7 @@ public class StateMachineTest {
         assertThat(accepted.getState().getClass()).isEqualTo(RECHARGE_ACCEPTED_FINAL_STATE.getClass());
         assertThat(onTransitionStack.size()).isEqualTo(1);
         assertThat(onTransitionStack.get(0).getState().getClass()).isEqualTo(RechargeAcceptedFinalState.class);
-        //assertThat(onTransitionStack.get(0).previous().get().getState().getClass())
-        //        .isEqualTo(RechargeAcceptedFinalState.class);
+        assertThat(onTransitionStack.get(0).previous().get().getState().getClass())
+                .isEqualTo(RechargeRequestedState.class);
     }
 }

@@ -107,8 +107,8 @@ public class Transition {
                 null, context);
     }
 
-    public Transition setNextTransition(Transition nextTransition) {
-        return new Transition(nextTransition.transitioned, nextTransition.state,
-                nextTransition.event, this, nextTransition.context);
+    //TODO: rename this to setPrevious (and reverse call)
+    public Transition setNextTransition(Transition next) {
+        return new Transition(next.transitioned, next.state, next.event, this, next.context);
     }
 }

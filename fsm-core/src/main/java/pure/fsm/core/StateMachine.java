@@ -31,6 +31,9 @@ public abstract class StateMachine<T> {
 
             next = handleEvent.handle(last, event);
 
+            //
+            next = last.setNextTransition(next);
+
         } catch (Exception e) {
             LOG.error("SM [" + stateMachineId + "], Error handling event [" + event + "]", e);
 

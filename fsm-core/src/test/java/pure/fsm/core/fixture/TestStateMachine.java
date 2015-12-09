@@ -14,7 +14,7 @@ import static pure.fsm.core.fixture.TestState.RECHARGE_REQUESTED_STATE;
 
 public class TestStateMachine extends StateMachine<TestEvent> {
 
-    public TestStateMachine(Consumer<Transition> f) {
+    public TestStateMachine(Consumer<Transition> onTransition) {
 
         when(INITIAL_STATE, (last, event) -> {
             if (RechargeEvent.class.equals(event.getClass())) {
@@ -32,6 +32,6 @@ public class TestStateMachine extends StateMachine<TestEvent> {
             }
         });
 
-        onTransition(RECHARGE_REQUESTED_STATE.getClass(), FinalState.class, f);
+        onTransition(RECHARGE_REQUESTED_STATE.getClass(), FinalState.class, onTransition);
     }
 }
