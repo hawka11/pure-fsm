@@ -1,6 +1,6 @@
 package pure.fsm.example.inmemory.state;
 
-import pure.fsm.core.context.CanUnlock;
+import pure.fsm.core.unlock.CanUnlock;
 
 import java.util.Set;
 

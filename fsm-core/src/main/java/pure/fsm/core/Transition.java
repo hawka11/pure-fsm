@@ -75,9 +75,9 @@ public class Transition {
         return toInstance(state);
     }
 
-    private Object toInstance(String event) {
+    private Object toInstance(String thing) {
         try {
-            return Class.forName(event).newInstance();
+            return Class.forName(thing).newInstance();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -97,8 +97,12 @@ public class Transition {
     }
 
     public static Transition To(Object state, Object event, Context context) {
+        return Transition.To(state.getClass(), event, context);
+    }
+
+    public static Transition To(Class<?> state, Object event, Context context) {
         return new Transition(LocalDateTime.now(),
-                state.getClass().getName(),
+                state.getName(),
                 event.getClass().getName(),
                 null, context);
     }

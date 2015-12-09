@@ -8,7 +8,7 @@ import static pure.fsm.core.fixture.TestState.INITIAL_STATE;
 import static pure.fsm.core.fixture.TestState.RECHARGE_ACCEPTED_FINAL_STATE;
 import static pure.fsm.core.fixture.TestState.RECHARGE_REQUESTED_STATE;
 
-public class TestStateMachine extends StateMachine {
+public class TestStateMachine extends StateMachine<TestEvent> {
 
     public final static TestStateMachine TEST_STATE_MACHINE = new TestStateMachine();
 

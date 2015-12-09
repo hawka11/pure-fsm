@@ -5,20 +5,15 @@ import com.hazelcast.core.IAtomicLong;
 import com.hazelcast.core.IMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pure.fsm.core.Transition;
 import pure.fsm.core.StateMachineRepository;
-import pure.fsm.core.FinalState;
-import pure.fsm.core.state.State;
-import pure.fsm.core.state.StateFactory;
+import pure.fsm.core.Transition;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static com.google.common.collect.ImmutableSet.copyOf;
-import static java.util.stream.Collectors.toSet;
 import static pure.fsm.core.Transition.initialTransition;
 
 public class HazelcastStateMachineRepository implements StateMachineRepository {
@@ -33,11 +28,11 @@ public class HazelcastStateMachineRepository implements StateMachineRepository {
 
     @Override
     @SuppressWarnings("unchecked")
-    public String create(State initialState, Class<? extends StateFactory> stateFactory, List<Object> initialContextData) {
+    public String create(Object initialState, List<Object> initialContextData) {
         IAtomicLong idAtomicLong = getHazel().getAtomicLong("STATE_MACHINE_ID_GENERATOR");
         String id = String.valueOf(idAtomicLong.addAndGet(1));
 
-        final Transition transition = initialTransition(id, initialState, stateFactory, initialContextData);
+        final Transition transition = initialTransition(id, initialState, initialContextData);
 
         getHolderMap().put(id, transition);
 
@@ -67,15 +62,6 @@ public class HazelcastStateMachineRepository implements StateMachineRepository {
     public Set<String> getIds() {
         return copyOf(getHolderMap().keySet());
     }
-
-    @Override
-    public Set<String> getInProgressIds() {
-        return getHolderMap().entrySet().stream()
-                .filter(e -> !FinalState.class.isAssignableFrom(e.getValue().getState().getClass()))
-                .map(Map.Entry::getKey)
-                .collect(toSet());
-    }
-
 
     private Optional<Lock> createLock(String stateMachineId, java.util.concurrent.locks.Lock distributedLock) {
         Lock lock = new Lock() {

@@ -1,16 +1,12 @@
 package pure.fsm.repository.mysql;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.skife.jdbi.v2.Handle;
-import pure.fsm.core.StateFactoryRegistration;
 import pure.fsm.core.Transition;
 import pure.fsm.core.fixture.TestEvent;
 import pure.fsm.core.fixture.TestInitialContext;
-import pure.fsm.core.fixture.TestNonFinalState;
-import pure.fsm.core.fixture.TestStateFactory;
 
 import java.util.List;
 import java.util.Set;
@@ -20,6 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static pure.fsm.core.Transition.initialTransition;
+import static pure.fsm.core.fixture.TestState.RECHARGE_REQUESTED_STATE;
 
 public class StateMachineDaoTest {
 
@@ -32,11 +29,6 @@ public class StateMachineDaoTest {
     public RuleChain chain = RuleChain.emptyRuleChain()
             .around(JDBI_RULE)
             .around(FLYWAY_RULE);
-
-    @Before
-    public void beforeEach() {
-        StateFactoryRegistration.registerStateFactory(new TestStateFactory());
-    }
 
     @Test
     public void shouldGetSequentialStateMachineNumbers() {
@@ -91,7 +83,6 @@ public class StateMachineDaoTest {
         assertThat(actual.getState()).isEqualToComparingFieldByField(expected.getState());
         assertThat(actual.getTransitioned()).isEqualTo(expected.getTransitioned());
         assertThat(actual.getContext().stateMachineId()).isEqualTo(stateMachineId);
-        assertThat(actual.getContext().stateFactory().getClass()).isEqualTo(TestStateFactory.class);
     }
 
     @Test
@@ -124,8 +115,8 @@ public class StateMachineDaoTest {
     }
 
     private Transition transitionFrom(Transition transition) {
-        final Transition nextTransition = Transition.To(new TestNonFinalState(),
-                new TestEvent(), transition.getContext().appendState("nextState"));
+        final Transition nextTransition = Transition.To(RECHARGE_REQUESTED_STATE,
+                new TestEvent.RechargeEvent(), transition.getContext().appendState("nextState"));
         return transition.setNextTransition(nextTransition);
     }
 
@@ -226,8 +217,7 @@ public class StateMachineDaoTest {
 
     private Transition getInitialTestTransition(String stateMachineId) {
         return initialTransition(stateMachineId,
-                new TestNonFinalState(),
-                TestStateFactory.class,
+                RECHARGE_REQUESTED_STATE,
                 newArrayList(new TestInitialContext("testdata")));
     }
 

@@ -9,15 +9,17 @@ import java.util.Set;
 
 public class InitialState extends BaseTelcoState {
 
+    public static final InitialState INITIAL_STATE = new InitialState();
+
     @Override
-    public Transition visit(Context context, RequestRechargeEvent requestRechargeEvent) {
+    public Transition visit(Transition last, RequestRechargeEvent requestRechargeEvent) {
 
         System.out.println("In InitialState, processing RequestRechargeEvent event ");
 
         BigDecimal rechargeAmount = requestRechargeEvent.getAmount();
         Set<String> pinsToLock = requestRechargeEvent.getPinsToLock();
 
-        final Context updatedContext = context.appendState(new LockedPinResource(pinsToLock));
+        final Context updatedContext = last.getContext().appendState(new LockedPinResource(pinsToLock));
 
         pinsToLock.stream().forEach(pin -> {
             //telcoClientRepository.startRechargeProcess(rechargeAmount, pin);

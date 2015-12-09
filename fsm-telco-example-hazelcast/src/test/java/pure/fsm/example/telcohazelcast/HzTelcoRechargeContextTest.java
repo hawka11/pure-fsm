@@ -3,9 +3,8 @@ package pure.fsm.example.telcohazelcast;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import pure.fsm.core.Transition;
-import pure.fsm.repository.hazelcast.serialization.TransitionSerializer;
 import pure.fsm.example.inmemory.state.InitialState;
-import pure.fsm.example.telcohazelcast.state.HzTelcoStateFactory;
+import pure.fsm.repository.hazelcast.serialization.TransitionSerializer;
 
 import java.io.ByteArrayInputStream;
 
@@ -23,7 +22,7 @@ public class HzTelcoRechargeContextTest {
     public void test() throws Exception {
         final ObjectMapper mapper = new TransitionSerializer().mapper;
 
-        final Transition transition = initialTransition("1", new InitialState(), HzTelcoStateFactory.class,
+        final Transition transition = initialTransition("1", new InitialState(),
                 newArrayList(initialTelcoRecharge().addAcceptedPin("333")));
 
         byte[] data = mapper.writeValueAsBytes(transition);

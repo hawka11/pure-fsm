@@ -30,7 +30,7 @@ public class FsmApplication extends Application<FsmConfiguration> {
 
     @Override
     public void run(FsmConfiguration configuration, Environment environment) throws Exception {
-        stateMachineBundle.getTimeoutTicker(10, SECONDS).startTickScheduler();
+        stateMachineBundle.getTimeoutTicker(10, SECONDS).start();
         stateMachineBundle.getCleaner(newArrayList(HISTORY_FORMATTER), 10, SECONDS, 5, ChronoUnit.SECONDS).startScheduler();
 
         UserActionResource resource = new UserActionResource(

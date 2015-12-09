@@ -1,35 +1,46 @@
 package pure.fsm.example.telcohazelcast.state;
 
-import pure.fsm.core.Context;
 import pure.fsm.core.Transition;
+import pure.fsm.example.inmemory.event.RequestRechargeEvent;
+import pure.fsm.example.inmemory.state.BaseTelcoState;
+import pure.fsm.example.inmemory.state.RechargeRequestedState;
 import pure.fsm.repository.hazelcast.resource.DistributedLockResource;
 import pure.fsm.repository.hazelcast.resource.DistributedResourceFactory;
-import pure.fsm.example.inmemory.event.RequestRechargeEvent;
-import pure.fsm.example.inmemory.state.RechargeRequestedState;
 
 import java.math.BigDecimal;
 import java.util.Set;
 
-public class HzInitialState extends BaseHzTelcoState {
+public class HzInitialState {
 
-    HzInitialState(DistributedResourceFactory factory) {
-        super(factory);
+    public static final HzInitialState INITIAL_STATE = new HzInitialState();
+
+    public EventProcessor init(DistributedResourceFactory factory) {
+        return new EventProcessor(factory); //need external deps
     }
 
-    @Override
-    public Transition visit(Context context, RequestRechargeEvent requestRechargeEvent) {
+    public static class EventProcessor extends BaseTelcoState {
 
-        System.out.println("In InitialState, processing RequestRechargeEvent event ");
+        private final DistributedResourceFactory factory;
 
-        BigDecimal rechargeAmount = requestRechargeEvent.getAmount();
-        Set<String> pinsToLock = requestRechargeEvent.getPinsToLock();
+        public EventProcessor(DistributedResourceFactory factory) {
+            this.factory = factory;
+        }
 
-        //lock pin in distributed lock set, and represent that as a locked pin resource.
-        final DistributedLockResource lockResource = getDistributedResourceFactory().tryLock("MyLockedPins", pinsToLock);
+        @Override
+        public Transition visit(Transition last, RequestRechargeEvent event) {
 
-        //telcoClientRepository.startRechargeProcess(rechargeAmount);
+            System.out.println("In InitialState, processing RequestRechargeEvent event ");
 
-        return Transition.To(RechargeRequestedState.class,
-                requestRechargeEvent, context.addCanUnlock(lockResource));
+            BigDecimal rechargeAmount = event.getAmount();
+            Set<String> pinsToLock = event.getPinsToLock();
+
+            //lock pin in distributed lock set, and represent that as a locked pin resource.
+            final DistributedLockResource lockResource = factory.tryLock("MyLockedPins", pinsToLock);
+
+            //telcoClientRepository.startRechargeProcess(rechargeAmount);
+
+            return Transition.To(RechargeRequestedState.class,
+                    event, last.getContext().addCanUnlock(lockResource));
+        }
     }
 }

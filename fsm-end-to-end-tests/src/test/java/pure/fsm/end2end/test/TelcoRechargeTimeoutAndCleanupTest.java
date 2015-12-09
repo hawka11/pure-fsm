@@ -39,7 +39,7 @@ public class TelcoRechargeTimeoutAndCleanupTest extends BaseEnd2EndTest {
         sleep(STATE_TIMEOUT);
 
         //something should configure this to run periodically
-        ops.getEventTicker().sendTimeOutTickerEvents();
+        ops.getEventTicker().tick();
         assertStateMachineHasTimedout(stateMachineId, ops.getStateMachine(stateMachineId));
 
         sleep(KEEP_AROUND_B4_REMOVING);

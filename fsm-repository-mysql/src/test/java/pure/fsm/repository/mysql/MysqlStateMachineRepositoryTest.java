@@ -4,18 +4,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-import pure.fsm.core.StateFactoryRegistration;
-import pure.fsm.core.Transition;
-import pure.fsm.core.fixture.TestEvent;
-import pure.fsm.core.fixture.TestFinalState;
-import pure.fsm.core.fixture.TestNonFinalState;
-import pure.fsm.core.fixture.TestStateFactory;
 import pure.fsm.core.StateMachineRepository.Lock;
 
 import java.util.Optional;
-import java.util.Set;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
@@ -37,23 +29,7 @@ public class MysqlStateMachineRepositoryTest {
 
     @Before
     public void beforeEach() {
-        StateFactoryRegistration.registerStateFactory(new TestStateFactory());
         repository = new MysqlStateMachineRepository(JDBI_RULE.DBI);
-    }
-
-    @Test
-    public void shouldOnlyRetrieveInProgressIds() throws Exception {
-        final String smIdOne = repository.create(new TestNonFinalState(), TestStateFactory.class, newArrayList());
-        final String smIdTwo = repository.create(new TestNonFinalState(), TestStateFactory.class, newArrayList());
-        final String smIdThree = repository.create(new TestNonFinalState(), TestStateFactory.class, newArrayList());
-        final String smIdFour = repository.create(new TestNonFinalState(), TestStateFactory.class, newArrayList());
-
-        repository.tryLock(smIdTwo, 1, SECONDS).get().update(transitionToFinalState(smIdTwo));
-        repository.tryLock(smIdThree, 1, SECONDS).get().update(transitionToFinalState(smIdThree));
-
-        final Set<String> inProgressIds = repository.getInProgressIds();
-
-        assertThat(inProgressIds).containsExactly(smIdOne, smIdFour);
     }
 
     @Test
@@ -63,7 +39,6 @@ public class MysqlStateMachineRepositoryTest {
         assertTrue(lock.isPresent());
     }
 
-
     @Test
     public void unlockShouldBeIdempotent() {
         final Optional<Lock> lock = repository.tryLock("55555", 1, SECONDS);
@@ -71,6 +46,7 @@ public class MysqlStateMachineRepositoryTest {
         assertTrue(lock.get().unlock());
         assertFalse(lock.get().unlock());
     }
+
     @Test
     public void unlockAndRemoveShouldBeIdempotent() {
         final Optional<Lock> lock = repository.tryLock("55555", 1, SECONDS);
@@ -92,11 +68,5 @@ public class MysqlStateMachineRepositoryTest {
         assertTrue(repository.tryLock("4444", 1, SECONDS).isPresent());
         assertFalse(repository.tryLock("4444", 1, SECONDS).isPresent());
         assertFalse(repository.tryLock("4444", 1, SECONDS).isPresent());
-    }
-
-    private Transition transitionToFinalState(String smIdTwo) {
-        final Transition transition = repository.get(smIdTwo);
-        return transition.setNextTransition(
-                Transition.To(new TestFinalState(), new TestEvent(), transition.getContext()));
     }
 }

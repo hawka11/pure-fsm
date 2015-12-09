@@ -11,7 +11,6 @@ import java.util.Optional;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static pure.fsm.core.FinalState.ERROR_FINAL_STATE;
 import static pure.fsm.core.Transition.initialTransition;
 import static pure.fsm.core.fixture.TestState.INITIAL_STATE;
 import static pure.fsm.core.fixture.TestState.RECHARGE_ACCEPTED_FINAL_STATE;
@@ -39,12 +38,5 @@ public class StateMachineTest {
         final Transition accepted = TEST_STATE_MACHINE.handleEvent(requested, new RechargeAcceptedEvent());
         assertThat(accepted).isNotNull();
         assertThat(accepted.getState().getClass()).isEqualTo(RECHARGE_ACCEPTED_FINAL_STATE.getClass());
-    }
-
-    @Test
-    public void shouldErrorWhenUnknownEvent() {
-        final Transition requested = TEST_STATE_MACHINE.handleEvent(initialTransition, new Object());
-        assertThat(requested).isNotNull();
-        assertThat(requested.getState().getClass()).isEqualTo(ERROR_FINAL_STATE.getClass());
     }
 }

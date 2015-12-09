@@ -1,13 +1,13 @@
 package pure.fsm.example.inmemory.event;
 
-import pure.fsm.core.Context;
 import pure.fsm.core.Transition;
-import pure.fsm.core.event.EventVisitor;
 
-public interface TelcoEventVisitor extends EventVisitor {
-    Transition visit(Context context, RequestRechargeEvent requestRechargeEvent);
+public interface TelcoEventVisitor {
+    Transition visit(Transition last, RequestRechargeEvent event);
 
-    Transition visit(Context context, CancelRechargeEvent cancelRechargeEvent);
+    Transition visit(Transition last, CancelRechargeEvent event);
 
-    Transition visit(Context context, RechargeAcceptedEvent rechargeAcceptedEvent);
+    Transition visit(Transition last, RechargeAcceptedEvent event);
+
+    Transition visit(Transition last, TimeoutTickEvent event);
 }

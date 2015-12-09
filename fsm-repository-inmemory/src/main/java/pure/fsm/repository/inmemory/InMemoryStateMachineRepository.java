@@ -3,14 +3,10 @@ package pure.fsm.repository.inmemory;
 import com.google.common.collect.ImmutableSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pure.fsm.core.Transition;
 import pure.fsm.core.StateMachineRepository;
-import pure.fsm.core.FinalState;
-import pure.fsm.core.state.State;
-import pure.fsm.core.state.StateFactory;
+import pure.fsm.core.Transition;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,7 +14,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static java.util.stream.Collectors.toSet;
 import static pure.fsm.core.Transition.initialTransition;
 
 public class InMemoryStateMachineRepository implements StateMachineRepository {
@@ -32,10 +27,10 @@ public class InMemoryStateMachineRepository implements StateMachineRepository {
 
     @Override
     @SuppressWarnings("unchecked")
-    public String create(State initialState, Class<? extends StateFactory> stateFactory, List<Object> initialContextData) {
+    public String create(Object initialState, List<Object> initialContextData) {
         String id = String.valueOf(idGenerator.getAndIncrement());
 
-        final Transition transition = initialTransition(id, initialState, stateFactory, initialContextData);
+        final Transition transition = initialTransition(id, initialState, initialContextData);
 
         transitionByStateMachineId.put(id, transition);
         lockByStateMachineId.put(id, new ReentrantLock());
@@ -105,13 +100,5 @@ public class InMemoryStateMachineRepository implements StateMachineRepository {
     @Override
     public Set<String> getIds() {
         return ImmutableSet.copyOf(transitionByStateMachineId.keySet());
-    }
-
-    @Override
-    public Set<String> getInProgressIds() {
-        return transitionByStateMachineId.entrySet().stream()
-                .filter(e -> !FinalState.class.isAssignableFrom(e.getValue().getState().getClass()))
-                .map(Map.Entry::getKey)
-                .collect(toSet());
     }
 }

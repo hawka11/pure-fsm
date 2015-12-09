@@ -5,6 +5,8 @@ import pure.fsm.example.inmemory.event.RequestRechargeEvent;
 import java.math.BigDecimal;
 
 import static com.google.common.collect.Sets.newHashSet;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static pure.fsm.example.inmemory.state.BaseTelcoState.TIMEOUT_SECS;
 
 public class MainWithTimeOut {
 
@@ -16,10 +18,10 @@ public class MainWithTimeOut {
 
         //One thread will send RequestRechargeEvent to sm
         ops.scheduleEventOnThread(stateMachineId, new RequestRechargeEvent(new BigDecimal("20.00"), newHashSet("555")));
-        Thread.sleep(6000);
+        Thread.sleep(SECONDS.toMillis(TIMEOUT_SECS + 1));
 
         //something should configure this to run periodically
-        ops.getEventTicker().sendTimeOutTickerEvents();
+        ops.timeoutEventTicker.tick();
 
         Thread.sleep(1000);
 

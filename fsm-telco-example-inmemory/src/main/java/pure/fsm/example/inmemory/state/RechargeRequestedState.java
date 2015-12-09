@@ -2,49 +2,58 @@ package pure.fsm.example.inmemory.state;
 
 import pure.fsm.core.Context;
 import pure.fsm.core.Transition;
-import pure.fsm.core.transition.UserCancelled;
 import pure.fsm.example.inmemory.TelcoRechargeContext;
 import pure.fsm.example.inmemory.event.CancelRechargeEvent;
 import pure.fsm.example.inmemory.event.RechargeAcceptedEvent;
 import pure.fsm.example.inmemory.guard.Guard;
 
+import static pure.fsm.core.FinalState.SUCCESS_FINAL_STATE;
+import static pure.fsm.core.FinalState.USER_CANCELLED_FINAL_STATE;
 import static pure.fsm.core.context.ContextMessage.withMessage;
 
-public class RechargeRequestedState extends BaseTelcoState {
+public class RechargeRequestedState {
 
-    private final Guard guard;
+    public static final RechargeRequestedState RECHARGE_REQUESTED_STATE = new RechargeRequestedState();
 
-    public RechargeRequestedState(Guard allPinsLockedGuard) {
-        this.guard = allPinsLockedGuard;
+    public EventProcesor init(Guard guard) {
+        return new EventProcesor(guard);
     }
 
-    @Override
-    public Transition visit(Context context, CancelRechargeEvent cancelRechargeEvent) {
+    public static class EventProcesor extends BaseTelcoState {
 
-        System.out.println("In RechargeRequestedState, processing CancelRechargeEvent event ");
+        private final Guard guard;
 
-        //telcoClientRepository.cancelRechargeProcess();
+        public EventProcesor(Guard guard) {
+            this.guard = guard;
+        }
 
-        return UserCancelled.transitionToUserCancelled(context, cancelRechargeEvent);
-    }
+        @Override
+        public Transition visit(Transition last, CancelRechargeEvent event) {
 
-    @Override
-    public Transition visit(Context context, RechargeAcceptedEvent rechargeAcceptedEvent) {
-        System.out.println("In RechargeRequestedState, processing RechargeAcceptedEvent event ");
+            System.out.println("In RechargeRequestedState, processing CancelRechargeEvent event ");
 
-        final TelcoRechargeContext withPin = context.mostRecentOf(TelcoRechargeContext.class).get()
-                .addAcceptedPin(rechargeAcceptedEvent.getAcceptedPin());
+            //telcoClientRepository.cancelRechargeProcess();
 
-        final Context newState = context.appendState(withPin);
+            return Transition.To(USER_CANCELLED_FINAL_STATE, event, last.getContext());
+        }
 
-        if (guard.isSatisfied(newState)) {
-            return Transition.To(context.stateFactory().successFinalState(),
-                    rechargeAcceptedEvent,
-                    newState.appendState(withMessage("RECHARGE_ACCEPTED")));
-        } else {
-            //stay in current state, until all RechargeAcceptedEvent's have been received
-            return Transition.To(this, rechargeAcceptedEvent, newState);
+        @Override
+        public Transition visit(Transition last, RechargeAcceptedEvent event) {
+            System.out.println("In RechargeRequestedState, processing RechargeAcceptedEvent event ");
 
+            final TelcoRechargeContext withPin = last.getContext().mostRecentOf(TelcoRechargeContext.class).get()
+                    .addAcceptedPin(event.getAcceptedPin());
+
+            final Context newState = last.getContext().appendState(withPin);
+
+            if (guard.isSatisfied(newState)) {
+                return Transition.To(SUCCESS_FINAL_STATE, event,
+                        newState.appendState(withMessage("RECHARGE_ACCEPTED")));
+            } else {
+                //stay in current state, until all RechargeAcceptedEvent's have been received
+                return Transition.To(RECHARGE_REQUESTED_STATE, event, newState);
+
+            }
         }
     }
 }

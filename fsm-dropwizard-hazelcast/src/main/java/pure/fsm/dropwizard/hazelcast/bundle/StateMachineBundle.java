@@ -8,32 +8,25 @@ import com.hazelcast.core.HazelcastInstance;
 import io.dropwizard.Bundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import pure.fsm.core.StateFactoryRegistration;
+import pure.fsm.core.EventTicker;
 import pure.fsm.core.Transition;
 import pure.fsm.core.cleanup.CleanUpFinalisedStateMachines;
 import pure.fsm.core.cleanup.OnCleanupListener;
-import pure.fsm.core.state.StateFactory;
-import pure.fsm.core.WithinLock;
-import pure.fsm.core.EventTicker;
-import pure.fsm.core.transition.TransitionOccuredListener;
 import pure.fsm.repository.hazelcast.HazelcastStateMachineRepository;
 import pure.fsm.repository.hazelcast.resource.DistributedResourceFactory;
-import pure.fsm.repository.hazelcast.serialization.TransitionSerializer;
 import pure.fsm.repository.hazelcast.serialization.StateMachineModule;
+import pure.fsm.repository.hazelcast.serialization.TransitionSerializer;
 
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import static com.google.common.collect.Lists.newArrayList;
+import java.util.function.Function;
 
 public abstract class StateMachineBundle implements Bundle {
 
     private DistributedResourceFactory distributedResourceFactory;
     private HazelcastInstance hazelcastInstance;
     private HazelcastStateMachineRepository repository;
-    private WithinLock template;
 
     @Override
     public void initialize(Bootstrap<?> bootstrap) {
@@ -46,18 +39,9 @@ public abstract class StateMachineBundle implements Bundle {
         hazelcastInstance = createClientHz(transitionSerializer);
         distributedResourceFactory = new DistributedResourceFactory(hazelcastInstance);
         repository = new HazelcastStateMachineRepository(hazelcastInstance);
-        template = new WithinLock(repository, createTransitionOccuredListeners());
-
-        createStateFactories().stream().forEach(StateFactoryRegistration::registerStateFactory);
 
         transitionSerializer.registerModule(new StateMachineModule(hazelcastInstance));
     }
-
-    protected List<TransitionOccuredListener> createTransitionOccuredListeners() {
-        return newArrayList();
-    }
-
-    protected abstract List<StateFactory> createStateFactories();
 
     private HazelcastInstance createClientHz(TransitionSerializer transitionSerializer) {
         ClientConfig clientConfig = getClientConfig();
@@ -87,12 +71,8 @@ public abstract class StateMachineBundle implements Bundle {
         return repository;
     }
 
-    public WithinLock getTemplate() {
-        return template;
-    }
-
-    public EventTicker getTimeoutTicker(long howOften, TimeUnit timeUnit) {
-        return new EventTicker(getStateMachineRepository(), getTemplate(), handleEvent, howOften, timeUnit);
+    public EventTicker getTimeoutTicker(long howOften, TimeUnit timeUnit, Function<Transition, Transition> f) {
+        return new EventTicker(repository, howOften, timeUnit, f);
     }
 
     public CleanUpFinalisedStateMachines getCleaner(Collection<OnCleanupListener> cleanupListeners,

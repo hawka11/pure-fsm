@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.ImmutableList;
-import pure.fsm.core.context.CanUnlock;
+import pure.fsm.core.unlock.CanUnlock;
 import pure.fsm.core.context.InitialContext;
 
 import java.util.List;

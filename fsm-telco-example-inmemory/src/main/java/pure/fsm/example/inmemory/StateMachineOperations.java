@@ -1,72 +1,54 @@
 package pure.fsm.example.inmemory;
 
-import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pure.fsm.core.EventTicker;
+import pure.fsm.core.StateMachineRepository;
 import pure.fsm.core.Transition;
 import pure.fsm.core.cleanup.CleanUpFinalisedStateMachines;
-import pure.fsm.core.StateMachineRepository;
-import pure.fsm.core.event.Event;
-import pure.fsm.core.WithinLock;
-import pure.fsm.core.EventTicker;
+import pure.fsm.example.inmemory.event.TelcoEvent;
+import pure.fsm.example.inmemory.event.TimeoutTickEvent;
+import pure.fsm.example.inmemory.guard.AllPinsRechargedAcceptedGuard;
 import pure.fsm.repository.inmemory.InMemoryStateMachineRepository;
-import pure.fsm.example.inmemory.state.InitialState;
-import pure.fsm.example.inmemory.state.TelcoStateFactory;
 
 import java.time.temporal.ChronoUnit;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static pure.fsm.core.StateFactoryRegistration.registerStateFactory;
-import static pure.fsm.core.template.DefaultStateMachineCallable.handleWithTransition;
+import static pure.fsm.core.WithinLock.tryWithLock;
+import static pure.fsm.core.context.InitialContext.initialContext;
+import static pure.fsm.example.inmemory.TelcoRechargeContext.initialTelcoRecharge;
+import static pure.fsm.example.inmemory.state.InitialState.INITIAL_STATE;
 
 class StateMachineOperations {
 
     private final static Logger LOG = LoggerFactory.getLogger(StateMachineOperations.class);
 
-    final StateMachineRepository repository = new InMemoryStateMachineRepository();
-    final WithinLock template = new WithinLock(repository, newArrayList());
-    final TelcoStateFactory stateFactory = new TelcoStateFactory();
-    final EventTicker eventTicker = new EventTicker(repository, template, handleEvent, 1, SECONDS);
-    final CleanUpFinalisedStateMachines cleaner = new CleanUpFinalisedStateMachines(repository, newArrayList(), 5, SECONDS, 5, ChronoUnit.SECONDS);
+    final public StateMachineRepository repository = new InMemoryStateMachineRepository();
+
+    final public CleanUpFinalisedStateMachines cleaner = new CleanUpFinalisedStateMachines(repository, newArrayList(), 5, SECONDS, 5, ChronoUnit.SECONDS);
+
+    final public TelcoStateMachine stateMachine = new TelcoStateMachine(new AllPinsRechargedAcceptedGuard());
+
+    final public EventTicker timeoutEventTicker = new EventTicker(repository, 1, SECONDS, last -> {
+        final String id = initialContext(last.getContext()).stateMachineId;
+        return tryWithLock(id, repository, transition -> stateMachine.handleEvent(transition, new TimeoutTickEvent()));
+    });
 
     public Transition getStateMachine(String stateMachineId) {
         return repository.get(stateMachineId);
     }
 
-    public void scheduleEventOnThread(String stateMachineId, final Event event) {
-        new Thread(() -> template.tryWithLock(stateMachineId,
-                handleWithTransition((prevTransition, stateMachine) -> stateMachine.handleEvent(prevTransition, event)))).start();
+    public void scheduleEventOnThread(String stateMachineId, final TelcoEvent event) {
+        new Thread(() -> tryWithLock(stateMachineId, repository, (last) -> stateMachine.handleEvent(last, event))).start();
     }
 
     public String createStateMachineInInitialState() {
-        registerStateFactory(stateFactory);
-        return repository.create(
-                stateFactory.getStateByClass(InitialState.class), TelcoStateFactory.class, Lists.newArrayList(TelcoRechargeContext.initialTelcoRecharge()));
+        return repository.create(INITIAL_STATE, newArrayList(initialTelcoRecharge()));
     }
 
     public void logCurrentState(String stateMachineId) {
         LOG.info("Ending.... current state for [{}] is: [{}]", stateMachineId,
                 getStateMachine(stateMachineId).getState().getClass().getSimpleName());
-    }
-
-    public StateMachineRepository getRepository() {
-        return repository;
-    }
-
-    public WithinLock getTemplate() {
-        return template;
-    }
-
-    public TelcoStateFactory getStateFactory() {
-        return stateFactory;
-    }
-
-    public EventTicker getEventTicker() {
-        return eventTicker;
-    }
-
-    public CleanUpFinalisedStateMachines getCleaner() {
-        return cleaner;
     }
 }

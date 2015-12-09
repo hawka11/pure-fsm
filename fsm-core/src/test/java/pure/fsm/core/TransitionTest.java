@@ -4,19 +4,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
-import pure.fsm.core.context.CanUnlock;
 import pure.fsm.core.context.InitialContext;
 import pure.fsm.core.fixture.PinRechargedContext;
 import pure.fsm.core.fixture.TestCanUnlock;
 import pure.fsm.core.fixture.TestEvent.RechargeEvent;
 import pure.fsm.core.fixture.TestInitialContext;
+import pure.fsm.core.unlock.CanUnlock;
 
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static pure.fsm.core.Transition.initialTransition;
 import static pure.fsm.core.fixture.TestState.INITIAL_STATE;

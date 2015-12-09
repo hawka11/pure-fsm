@@ -8,7 +8,6 @@ import java.util.Set;
 
 import static pure.fsm.example.telcohazelcast.HzTelcoRechargeContext.getRequestedPins;
 
-
 public class AllPinsRechargedAcceptedGuard implements Guard {
 
     @Override

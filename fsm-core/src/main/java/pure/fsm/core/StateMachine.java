@@ -9,14 +9,14 @@ import static com.google.common.collect.Maps.newHashMap;
 import static pure.fsm.core.FinalState.ERROR_FINAL_STATE;
 import static pure.fsm.core.context.ExceptionContext.withException;
 
-public abstract class StateMachine {
+public abstract class StateMachine<T> {
 
     private final static Logger LOG = LoggerFactory.getLogger(StateMachine.class);
 
-    private Map<Class<?>, HandleEvent> defByState = newHashMap();
+    private Map<Class<?>, HandleEvent<T>> defByState = newHashMap();
 
     @SuppressWarnings("unchecked")
-    public Transition handleEvent(Transition last, Object event) {
+    public Transition handleEvent(Transition last, T event) {
         final Object current = last.getState();
         final Context context = last.getContext();
         final String stateMachineId = context.stateMachineId();
@@ -25,7 +25,7 @@ public abstract class StateMachine {
 
         try {
 
-            final HandleEvent handleEvent = defByState.get(current.getClass());
+            final HandleEvent<T> handleEvent = defByState.get(current.getClass());
 
             next = handleEvent.handle(last, event);
 
@@ -40,28 +40,28 @@ public abstract class StateMachine {
         return next;
     }
 
-    protected void when(Object state, HandleEvent handleEvent) {
+    protected void when(Object state, HandleEvent<T> handleEvent) {
         defByState.put(state.getClass(), handleEvent);
     }
 
-    protected void when(Class<?> state, HandleEvent handleEvent) {
+    protected void when(Class<?> state, HandleEvent<T> handleEvent) {
         defByState.put(state, handleEvent);
     }
 
-    protected Transition go(Object state, Object event, Context context) {
+    protected Transition go(Object state, T event, Context context) {
         return Transition.To(state, event, context);
     }
 
-    protected Transition stay(Object state, Object event, Context context) {
+    protected Transition stay(Object state, T event, Context context) {
         return go(state, event, context);
     }
 
-    protected Transition error(Object event, Context context) {
+    protected Transition error(T event, Context context) {
         return Transition.To(ERROR_FINAL_STATE, event, context);
     }
 
     @FunctionalInterface
-    public interface HandleEvent {
-        Transition handle(Transition last, Object event);
+    public interface HandleEvent<T> {
+        Transition handle(Transition last, T event);
     }
 }
