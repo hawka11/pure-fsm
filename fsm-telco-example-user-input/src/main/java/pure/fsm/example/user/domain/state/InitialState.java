@@ -4,51 +4,62 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Context;
 import pure.fsm.core.Transition;
-import pure.fsm.repository.hazelcast.resource.DistributedResourceFactory;
 import pure.fsm.example.user.domain.TelcoRechargeData;
 import pure.fsm.example.user.domain.event.RequestAcceptedEvent;
 import pure.fsm.example.user.domain.event.RequestPinEvent;
 import pure.fsm.example.user.infra.TelcoGateway;
+import pure.fsm.repository.hazelcast.resource.DistributedResourceFactory;
 
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
+import static pure.fsm.example.user.domain.state.WaitingForConfirmationState.WAITING_FOR_CONFIRMATION_STATE;
 
-public class InitialState extends BaseTelcoState {
+public class InitialState {
 
     private static final Logger LOG = LoggerFactory.getLogger(InitialState.class);
 
-    private final TelcoGateway telcoGateway;
+    public final static InitialState INITIAL_STATE = new InitialState();
 
-    InitialState(DistributedResourceFactory resourceFactory, TelcoGateway telcoGateway) {
-        super(resourceFactory);
-        this.telcoGateway = telcoGateway;
+    public EventProcessor init(DistributedResourceFactory resourceFactory, TelcoGateway telcoGateway) {
+        return new EventProcessor(resourceFactory, telcoGateway);
     }
 
-    @Override
-    public Transition accept(Context context, RequestPinEvent requestPinEvent) {
-        List<String> pins = requestPinEvent.getPins();
+    public static class EventProcessor extends BaseTelcoState {
 
-        pins.stream().forEach(pin -> context.addCanUnlock(resourceFactory().tryLock("LOCKED_PINS", pin)));
+        private final TelcoGateway telcoGateway;
 
-        telcoGateway.requestPinRecharge(context.stateMachineId(), pins);
+        private EventProcessor(DistributedResourceFactory resourceFactory, TelcoGateway telcoGateway) {
+            super(resourceFactory);
+            this.telcoGateway = telcoGateway;
+        }
 
-        return Transition.To(this, requestPinEvent, context);
-    }
+        @Override
+        public Transition visit(Transition last, RequestPinEvent event) {
+            List<String> pins = event.getPins();
+            final Context context = last.getContext();
 
-    @Override
-    public Transition accept(Context context, RequestAcceptedEvent requestAcceptedEvent) {
-        List<String> acceptedPins = requestAcceptedEvent.getPins();
+            pins.stream().forEach(pin -> context.addCanUnlock(resourceFactory().tryLock("LOCKED_PINS", pin)));
 
-        final TelcoRechargeData data = context.mostRecentOf(TelcoRechargeData.class).get();
+            telcoGateway.requestPinRecharge(context.stateMachineId(), pins);
 
-        List<String> waitingAcceptance = data.requestedPins(context).stream()
-                .filter(pin -> !acceptedPins.contains(pin))
-                .collect(toList());
+            return Transition.To(this, event, context);
+        }
 
-        final BaseTelcoState nextState = waitingAcceptance.isEmpty() ?
-                context.stateFactory().getStateByClass(WaitingForConfirmationState.class) : this;
+        @Override
+        public Transition visit(Transition last, RequestAcceptedEvent event) {
+            final List<String> acceptedPins = event.getPins();
+            final Context context = last.getContext();
 
-        return Transition.To(nextState, requestAcceptedEvent, context);
+            final TelcoRechargeData data = context.mostRecentOf(TelcoRechargeData.class).get();
+
+            List<String> waitingAcceptance = data.requestedPins(context).stream()
+                    .filter(pin -> !acceptedPins.contains(pin))
+                    .collect(toList());
+
+            final Object nextState = waitingAcceptance.isEmpty() ? WAITING_FOR_CONFIRMATION_STATE : this;
+
+            return Transition.To(nextState, event, context);
+        }
     }
 }

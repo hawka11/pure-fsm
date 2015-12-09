@@ -1,20 +1,24 @@
 package pure.fsm.example.user.domain.state;
 
-import pure.fsm.core.Context;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pure.fsm.core.Transition;
-import pure.fsm.core.event.Event;
-import pure.fsm.core.timeout.TimeoutTickEvent;
-import pure.fsm.core.state.BaseNonFinalState;
-import pure.fsm.core.state.TimedOutFinalState;
-import pure.fsm.repository.hazelcast.resource.DistributedResourceFactory;
 import pure.fsm.example.user.domain.event.ConfirmPinEvent;
 import pure.fsm.example.user.domain.event.RequestAcceptedEvent;
 import pure.fsm.example.user.domain.event.RequestPinEvent;
+import pure.fsm.example.user.domain.event.TelcoEvent;
 import pure.fsm.example.user.domain.event.TelcoEventVisitor;
+import pure.fsm.example.user.domain.event.TimeoutTickEvent;
+import pure.fsm.repository.hazelcast.resource.DistributedResourceFactory;
 
+import java.time.LocalDateTime;
+
+import static pure.fsm.core.FinalState.TIMEOUT_ERROR_FINAL_STATE;
 import static pure.fsm.core.context.ContextMessage.withMessage;
 
-public class BaseTelcoState extends BaseNonFinalState implements TelcoEventVisitor {
+public class BaseTelcoState implements TelcoEventVisitor {
+
+    private final static Logger LOG = LoggerFactory.getLogger(BaseTelcoState.class);
 
     private final DistributedResourceFactory resourceFactory;
 
@@ -26,15 +30,8 @@ public class BaseTelcoState extends BaseNonFinalState implements TelcoEventVisit
         return resourceFactory;
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public Transition handle(Context context, Event event) {
-        return event.accept(context, this);
-    }
-
-    @Override
-    public Transition handle(Transition prevTransition, TimeoutTickEvent event) {
-        return event.accept(prevTransition, this);
+    public Transition handle(Transition last, TelcoEvent event) {
+        return event.accept(last, this);
     }
 
     @Override
@@ -43,25 +40,34 @@ public class BaseTelcoState extends BaseNonFinalState implements TelcoEventVisit
 
         Transition transition = Transition.To(this, timeoutTickEvent, prevTransition.getContext());
         if (isTimeout(prevTransition)) {
-            transition = Transition.To(new TimedOutFinalState(),
-                    timeoutTickEvent, prevTransition.getContext().appendState(withMessage("because timedout")));
+            transition = Transition.To(TIMEOUT_ERROR_FINAL_STATE,
+                    timeoutTickEvent, prevTransition.getContext().appendState(withMessage("because timed-out")));
         }
 
         return transition;
     }
 
     @Override
-    public Transition accept(Context context, RequestPinEvent requestPinEvent) {
-        return nonHandledEvent(context, requestPinEvent);
+    public Transition visit(Transition last, RequestPinEvent event) {
+        return nonHandledEvent(last, event);
     }
 
     @Override
-    public Transition accept(Context context, ConfirmPinEvent confirmPinEvent) {
-        return nonHandledEvent(context, confirmPinEvent);
+    public Transition visit(Transition last, ConfirmPinEvent event) {
+        return nonHandledEvent(last, event);
     }
 
     @Override
-    public Transition accept(Context context, RequestAcceptedEvent requestAcceptedEvent) {
-        return nonHandledEvent(context, requestAcceptedEvent);
+    public Transition visit(Transition last, RequestAcceptedEvent event) {
+        return nonHandledEvent(last, event);
+    }
+
+    protected boolean isTimeout(Transition last) {
+        return LocalDateTime.now().isAfter(last.getTransitioned().plusSeconds(5));
+    }
+
+    private Transition nonHandledEvent(Transition last, TelcoEvent event) {
+        LOG.warn("ignored event {}", event);
+        return Transition.To(last.getState(), event, last.getContext());
     }
 }

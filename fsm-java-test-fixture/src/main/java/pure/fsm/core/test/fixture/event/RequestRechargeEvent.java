@@ -1,13 +1,11 @@
-package pure.fsm.end2end.event;
+package pure.fsm.core.test.fixture.event;
 
-import pure.fsm.core.Context;
 import pure.fsm.core.Transition;
-import pure.fsm.core.event.Event;
 
 import java.math.BigDecimal;
 import java.util.Set;
 
-public class RequestRechargeEvent implements Event<TelcoEventVisitor> {
+public class RequestRechargeEvent implements TelcoEvent {
 
     private final BigDecimal amount;
     private final Set<String> pinsToLock;
@@ -22,8 +20,8 @@ public class RequestRechargeEvent implements Event<TelcoEventVisitor> {
     }
 
     @Override
-    public Transition accept(Context context, TelcoEventVisitor visitor) {
-        return visitor.visit(context, this);
+    public Transition accept(Transition last, TelcoEventVisitor visitor) {
+        return visitor.visit(last, this);
     }
 
     public Set<String> getPinsToLock() {

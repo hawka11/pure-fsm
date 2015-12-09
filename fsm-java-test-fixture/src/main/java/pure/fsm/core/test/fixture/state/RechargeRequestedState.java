@@ -1,11 +1,11 @@
-package pure.fsm.example.inmemory.state;
+package pure.fsm.core.test.fixture.state;
 
 import pure.fsm.core.Context;
 import pure.fsm.core.Transition;
-import pure.fsm.example.inmemory.TelcoRechargeContext;
-import pure.fsm.example.inmemory.event.CancelRechargeEvent;
-import pure.fsm.example.inmemory.event.RechargeAcceptedEvent;
-import pure.fsm.example.inmemory.guard.Guard;
+import pure.fsm.core.test.fixture.TelcoRechargeContext;
+import pure.fsm.core.test.fixture.event.CancelRechargeEvent;
+import pure.fsm.core.test.fixture.event.RechargeAcceptedEvent;
+import pure.fsm.core.test.fixture.guard.Guard;
 
 import static pure.fsm.core.FinalState.SUCCESS_FINAL_STATE;
 import static pure.fsm.core.FinalState.USER_CANCELLED_FINAL_STATE;

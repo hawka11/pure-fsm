@@ -1,9 +1,9 @@
-package pure.fsm.example.inmemory;
+package pure.fsm.core.test.fixture;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import pure.fsm.core.Context;
-import pure.fsm.example.inmemory.state.LockedPinResource;
+import pure.fsm.core.test.fixture.state.LockedPinResource;
 
 import java.util.Set;
 

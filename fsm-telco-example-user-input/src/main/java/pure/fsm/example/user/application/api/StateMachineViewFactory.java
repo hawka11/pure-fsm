@@ -1,11 +1,10 @@
 package pure.fsm.example.user.application.api;
 
 import io.dropwizard.views.View;
+import pure.fsm.core.FinalState.ErrorFinalState;
+import pure.fsm.core.FinalState.SuccessFinalState;
+import pure.fsm.core.FinalState.TimeoutErrorFinalState;
 import pure.fsm.core.Transition;
-import pure.fsm.core.state.ErrorFinalState;
-import pure.fsm.core.state.State;
-import pure.fsm.core.state.SuccessFinalState;
-import pure.fsm.core.state.TimedOutFinalState;
 import pure.fsm.example.user.domain.TelcoRechargeData;
 import pure.fsm.example.user.domain.state.InitialState;
 import pure.fsm.example.user.domain.state.WaitingForConfirmationState;
@@ -18,7 +17,7 @@ import static com.google.common.collect.Maps.newHashMap;
 
 public class StateMachineViewFactory {
 
-    private final static Map<Class<? extends State>, Class<? extends StateMachineView>> viewByStateMachineState;
+    private final static Map<Class<?>, Class<? extends StateMachineView>> viewByStateMachineState;
 
     static {
         viewByStateMachineState = newHashMap();
@@ -28,7 +27,7 @@ public class StateMachineViewFactory {
         viewByStateMachineState.put(SuccessFinalState.class, SuccessView.class);
 
         viewByStateMachineState.put(ErrorFinalState.class, ErrorView.class);
-        viewByStateMachineState.put(TimedOutFinalState.class, ErrorView.class);
+        viewByStateMachineState.put(TimeoutErrorFinalState.class, ErrorView.class);
     }
 
     public Optional<View> getViewFor(Transition transition) {

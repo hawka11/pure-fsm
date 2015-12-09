@@ -1,8 +1,8 @@
-package pure.fsm.example.inmemory.state;
+package pure.fsm.core.test.fixture.state;
 
 import pure.fsm.core.Context;
 import pure.fsm.core.Transition;
-import pure.fsm.example.inmemory.event.RequestRechargeEvent;
+import pure.fsm.core.test.fixture.event.RequestRechargeEvent;
 
 import java.math.BigDecimal;
 import java.util.Set;

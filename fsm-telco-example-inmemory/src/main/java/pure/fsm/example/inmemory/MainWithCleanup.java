@@ -1,7 +1,7 @@
 package pure.fsm.example.inmemory;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static pure.fsm.example.inmemory.state.BaseTelcoState.TIMEOUT_SECS;
+import static pure.fsm.core.test.fixture.state.BaseTelcoState.TIMEOUT_SECS;
 
 public class MainWithCleanup {
 

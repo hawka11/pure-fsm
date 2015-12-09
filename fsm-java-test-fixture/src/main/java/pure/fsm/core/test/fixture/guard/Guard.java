@@ -1,4 +1,4 @@
-package pure.fsm.end2end.guard;
+package pure.fsm.core.test.fixture.guard;
 
 import pure.fsm.core.Context;
 

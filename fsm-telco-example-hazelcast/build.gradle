@@ -1,9 +1,12 @@
-
 dependencies {
     compile project(":fsm-telco-example-inmemory")
+    compile project(":fsm-java-test-fixture")
     compile project(":fsm-repository-hazelcast")
 
     compile "com.hazelcast:hazelcast-all:$hazelcastVersion"
 
-    testCompile "junit:junit:$junitVersion"
+    testCompile(
+            project(":fsm-java-test-fixture"),
+            "junit:junit:$junitVersion"
+    )
 }

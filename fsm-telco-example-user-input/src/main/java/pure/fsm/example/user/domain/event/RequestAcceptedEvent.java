@@ -1,14 +1,12 @@
 package pure.fsm.example.user.domain.event;
 
-import pure.fsm.core.Context;
 import pure.fsm.core.Transition;
-import pure.fsm.core.event.Event;
 
 import java.util.List;
 
 import static com.google.common.base.Objects.toStringHelper;
 
-public class RequestAcceptedEvent implements Event<TelcoEventVisitor> {
+public class RequestAcceptedEvent implements TelcoEvent {
 
     private final List<String> pins;
 
@@ -21,8 +19,8 @@ public class RequestAcceptedEvent implements Event<TelcoEventVisitor> {
     }
 
     @Override
-    public Transition accept(Context context, TelcoEventVisitor visitor) {
-        return visitor.accept(context, this);
+    public Transition accept(Transition last, TelcoEventVisitor visitor) {
+        return visitor.visit(last, this);
     }
 
     @Override

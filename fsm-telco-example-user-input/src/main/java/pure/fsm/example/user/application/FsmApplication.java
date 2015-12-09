@@ -5,6 +5,9 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.views.ViewBundle;
 import pure.fsm.example.user.application.api.UserActionResource;
+import pure.fsm.example.user.domain.TelcoStateMachine;
+import pure.fsm.example.user.domain.event.TimeoutTickEvent;
+import pure.fsm.example.user.infra.TelcoGateway;
 
 import java.time.temporal.ChronoUnit;
 
@@ -30,13 +33,17 @@ public class FsmApplication extends Application<FsmConfiguration> {
 
     @Override
     public void run(FsmConfiguration configuration, Environment environment) throws Exception {
-        stateMachineBundle.getTimeoutTicker(10, SECONDS).start();
+        final TelcoGateway telcoGateway = new TelcoGateway(stateMachineBundle.getRepository());
+        final TelcoStateMachine stateMachine = new TelcoStateMachine(stateMachineBundle.getDistributedResourceFactory(), telcoGateway);
+        telcoGateway.stateMachine = stateMachine;
+
         stateMachineBundle.getCleaner(newArrayList(HISTORY_FORMATTER), 10, SECONDS, 5, ChronoUnit.SECONDS).startScheduler();
+        stateMachineBundle.getTimeoutTicker(10, SECONDS, transition ->
+                stateMachine.handleEvent(transition, new TimeoutTickEvent())).start();
 
         UserActionResource resource = new UserActionResource(
-                stateMachineBundle.getTemplate(),
-                stateMachineBundle.getStateMachineViewFactory(),
-                stateMachineBundle.getTelcoStateFactory());
+                stateMachineBundle.getRepository(),
+                stateMachine, stateMachineBundle.viewFactory);
 
         environment.jersey().register(resource);
     }

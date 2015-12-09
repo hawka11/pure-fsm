@@ -1,9 +1,9 @@
 package pure.fsm.example.telcohazelcast.state;
 
 import pure.fsm.core.Transition;
-import pure.fsm.example.inmemory.event.RequestRechargeEvent;
-import pure.fsm.example.inmemory.state.BaseTelcoState;
-import pure.fsm.example.inmemory.state.RechargeRequestedState;
+import pure.fsm.core.test.fixture.event.RequestRechargeEvent;
+import pure.fsm.core.test.fixture.state.BaseTelcoState;
+import pure.fsm.core.test.fixture.state.RechargeRequestedState;
 import pure.fsm.repository.hazelcast.resource.DistributedLockResource;
 import pure.fsm.repository.hazelcast.resource.DistributedResourceFactory;
 

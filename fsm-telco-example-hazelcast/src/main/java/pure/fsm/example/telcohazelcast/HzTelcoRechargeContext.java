@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import pure.fsm.core.Context;
 import pure.fsm.repository.hazelcast.resource.DistributedLockResource;
-import pure.fsm.example.inmemory.TelcoRechargeContext;
+import pure.fsm.core.test.fixture.TelcoRechargeContext;
 
 import java.util.Set;
 

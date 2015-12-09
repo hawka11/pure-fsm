@@ -3,7 +3,7 @@ package pure.fsm.example.telcohazelcast;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import pure.fsm.core.Transition;
-import pure.fsm.example.inmemory.state.InitialState;
+import pure.fsm.core.test.fixture.state.InitialState;
 import pure.fsm.repository.hazelcast.serialization.TransitionSerializer;
 
 import java.io.ByteArrayInputStream;

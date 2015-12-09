@@ -1,14 +1,14 @@
-package pure.fsm.example.inmemory.state;
+package pure.fsm.core.test.fixture.state;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Transition;
-import pure.fsm.example.inmemory.event.CancelRechargeEvent;
-import pure.fsm.example.inmemory.event.RechargeAcceptedEvent;
-import pure.fsm.example.inmemory.event.RequestRechargeEvent;
-import pure.fsm.example.inmemory.event.TelcoEvent;
-import pure.fsm.example.inmemory.event.TelcoEventVisitor;
-import pure.fsm.example.inmemory.event.TimeoutTickEvent;
+import pure.fsm.core.test.fixture.event.CancelRechargeEvent;
+import pure.fsm.core.test.fixture.event.RechargeAcceptedEvent;
+import pure.fsm.core.test.fixture.event.RequestRechargeEvent;
+import pure.fsm.core.test.fixture.event.TelcoEventVisitor;
+import pure.fsm.core.test.fixture.event.TimeoutTickEvent;
+import pure.fsm.core.test.fixture.event.TelcoEvent;
 
 import java.time.LocalDateTime;
 

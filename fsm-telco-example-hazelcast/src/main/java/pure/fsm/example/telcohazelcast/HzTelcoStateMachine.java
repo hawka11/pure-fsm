@@ -2,12 +2,12 @@ package pure.fsm.example.telcohazelcast;
 
 import pure.fsm.core.FinalState;
 import pure.fsm.core.StateMachine;
-import pure.fsm.example.inmemory.event.TelcoEvent;
-import pure.fsm.example.inmemory.guard.Guard;
+import pure.fsm.core.test.fixture.event.TelcoEvent;
+import pure.fsm.core.test.fixture.guard.Guard;
 import pure.fsm.repository.hazelcast.resource.DistributedResourceFactory;
 
+import static pure.fsm.core.test.fixture.state.RechargeRequestedState.RECHARGE_REQUESTED_STATE;
 import static pure.fsm.core.unlock.UnlockContexts.unlockContexts;
-import static pure.fsm.example.inmemory.state.RechargeRequestedState.RECHARGE_REQUESTED_STATE;
 import static pure.fsm.example.telcohazelcast.state.HzInitialState.INITIAL_STATE;
 
 public class HzTelcoStateMachine extends StateMachine<TelcoEvent> {

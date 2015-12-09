@@ -1,13 +1,13 @@
 package pure.fsm.example.user.domain.event;
 
-import pure.fsm.core.Context;
 import pure.fsm.core.Transition;
-import pure.fsm.core.event.EventVisitor;
 
-public interface TelcoEventVisitor extends EventVisitor {
-    Transition accept(Context context, RequestPinEvent requestPinEvent);
+public interface TelcoEventVisitor {
+    Transition visit(Transition last, RequestAcceptedEvent event);
 
-    Transition accept(Context context, ConfirmPinEvent confirmPinEvent);
+    Transition visit(Transition last, ConfirmPinEvent event);
 
-    Transition accept(Context context, RequestAcceptedEvent requestAcceptedEvent);
+    Transition visit(Transition last, RequestPinEvent event);
+
+    Transition visit(Transition last, TimeoutTickEvent event);
 }

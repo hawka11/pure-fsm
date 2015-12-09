@@ -1,4 +1,4 @@
-package pure.fsm.example.inmemory.event;
+package pure.fsm.core.test.fixture.event;
 
 import pure.fsm.core.Transition;
 

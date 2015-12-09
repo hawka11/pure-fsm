@@ -5,6 +5,7 @@ include 'fsm-repository-inmemory'
 include 'fsm-repository-hazelcast'
 include 'fsm-repository-mysql'
 
+include 'fsm-java-test-fixture'
 include 'fsm-end-to-end-tests'
 
 include 'fsm-telco-example-inmemory'
@@ -14,3 +15,4 @@ include 'fsm-telco-example-user-input'
 include 'fsm-dropwizard-inmemory'
 include 'fsm-dropwizard-hazelcast'
 include 'fsm-dropwizard-mysql'
+

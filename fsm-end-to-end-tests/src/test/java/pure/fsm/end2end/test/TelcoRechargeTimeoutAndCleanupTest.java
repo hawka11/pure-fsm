@@ -2,7 +2,7 @@ package pure.fsm.end2end.test;
 
 import org.junit.Test;
 import pure.fsm.core.StateMachineRepository;
-import pure.fsm.end2end.event.RequestRechargeEvent;
+import pure.fsm.core.test.fixture.event.RequestRechargeEvent;
 
 import java.math.BigDecimal;
 import java.util.function.Supplier;
@@ -39,13 +39,13 @@ public class TelcoRechargeTimeoutAndCleanupTest extends BaseEnd2EndTest {
         sleep(STATE_TIMEOUT);
 
         //something should configure this to run periodically
-        ops.getEventTicker().tick();
+        ops.timeoutEventTicker.tick();
         assertStateMachineHasTimedout(stateMachineId, ops.getStateMachine(stateMachineId));
 
         sleep(KEEP_AROUND_B4_REMOVING);
 
         //something should configure this to run periodically
-        ops.getCleaner().checkForFinalizedStateMachinesAndCleanupIfRequired();
+        ops.cleaner.checkForFinalizedStateMachinesAndCleanupIfRequired();
         assertThat(ops.getStateMachine(stateMachineId)).isNull();
     }
 }

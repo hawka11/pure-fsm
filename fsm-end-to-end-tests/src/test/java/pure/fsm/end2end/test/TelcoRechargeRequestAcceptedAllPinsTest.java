@@ -2,8 +2,8 @@ package pure.fsm.end2end.test;
 
 import org.junit.Test;
 import pure.fsm.core.StateMachineRepository;
-import pure.fsm.end2end.event.RechargeAcceptedEvent;
-import pure.fsm.end2end.event.RequestRechargeEvent;
+import pure.fsm.core.test.fixture.event.RechargeAcceptedEvent;
+import pure.fsm.core.test.fixture.event.RequestRechargeEvent;
 
 import java.math.BigDecimal;
 import java.util.function.Supplier;

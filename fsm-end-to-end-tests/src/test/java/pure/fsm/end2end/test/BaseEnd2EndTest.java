@@ -35,8 +35,8 @@ public abstract class BaseEnd2EndTest {
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {(Supplier<StateMachineRepository>) InMemoryStateMachineRepository::new}
-                , {(Supplier<StateMachineRepository>) () -> new MysqlStateMachineRepository(JDBI_RULE.DBI)}
-                , {(Supplier<StateMachineRepository>) () -> new HazelcastStateMachineRepository(createClientHz())}
+                //, {(Supplier<StateMachineRepository>) () -> new MysqlStateMachineRepository(JDBI_RULE.DBI)}
+                //, {(Supplier<StateMachineRepository>) () -> new HazelcastStateMachineRepository(createClientHz())}
         });
     }
 

@@ -1,26 +1,25 @@
 package pure.fsm.end2end.test;
 
+import pure.fsm.core.FinalState;
 import pure.fsm.core.Transition;
-import pure.fsm.core.event.Event;
-import pure.fsm.core.timeout.TimeoutTickEvent;
-import pure.fsm.core.state.State;
-import pure.fsm.core.state.SuccessFinalState;
-import pure.fsm.core.state.TimedOutFinalState;
-import pure.fsm.end2end.TelcoRechargeContext;
-import pure.fsm.end2end.event.RechargeAcceptedEvent;
-import pure.fsm.end2end.event.RequestRechargeEvent;
-import pure.fsm.end2end.state.InitialState;
-import pure.fsm.end2end.state.RechargeRequestedState;
+import pure.fsm.core.test.fixture.TelcoRechargeContext;
+import pure.fsm.core.test.fixture.event.RechargeAcceptedEvent;
+import pure.fsm.core.test.fixture.event.RequestRechargeEvent;
+import pure.fsm.core.test.fixture.event.TelcoEvent;
+import pure.fsm.core.test.fixture.event.TimeoutTickEvent;
+import pure.fsm.core.test.fixture.state.InitialState;
+import pure.fsm.core.test.fixture.state.RechargeRequestedState;
 
 import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pure.fsm.core.FinalState.TIMEOUT_ERROR_FINAL_STATE;
 
 public class TelcoStateAssertions {
 
     public static void assert2ndPinAccepted(String stateMachineId, Transition current) {
-        assertEventAndState(stateMachineId, current, SuccessFinalState.class, RechargeAcceptedEvent.class);
+        assertEventAndState(stateMachineId, current, FinalState.SuccessFinalState.class, RechargeAcceptedEvent.class);
 
         final List<TelcoRechargeContext> rechargeContexts = current.getContext().getContextsOfType(TelcoRechargeContext.class);
         assertThat(rechargeContexts).isNotNull();
@@ -50,7 +49,7 @@ public class TelcoStateAssertions {
 
     public static void assertStateMachineHasTimedout(String stateMachineId, Transition current) {
 
-        assertEventAndState(stateMachineId, current, TimedOutFinalState.class, TimeoutTickEvent.class);
+        assertEventAndState(stateMachineId, current, TIMEOUT_ERROR_FINAL_STATE.getClass(), TimeoutTickEvent.class);
 
         final List<TelcoRechargeContext> rechargeContexts = current.getContext().getContextsOfType(TelcoRechargeContext.class);
         assertThat(rechargeContexts).isNotNull();
@@ -79,8 +78,8 @@ public class TelcoStateAssertions {
     }
 
     public static void assertEventAndState(String stateMachineId, Transition current,
-                                           Class<? extends State> expectedState,
-                                           Class<? extends Event> expectedEvent) {
+                                           Class<?> expectedState,
+                                           Class<? extends TelcoEvent> expectedEvent) {
 
         assertThat(current).isNotNull();
         assertThat(current.getState()).isNotNull();

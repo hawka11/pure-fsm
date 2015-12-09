@@ -1,7 +1,7 @@
 package pure.fsm.example.inmemory;
 
-import pure.fsm.example.inmemory.event.RechargeAcceptedEvent;
-import pure.fsm.example.inmemory.event.RequestRechargeEvent;
+import pure.fsm.core.test.fixture.event.RechargeAcceptedEvent;
+import pure.fsm.core.test.fixture.event.RequestRechargeEvent;
 
 import java.math.BigDecimal;
 

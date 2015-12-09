@@ -67,7 +67,7 @@ public abstract class StateMachineBundle implements Bundle {
         return hazelcastInstance;
     }
 
-    public HazelcastStateMachineRepository getStateMachineRepository() {
+    public HazelcastStateMachineRepository getRepository() {
         return repository;
     }
 
@@ -79,6 +79,6 @@ public abstract class StateMachineBundle implements Bundle {
                                                     long scheduleFrequency, TimeUnit scheduleTimeUnit,
                                                     long keepFinalised, ChronoUnit keepFinalisedTimeUnit) {
 
-        return new CleanUpFinalisedStateMachines(getStateMachineRepository(), cleanupListeners, scheduleFrequency, scheduleTimeUnit, keepFinalised, keepFinalisedTimeUnit);
+        return new CleanUpFinalisedStateMachines(getRepository(), cleanupListeners, scheduleFrequency, scheduleTimeUnit, keepFinalised, keepFinalisedTimeUnit);
     }
 }

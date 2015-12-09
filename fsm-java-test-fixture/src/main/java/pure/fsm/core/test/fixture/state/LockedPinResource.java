@@ -1,4 +1,4 @@
-package pure.fsm.example.inmemory.state;
+package pure.fsm.core.test.fixture.state;
 
 import pure.fsm.core.unlock.CanUnlock;
 

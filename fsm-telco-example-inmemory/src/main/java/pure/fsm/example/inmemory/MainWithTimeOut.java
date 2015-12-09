@@ -1,12 +1,12 @@
 package pure.fsm.example.inmemory;
 
-import pure.fsm.example.inmemory.event.RequestRechargeEvent;
+import pure.fsm.core.test.fixture.event.RequestRechargeEvent;
 
 import java.math.BigDecimal;
 
 import static com.google.common.collect.Sets.newHashSet;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static pure.fsm.example.inmemory.state.BaseTelcoState.TIMEOUT_SECS;
+import static pure.fsm.core.test.fixture.state.BaseTelcoState.TIMEOUT_SECS;
 
 public class MainWithTimeOut {
 

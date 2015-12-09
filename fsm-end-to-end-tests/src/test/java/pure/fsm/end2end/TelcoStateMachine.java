@@ -1,4 +1,4 @@
-package pure.fsm.example.inmemory;
+package pure.fsm.end2end;
 
 import pure.fsm.core.StateMachine;
 import pure.fsm.core.test.fixture.event.TelcoEvent;

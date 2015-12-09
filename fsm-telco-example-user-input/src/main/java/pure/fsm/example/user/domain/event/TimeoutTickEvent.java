@@ -1,4 +1,4 @@
-package pure.fsm.example.inmemory.event;
+package pure.fsm.example.user.domain.event;
 
 import pure.fsm.core.Transition;
 

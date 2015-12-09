@@ -6,9 +6,9 @@ import pure.fsm.core.EventTicker;
 import pure.fsm.core.StateMachineRepository;
 import pure.fsm.core.Transition;
 import pure.fsm.core.cleanup.CleanUpFinalisedStateMachines;
-import pure.fsm.example.inmemory.event.TelcoEvent;
-import pure.fsm.example.inmemory.event.TimeoutTickEvent;
-import pure.fsm.example.inmemory.guard.AllPinsRechargedAcceptedGuard;
+import pure.fsm.core.test.fixture.event.TelcoEvent;
+import pure.fsm.core.test.fixture.event.TimeoutTickEvent;
+import pure.fsm.core.test.fixture.guard.AllPinsRechargedAcceptedGuard;
 import pure.fsm.repository.inmemory.InMemoryStateMachineRepository;
 
 import java.time.temporal.ChronoUnit;
@@ -17,8 +17,8 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static pure.fsm.core.WithinLock.tryWithLock;
 import static pure.fsm.core.context.InitialContext.initialContext;
-import static pure.fsm.example.inmemory.TelcoRechargeContext.initialTelcoRecharge;
-import static pure.fsm.example.inmemory.state.InitialState.INITIAL_STATE;
+import static pure.fsm.core.test.fixture.state.InitialState.INITIAL_STATE;
+import static pure.fsm.core.test.fixture.TelcoRechargeContext.initialTelcoRecharge;
 
 class StateMachineOperations {
 
