@@ -1,7 +1,7 @@
 PureFSM
 =========
 
-Pure as in pure Java, no xml or gui to configure.
+Pure as in pure Java / Kotlin, no xml or gui to configure.
 
 There are more advanced FSM / BPM frameworks out there but sometimes they can be seen as too heavyweight for certain applications.
 
