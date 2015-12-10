@@ -5,7 +5,7 @@ Pure as in pure Java, no xml or gui to configure.
 
 There are more advanced FSM / BPM frameworks out there but sometimes they can be seen as too heavyweight for certain applications.
 
-The intention of this project is a simple FSM, with influences from AKKA FSM.
+The intention of this project is a lightweight FSM, with influences from AKKA FSM.
 
 The main problem that it is trying to solve is to handle technical process flows between one or more systems.
 
@@ -15,18 +15,23 @@ Main objectives:
  - Stateless States / Events / State Machine, all except state machine transition / context
  - State machine context is serializable to support distributed state machine processing (i.e. horizontally scalable)
  - A single state machine can only process a single event at a time
- - A State machine that has transitioned into a Final State (either success / failure) cannot be restarted.
+ - Once a State machine has transitioned into a Final State (either success / failure) it cannot be restarted.
  - Each state can have its own timeout
+ - After a pre-determined amount of time, any state will be removed. 
  
 Basic concepts that exist are:
 
- - Event, something has happened, which may contain event data
- - State, handle a particular event resulting in a transition to another state, possible itself.
- - StateMachine, is a stateless object, that orchestrates the lifecycle of event transition after processing an event.
+ - Event, which may contain event data
+ - State, handle one or more events resulting in a transition to another state, possible itself.
+ - StateMachine, stateless object that orchestrates the lifecycle of event transition after processing an event.
  - Transition, the only stateful object provided by PureFSM. 
-   Contains event transition information (including previous transition) and 
-   any other data (Context) the user requires between states.
+    - Contains event transition information (including previous transition) and any other data (Context) the user requires between states.
 
+Pluggable persistent layer (current implementations):  
+ 
+ - InMemory (testing / single node)
+ - Distributed Hazelcast
+ - Distributed Mysql
 
 Kotlin Example
 ========
@@ -86,7 +91,9 @@ class TelcoStateMachine : StateMachine<TelcoEvent>() {
 }
 ```
 
-Initial Java Example: https://github.com/hawka11/PureFSM/blob/master/fsm-telco-example-inmemory/src/main/java/pure/fsm/example/inmemory/MainSuccessful.java
+Java Example
+=======
+Initial: https://github.com/hawka11/PureFSM/blob/master/fsm-telco-example-inmemory/src/main/java/pure/fsm/example/inmemory/MainSuccessful.java
 
 RoadMap
 ======
