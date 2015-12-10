@@ -65,6 +65,14 @@ public class StateMachineViewFactory {
         public String getStateMachineId() {
             return transition.getContext().stateMachineId();
         }
+
+        public Set<String> confirmedPins() {
+            return data().getConfirmedPins();
+        }
+
+        protected TelcoRechargeData data() {
+            return getTransition().getContext().mostRecentOf(TelcoRechargeData.class).get();
+        }
     }
 
     static class WatingView extends StateMachineView {
@@ -74,14 +82,6 @@ public class StateMachineViewFactory {
 
         public Set<String> nonConfirmedPins() {
             return data().nonConfirmedPins(getTransition().getContext());
-        }
-
-        public Set<String> confirmedPins() {
-            return data().getConfirmedPins();
-        }
-
-        private TelcoRechargeData data() {
-            return getTransition().getContext().mostRecentOf(TelcoRechargeData.class).get();
         }
     }
 
