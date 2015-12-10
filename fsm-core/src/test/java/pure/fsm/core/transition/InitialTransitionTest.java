@@ -26,10 +26,10 @@ public class InitialTransitionTest {
     @Before
     public void beforeEach() {
         initialTransition = initialTransition("111", INITIAL_STATE, newArrayList(new TestInitialContext("data")));
-
-        transitioned = initialTransition.setNextTransition(Transition.To(
+        transitioned = Transition.To(
                 RECHARGE_REQUESTED_STATE, new RechargeEvent(),
-                initialTransition.getContext().appendState(new PinRechargedContext())));
+                initialTransition.getContext().appendState(new PinRechargedContext()));
+        transitioned = transitioned.setPrevious(initialTransition);
     }
 
     @Test

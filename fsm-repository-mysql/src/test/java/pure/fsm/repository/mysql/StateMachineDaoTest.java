@@ -117,7 +117,7 @@ public class StateMachineDaoTest {
     private Transition transitionFrom(Transition transition) {
         final Transition nextTransition = Transition.To(RECHARGE_REQUESTED_STATE,
                 new TestEvent.RechargeEvent(), transition.getContext().appendState("nextState"));
-        return transition.setNextTransition(nextTransition);
+        return nextTransition.setPrevious(transition);
     }
 
     @Test

@@ -115,8 +115,7 @@ public class Transition {
                 null, context);
     }
 
-    //TODO: rename this to setPrevious (and reverse call)
-    public Transition setNextTransition(Transition next) {
-        return new Transition(next.transitioned, next.state, next.event, this, next.context);
+    public Transition setPrevious(Transition previous) {
+        return new Transition(this.transitioned, this.state, this.event, previous, this.context);
     }
 }

@@ -8,14 +8,15 @@ import java.util.function.Consumer;
 
 import static com.google.common.collect.Maps.newHashMap;
 import static pure.fsm.core.FinalState.ERROR_FINAL_STATE;
+import static pure.fsm.core.FinalState.TIMEOUT_ERROR_FINAL_STATE;
 import static pure.fsm.core.context.ExceptionContext.withException;
 
 public abstract class StateMachine<T> {
 
     private final static Logger LOG = LoggerFactory.getLogger(StateMachine.class);
 
-    private Map<Class<?>, HandleEvent<T>> defByState = newHashMap();
-    private Map<Class<?>, Map<Class<?>, Consumer<Transition>>> defByTransition = newHashMap();
+    private final Map<Class<?>, HandleEvent<T>> defByState = newHashMap();
+    private final Map<Class<?>, Map<Class<?>, Consumer<Transition>>> defByTransition = newHashMap();
 
     @SuppressWarnings("unchecked")
     public Transition handleEvent(Transition last, T event) {
@@ -32,17 +33,18 @@ public abstract class StateMachine<T> {
             if (handleEvent != null) {
                 next = handleEvent.handle(last, event);
             } else {
+                LOG.error("unhandled event {}", event);
                 next = unhandled(last, event);
             }
 
         } catch (Exception e) {
+
             LOG.error("SM [" + stateMachineId + "], Error handling event [" + event + "]", e);
 
             next = onError(event, context, e);
         }
 
-        //TODO: rename this method
-        next = last.setNextTransition(next);
+        next = next.setPrevious(last);
 
         invokeOnTransitionListeners(last, next);
 
@@ -67,7 +69,6 @@ public abstract class StateMachine<T> {
     }
 
     protected Transition unhandled(Transition last, T event) {
-        LOG.error("unhandled event {}", event);
         return Transition.To(ERROR_FINAL_STATE, event, last.getContext());
     }
 
@@ -97,7 +98,11 @@ public abstract class StateMachine<T> {
     }
 
     protected Transition error(T event, Context context) {
-        return Transition.To(ERROR_FINAL_STATE, event, context);
+        return go(ERROR_FINAL_STATE, event, context);
+    }
+
+    protected Transition timeout(T event, Context context) {
+        return go(TIMEOUT_ERROR_FINAL_STATE, event, context);
     }
 
     @FunctionalInterface
