@@ -64,12 +64,20 @@ public abstract class StateMachine<E> {
     }
 
     protected Transition onError(E event, Context context, Exception e) {
-        final Context updatedContext = context.appendState(withException(e));
-        return Transition.To(ERROR_FINAL_STATE, event, updatedContext);
+        return error(event, context.appendState(withException(e)));
     }
 
     protected Transition unhandled(Transition last, E event) {
-        return Transition.To(ERROR_FINAL_STATE, event, last.getContext());
+        if (FinalState.class.isAssignableFrom(last.getState().getClass())) {
+            LOG.info("ignoring event {}", event);
+            return stay(last.getState(), event, last.getContext());
+        } else {
+            return unhandledError(last, event);
+        }
+    }
+
+    protected Transition unhandledError(Transition last, E event) {
+        return error(event, last.getContext());
     }
 
     protected void when(Object state, HandleEvent<E> handleEvent) {
