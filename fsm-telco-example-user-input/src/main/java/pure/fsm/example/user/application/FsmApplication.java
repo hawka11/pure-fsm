@@ -37,8 +37,8 @@ public class FsmApplication extends Application<FsmConfiguration> {
         final TelcoStateMachine stateMachine = new TelcoStateMachine(stateMachineBundle.getDistributedResourceFactory(), telcoGateway);
         telcoGateway.stateMachine = stateMachine;
 
-        stateMachineBundle.getCleaner(newArrayList(HISTORY_FORMATTER), 10, SECONDS, 5, ChronoUnit.SECONDS).startScheduler();
-        stateMachineBundle.getTimeoutTicker(10, SECONDS, transition ->
+        stateMachineBundle.createCleaner(newArrayList(HISTORY_FORMATTER), 30, SECONDS, 5, ChronoUnit.SECONDS).startScheduler();
+        stateMachineBundle.createEventTicker(30, SECONDS, transition ->
                 stateMachine.handleEvent(transition, new TimeoutTickEvent())).start();
 
         UserActionResource resource = new UserActionResource(

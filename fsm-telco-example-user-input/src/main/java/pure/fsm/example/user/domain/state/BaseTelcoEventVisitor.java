@@ -2,6 +2,7 @@ package pure.fsm.example.user.domain.state;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pure.fsm.core.FinalState;
 import pure.fsm.core.Transition;
 import pure.fsm.example.user.domain.event.ConfirmPinEvent;
 import pure.fsm.example.user.domain.event.RequestAcceptedEvent;
@@ -16,18 +17,14 @@ import java.time.LocalDateTime;
 import static pure.fsm.core.FinalState.TIMEOUT_ERROR_FINAL_STATE;
 import static pure.fsm.core.context.ContextMessage.withMessage;
 
-public class BaseTelcoState implements TelcoEventVisitor {
+public class BaseTelcoEventVisitor implements TelcoEventVisitor {
 
-    private final static Logger LOG = LoggerFactory.getLogger(BaseTelcoState.class);
+    private final static Logger LOG = LoggerFactory.getLogger(BaseTelcoEventVisitor.class);
 
-    private final DistributedResourceFactory resourceFactory;
+    public final DistributedResourceFactory resourceFactory;
 
-    protected BaseTelcoState(DistributedResourceFactory resourceFactory) {
+    protected BaseTelcoEventVisitor(DistributedResourceFactory resourceFactory) {
         this.resourceFactory = resourceFactory;
-    }
-
-    public DistributedResourceFactory resourceFactory() {
-        return resourceFactory;
     }
 
     public Transition handle(Transition last, TelcoEvent event) {
@@ -35,13 +32,15 @@ public class BaseTelcoState implements TelcoEventVisitor {
     }
 
     @Override
-    public Transition visit(Transition prevTransition, TimeoutTickEvent timeoutTickEvent) {
+    public Transition visit(Transition prev, TimeoutTickEvent event) {
         System.out.println("In " + getClass().getSimpleName() + ", processing TimeoutTickEvent event ");
 
-        Transition transition = Transition.To(this, timeoutTickEvent, prevTransition.getContext());
-        if (isTimeout(prevTransition)) {
-            transition = Transition.To(TIMEOUT_ERROR_FINAL_STATE,
-                    timeoutTickEvent, prevTransition.getContext().appendState(withMessage("because timed-out")));
+        Transition transition = Transition.To(prev.getState(), event, prev.getContext());
+        if (!FinalState.class.isAssignableFrom(prev.getState().getClass())) {
+            if (isTimeout(prev)) {
+                transition = Transition.To(TIMEOUT_ERROR_FINAL_STATE,
+                        event, prev.getContext().appendState(withMessage("timed-out")));
+            }
         }
 
         return transition;
@@ -63,7 +62,7 @@ public class BaseTelcoState implements TelcoEventVisitor {
     }
 
     protected boolean isTimeout(Transition last) {
-        return LocalDateTime.now().isAfter(last.getTransitioned().plusSeconds(5));
+        return LocalDateTime.now().isAfter(last.getTransitioned().plusMinutes(1));
     }
 
     private Transition nonHandledEvent(Transition last, TelcoEvent event) {

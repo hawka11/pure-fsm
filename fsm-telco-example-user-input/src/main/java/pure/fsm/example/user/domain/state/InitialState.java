@@ -25,7 +25,7 @@ public class InitialState {
         return new EventProcessor(resourceFactory, telcoGateway);
     }
 
-    public static class EventProcessor extends BaseTelcoState {
+    public static class EventProcessor extends BaseTelcoEventVisitor {
 
         private final TelcoGateway telcoGateway;
 
@@ -39,11 +39,11 @@ public class InitialState {
             List<String> pins = event.getPins();
             final Context context = last.getContext();
 
-            pins.stream().forEach(pin -> context.addCanUnlock(resourceFactory().tryLock("LOCKED_PINS", pin)));
+            pins.stream().forEach(pin -> context.addCanUnlock(resourceFactory.tryLock("LOCKED_PINS", pin)));
 
             telcoGateway.requestPinRecharge(context.stateMachineId(), pins);
 
-            return Transition.To(this, event, context);
+            return Transition.To(InitialState.class, event, context);
         }
 
         @Override
@@ -57,7 +57,7 @@ public class InitialState {
                     .filter(pin -> !acceptedPins.contains(pin))
                     .collect(toList());
 
-            final Object nextState = waitingAcceptance.isEmpty() ? WAITING_FOR_CONFIRMATION_STATE : this;
+            final Object nextState = waitingAcceptance.isEmpty() ? WAITING_FOR_CONFIRMATION_STATE : InitialState.class;
 
             return Transition.To(nextState, event, context);
         }

@@ -27,11 +27,11 @@ public abstract class StateMachineBundle implements Bundle {
         repository = new InMemoryTransitionRepository();
     }
 
-    public EventTicker getTimeoutTicker(long howOften, TimeUnit timeUnit, Function<Transition, Transition> f) {
+    public EventTicker createEventTicker(long howOften, TimeUnit timeUnit, Function<Transition, Transition> f) {
         return new EventTicker(repository, howOften, timeUnit, f);
     }
 
-    public CleanUpFinalisedStateMachines getCleaner(Collection<OnCleanupListener> cleanupListeners,
+    public CleanUpFinalisedStateMachines createCleaner(Collection<OnCleanupListener> cleanupListeners,
                                                     long scheduleFrequency, TimeUnit scheduleTimeUnit,
                                                     long keepFinalised, ChronoUnit keepFinalisedTimeUnit) {
 

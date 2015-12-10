@@ -18,7 +18,6 @@ public class HzTelcoStateMachine extends StateMachine<TelcoEvent> {
 
         when(RECHARGE_REQUESTED_STATE, (last, event) -> RECHARGE_REQUESTED_STATE.init(guard).handle(last, event));
 
-
         onTransition(RECHARGE_REQUESTED_STATE.getClass(), FinalState.class,
                 transition -> unlockContexts(transition.getContext()));
     }

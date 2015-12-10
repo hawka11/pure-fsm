@@ -6,8 +6,8 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.skife.jdbi.v2.DBI;
 import pure.fsm.core.EventTicker;
-import pure.fsm.core.TransitionRepository;
 import pure.fsm.core.Transition;
+import pure.fsm.core.TransitionRepository;
 import pure.fsm.core.cleanup.CleanUpFinalisedStateMachines;
 import pure.fsm.core.cleanup.OnCleanupListener;
 import pure.fsm.repository.mysql.MysqlTransitionRepository;
@@ -43,13 +43,13 @@ public abstract class StateMachineBundle implements ConfiguredBundle<PureFsmMysq
         return repository;
     }
 
-    public EventTicker getTimeoutTicker(long howOften, TimeUnit timeUnit, Function<Transition, Transition> f) {
+    public EventTicker createEventTicker(long howOften, TimeUnit timeUnit, Function<Transition, Transition> f) {
         return new EventTicker(repository, howOften, timeUnit, f);
     }
 
-    public CleanUpFinalisedStateMachines getCleaner(Collection<OnCleanupListener> cleanupListeners,
-                                                    long scheduleFrequency, TimeUnit scheduleTimeUnit,
-                                                    long keepFinalised, ChronoUnit keepFinalisedTimeUnit) {
+    public CleanUpFinalisedStateMachines createCleaner(Collection<OnCleanupListener> cleanupListeners,
+                                                       long scheduleFrequency, TimeUnit scheduleTimeUnit,
+                                                       long keepFinalised, ChronoUnit keepFinalisedTimeUnit) {
 
         return new CleanUpFinalisedStateMachines(getStateMachineRepository(), cleanupListeners, scheduleFrequency, scheduleTimeUnit, keepFinalised, keepFinalisedTimeUnit);
     }

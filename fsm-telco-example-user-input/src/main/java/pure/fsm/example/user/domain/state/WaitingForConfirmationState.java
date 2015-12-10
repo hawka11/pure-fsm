@@ -22,7 +22,7 @@ public class WaitingForConfirmationState {
         return new EventProcessor(resourceFactory);
     }
 
-    public static class EventProcessor extends BaseTelcoState {
+    public static class EventProcessor extends BaseTelcoEventVisitor {
 
         private EventProcessor(DistributedResourceFactory resourceFactory) {
             super(resourceFactory);
@@ -43,7 +43,7 @@ public class WaitingForConfirmationState {
                 return Transition.To(SUCCESS_FINAL_STATE, event, updatedContext);
             } else {
                 LOG.info("still waiting for more pins to confirm, transitioning back to current state");
-                return Transition.To(this, event, updatedContext);
+                return Transition.To(WaitingForConfirmationState.class, event, updatedContext);
             }
         }
 
