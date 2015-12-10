@@ -11,15 +11,15 @@ import static pure.fsm.core.FinalState.ERROR_FINAL_STATE;
 import static pure.fsm.core.FinalState.TIMEOUT_ERROR_FINAL_STATE;
 import static pure.fsm.core.context.ExceptionContext.withException;
 
-public abstract class StateMachine<T> {
+public abstract class StateMachine<E> {
 
     private final static Logger LOG = LoggerFactory.getLogger(StateMachine.class);
 
-    private final Map<Class<?>, HandleEvent<T>> defByState = newHashMap();
+    private final Map<Class<?>, HandleEvent<E>> defByState = newHashMap();
     private final Map<Class<?>, Map<Class<?>, Consumer<Transition>>> defByTransition = newHashMap();
 
     @SuppressWarnings("unchecked")
-    public Transition handleEvent(Transition last, T event) {
+    public Transition handleEvent(Transition last, E event) {
         final Object current = last.getState();
         final Context context = last.getContext();
         final String stateMachineId = context.stateMachineId();
@@ -28,7 +28,7 @@ public abstract class StateMachine<T> {
 
         try {
 
-            final HandleEvent<T> handleEvent = defByState.get(current.getClass());
+            final HandleEvent<E> handleEvent = defByState.get(current.getClass());
 
             if (handleEvent != null) {
                 next = handleEvent.handle(last, event);
@@ -63,20 +63,20 @@ public abstract class StateMachine<T> {
         });
     }
 
-    protected Transition onError(T event, Context context, Exception e) {
+    protected Transition onError(E event, Context context, Exception e) {
         final Context updatedContext = context.appendState(withException(e));
         return Transition.To(ERROR_FINAL_STATE, event, updatedContext);
     }
 
-    protected Transition unhandled(Transition last, T event) {
+    protected Transition unhandled(Transition last, E event) {
         return Transition.To(ERROR_FINAL_STATE, event, last.getContext());
     }
 
-    protected void when(Object state, HandleEvent<T> handleEvent) {
+    protected void when(Object state, HandleEvent<E> handleEvent) {
         defByState.put(state.getClass(), handleEvent);
     }
 
-    protected void when(Class<?> state, HandleEvent<T> handleEvent) {
+    protected void when(Class<?> state, HandleEvent<E> handleEvent) {
         defByState.put(state, handleEvent);
     }
 
@@ -89,24 +89,24 @@ public abstract class StateMachine<T> {
         defByTransition.get(state).put(next, f);
     }
 
-    protected Transition go(Object state, T event, Context context) {
+    protected Transition go(Object state, E event, Context context) {
         return Transition.To(state, event, context);
     }
 
-    protected Transition stay(Object state, T event, Context context) {
+    protected Transition stay(Object state, E event, Context context) {
         return go(state, event, context);
     }
 
-    protected Transition error(T event, Context context) {
+    protected Transition error(E event, Context context) {
         return go(ERROR_FINAL_STATE, event, context);
     }
 
-    protected Transition timeout(T event, Context context) {
+    protected Transition timeout(E event, Context context) {
         return go(TIMEOUT_ERROR_FINAL_STATE, event, context);
     }
 
     @FunctionalInterface
-    public interface HandleEvent<T> {
-        Transition handle(Transition last, T event);
+    public interface HandleEvent<E> {
+        Transition handle(Transition last, E event);
     }
 }
