@@ -29,31 +29,46 @@ public abstract class StateMachine<T> {
 
             final HandleEvent<T> handleEvent = defByState.get(current.getClass());
 
-            next = handleEvent.handle(last, event);
-
-            //
-            next = last.setNextTransition(next);
+            if (handleEvent != null) {
+                next = handleEvent.handle(last, event);
+            } else {
+                next = unhandled(last, event);
+            }
 
         } catch (Exception e) {
             LOG.error("SM [" + stateMachineId + "], Error handling event [" + event + "]", e);
 
-            final Context updatedContext = context.appendState(withException(e));
-
-            next = Transition.To(ERROR_FINAL_STATE, event, updatedContext);
+            next = onError(event, context, e);
         }
 
-        final Transition nextForTransitionCallback = next; //needs to be final
+        //TODO: rename this method
+        next = last.setNextTransition(next);
+
+        invokeOnTransitionListeners(last, next);
+
+        return next;
+    }
+
+    private void invokeOnTransitionListeners(Transition last, Transition next) {
         defByTransition.entrySet().stream().forEach(it -> {
             if (it.getKey().isAssignableFrom(last.getState().getClass())) {
                 it.getValue().entrySet().stream().forEach(ij -> {
-                    if (ij.getKey().isAssignableFrom(nextForTransitionCallback.getState().getClass())) {
-                        ij.getValue().accept(nextForTransitionCallback);
+                    if (ij.getKey().isAssignableFrom(next.getState().getClass())) {
+                        ij.getValue().accept(next);
                     }
                 });
             }
         });
+    }
 
-        return next;
+    protected Transition onError(T event, Context context, Exception e) {
+        final Context updatedContext = context.appendState(withException(e));
+        return Transition.To(ERROR_FINAL_STATE, event, updatedContext);
+    }
+
+    protected Transition unhandled(Transition last, T event) {
+        LOG.error("unhandled event {}", event);
+        return Transition.To(ERROR_FINAL_STATE, event, last.getContext());
     }
 
     protected void when(Object state, HandleEvent<T> handleEvent) {
