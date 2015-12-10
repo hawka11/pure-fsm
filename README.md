@@ -91,6 +91,19 @@ class TelcoStateMachine : StateMachine<TelcoEvent>() {
 }
 ```
 
+###Process Event
+
+Use WithinLock.tryWithinLock() to process an event within a distributed lock.
+
+```
+val next = tryWithLock(id, repository, { t -> stateMachine.handleEvent(t, RechargeEvent() })
+        
+```
+
+Full Kotlin Test
+========
+https://github.com/hawka11/PureFSM/blob/master/fsm-telco-example-kotlin/src/test/kotlin/pure/fsm/example/kotlin/SuccessfulTest.kt
+
 Initial Java Example
 =======
 https://github.com/hawka11/PureFSM/blob/master/fsm-telco-example-inmemory/src/main/java/pure/fsm/example/inmemory/MainSuccessful.java
