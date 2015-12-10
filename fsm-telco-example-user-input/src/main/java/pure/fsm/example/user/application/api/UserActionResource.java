@@ -1,7 +1,7 @@
 package pure.fsm.example.user.application.api;
 
 import io.dropwizard.views.View;
-import pure.fsm.core.StateMachineRepository;
+import pure.fsm.core.TransitionRepository;
 import pure.fsm.core.Transition;
 import pure.fsm.example.user.domain.TelcoStateMachine;
 import pure.fsm.example.user.domain.event.ConfirmPinEvent;
@@ -29,11 +29,11 @@ import static pure.fsm.example.user.domain.state.InitialState.INITIAL_STATE;
 @Path("/sm")
 public class UserActionResource {
 
-    private final StateMachineRepository repository;
+    private final TransitionRepository repository;
     private final TelcoStateMachine stateMachine;
     private final StateMachineViewFactory viewFactory;
 
-    public UserActionResource(StateMachineRepository repository,
+    public UserActionResource(TransitionRepository repository,
                               TelcoStateMachine stateMachine,
                               StateMachineViewFactory viewFactory) {
         this.repository = repository;

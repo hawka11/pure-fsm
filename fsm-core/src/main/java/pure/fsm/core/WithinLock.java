@@ -14,7 +14,7 @@ public class WithinLock {
 
     private final static Logger LOG = LoggerFactory.getLogger(WithinLock.class);
 
-    public static Transition tryWithLock(String stateMachineId, StateMachineRepository repository, Function<Transition, Transition> f) {
+    public static Transition tryWithLock(String stateMachineId, TransitionRepository repository, Function<Transition, Transition> f) {
         return tryWithLock(stateMachineId, repository, f, 1, SECONDS);
     }
 
@@ -24,9 +24,9 @@ public class WithinLock {
      * <p>
      * This does not prevent multiple state machines being sent their own events concurrently
      */
-    public static Transition tryWithLock(String stateMachineId, StateMachineRepository repository, Function<Transition, Transition> f, long timeout, TimeUnit timeUnit) {
+    public static Transition tryWithLock(String stateMachineId, TransitionRepository repository, Function<Transition, Transition> f, long timeout, TimeUnit timeUnit) {
         Transition next = null;
-        Optional<StateMachineRepository.Lock> lock = Optional.empty();
+        Optional<TransitionRepository.Lock> lock = Optional.empty();
 
         try {
             lock = repository.tryLock(stateMachineId, timeout, timeUnit);

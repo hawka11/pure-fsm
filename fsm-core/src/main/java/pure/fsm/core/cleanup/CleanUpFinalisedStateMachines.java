@@ -5,8 +5,8 @@ import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.Transition;
-import pure.fsm.core.StateMachineRepository;
-import pure.fsm.core.StateMachineRepository.Lock;
+import pure.fsm.core.TransitionRepository;
+import pure.fsm.core.TransitionRepository.Lock;
 import pure.fsm.core.FinalState;
 
 import java.time.LocalDateTime;
@@ -24,7 +24,7 @@ public class CleanUpFinalisedStateMachines {
 
     private final static Logger LOG = LoggerFactory.getLogger(CleanUpFinalisedStateMachines.class);
 
-    private final StateMachineRepository repository;
+    private final TransitionRepository repository;
     private final Collection<OnCleanupListener> cleanupListeners;
     private final long scheduleFrequency;
     private final TimeUnit scheduleTimeUnit;
@@ -32,7 +32,7 @@ public class CleanUpFinalisedStateMachines {
     private final ChronoUnit keepFinalisedTimeUnit;
     private final ScheduledExecutorService scheduledExecutorService;
 
-    public CleanUpFinalisedStateMachines(StateMachineRepository repository,
+    public CleanUpFinalisedStateMachines(TransitionRepository repository,
                                          Collection<OnCleanupListener> cleanupListeners,
                                          long scheduleFrequency, TimeUnit scheduleTimeUnit,
                                          long keepFinalised, ChronoUnit keepFinalisedTimeUnit) {
@@ -93,7 +93,7 @@ public class CleanUpFinalisedStateMachines {
         }
     }
 
-    private void forceCleanup(StateMachineRepository repository, String smId) {
+    private void forceCleanup(TransitionRepository repository, String smId) {
         final Optional<Lock> lock = repository.tryLock(smId, 1, SECONDS);
         lock.ifPresent((lock1) -> {
             LOG.info("Got lock for [{}], removing from db", smId);

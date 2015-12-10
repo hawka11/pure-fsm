@@ -1,7 +1,7 @@
 package pure.fsm.end2end.test;
 
 import org.junit.Test;
-import pure.fsm.core.StateMachineRepository;
+import pure.fsm.core.TransitionRepository;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -12,18 +12,18 @@ import static org.junit.Assert.assertTrue;
 
 public class UnlockIdempotentTest extends BaseEnd2EndTest {
 
-    public UnlockIdempotentTest(Supplier<StateMachineRepository> repository) {
+    public UnlockIdempotentTest(Supplier<TransitionRepository> repository) {
         super(repository);
     }
 
     @Test
     public void unlockShouldBeIdempotent() {
-        final StateMachineRepository repository = this.repository.get();
+        final TransitionRepository repository = this.repository.get();
 
         StateMachineOperations ops = new StateMachineOperations(repository);
         final String stateMachineId = ops.createStateMachineInInitialState();
 
-        final Optional<StateMachineRepository.Lock> lock = repository.tryLock(stateMachineId, 1, SECONDS);
+        final Optional<TransitionRepository.Lock> lock = repository.tryLock(stateMachineId, 1, SECONDS);
 
         assertTrue(lock.get().unlock());
         assertFalse(lock.get().unlock());
@@ -31,11 +31,11 @@ public class UnlockIdempotentTest extends BaseEnd2EndTest {
 
     @Test
     public void unlockAndRemoveShouldBeIdempotent() {
-        final StateMachineRepository repository = this.repository.get();
+        final TransitionRepository repository = this.repository.get();
         StateMachineOperations ops = new StateMachineOperations(repository);
         final String stateMachineId = ops.createStateMachineInInitialState();
 
-        final Optional<StateMachineRepository.Lock> lock = repository.tryLock(stateMachineId, 1, SECONDS);
+        final Optional<TransitionRepository.Lock> lock = repository.tryLock(stateMachineId, 1, SECONDS);
 
         assertTrue(lock.get().unlockAndRemove());
         assertFalse(lock.get().unlockAndRemove());

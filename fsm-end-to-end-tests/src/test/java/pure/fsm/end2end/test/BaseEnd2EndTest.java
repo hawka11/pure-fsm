@@ -4,13 +4,13 @@ import org.junit.Rule;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import pure.fsm.core.StateMachineRepository;
+import pure.fsm.core.TransitionRepository;
 import pure.fsm.end2end.hazelcast.HazelcastUtil;
-import pure.fsm.repository.hazelcast.HazelcastStateMachineRepository;
-import pure.fsm.repository.inmemory.InMemoryStateMachineRepository;
+import pure.fsm.repository.hazelcast.HazelcastTransitionRepository;
+import pure.fsm.repository.inmemory.InMemoryTransitionRepository;
 import pure.fsm.repository.mysql.FlywayRule;
 import pure.fsm.repository.mysql.JdbiRule;
-import pure.fsm.repository.mysql.MysqlStateMachineRepository;
+import pure.fsm.repository.mysql.MysqlTransitionRepository;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,18 +25,18 @@ public abstract class BaseEnd2EndTest {
         HazelcastUtil.startHzNodeOnThread();
     }
 
-    protected final Supplier<StateMachineRepository> repository;
+    protected final Supplier<TransitionRepository> repository;
 
-    protected BaseEnd2EndTest(Supplier<StateMachineRepository> repository) {
+    protected BaseEnd2EndTest(Supplier<TransitionRepository> repository) {
         this.repository = repository;
     }
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {(Supplier<StateMachineRepository>) InMemoryStateMachineRepository::new}
-                , {(Supplier<StateMachineRepository>) () -> new MysqlStateMachineRepository(JDBI_RULE.DBI)}
-                , {(Supplier<StateMachineRepository>) () -> new HazelcastStateMachineRepository(createClientHz())}
+                {(Supplier<TransitionRepository>) InMemoryTransitionRepository::new}
+                , {(Supplier<TransitionRepository>) () -> new MysqlTransitionRepository(JDBI_RULE.DBI)}
+                , {(Supplier<TransitionRepository>) () -> new HazelcastTransitionRepository(createClientHz())}
         });
     }
 

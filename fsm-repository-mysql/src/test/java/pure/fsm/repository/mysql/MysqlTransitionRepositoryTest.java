@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-import pure.fsm.core.StateMachineRepository.Lock;
+import pure.fsm.core.TransitionRepository.Lock;
 
 import java.util.Optional;
 
@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class MysqlStateMachineRepositoryTest {
+public class MysqlTransitionRepositoryTest {
 
     protected static JdbiRule JDBI_RULE = new JdbiRule("purefsm-test.yml");
 
@@ -25,11 +25,11 @@ public class MysqlStateMachineRepositoryTest {
             .around(JDBI_RULE)
             .around(FLYWAY_RULE);
 
-    private MysqlStateMachineRepository repository;
+    private MysqlTransitionRepository repository;
 
     @Before
     public void beforeEach() {
-        repository = new MysqlStateMachineRepository(JDBI_RULE.DBI);
+        repository = new MysqlTransitionRepository(JDBI_RULE.DBI);
     }
 
     @Test

@@ -12,7 +12,7 @@ import pure.fsm.core.EventTicker;
 import pure.fsm.core.Transition;
 import pure.fsm.core.cleanup.CleanUpFinalisedStateMachines;
 import pure.fsm.core.cleanup.OnCleanupListener;
-import pure.fsm.repository.hazelcast.HazelcastStateMachineRepository;
+import pure.fsm.repository.hazelcast.HazelcastTransitionRepository;
 import pure.fsm.repository.hazelcast.resource.DistributedResourceFactory;
 import pure.fsm.repository.hazelcast.serialization.StateMachineModule;
 import pure.fsm.repository.hazelcast.serialization.TransitionSerializer;
@@ -26,7 +26,7 @@ public abstract class StateMachineBundle implements Bundle {
 
     private DistributedResourceFactory distributedResourceFactory;
     private HazelcastInstance hazelcastInstance;
-    private HazelcastStateMachineRepository repository;
+    private HazelcastTransitionRepository repository;
 
     @Override
     public void initialize(Bootstrap<?> bootstrap) {
@@ -38,7 +38,7 @@ public abstract class StateMachineBundle implements Bundle {
 
         hazelcastInstance = createClientHz(transitionSerializer);
         distributedResourceFactory = new DistributedResourceFactory(hazelcastInstance);
-        repository = new HazelcastStateMachineRepository(hazelcastInstance);
+        repository = new HazelcastTransitionRepository(hazelcastInstance);
 
         transitionSerializer.registerModule(new StateMachineModule(hazelcastInstance));
     }
@@ -67,7 +67,7 @@ public abstract class StateMachineBundle implements Bundle {
         return hazelcastInstance;
     }
 
-    public HazelcastStateMachineRepository getRepository() {
+    public HazelcastTransitionRepository getRepository() {
         return repository;
     }
 

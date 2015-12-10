@@ -6,11 +6,11 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.skife.jdbi.v2.DBI;
 import pure.fsm.core.EventTicker;
-import pure.fsm.core.StateMachineRepository;
+import pure.fsm.core.TransitionRepository;
 import pure.fsm.core.Transition;
 import pure.fsm.core.cleanup.CleanUpFinalisedStateMachines;
 import pure.fsm.core.cleanup.OnCleanupListener;
-import pure.fsm.repository.mysql.MysqlStateMachineRepository;
+import pure.fsm.repository.mysql.MysqlTransitionRepository;
 
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
@@ -19,7 +19,7 @@ import java.util.function.Function;
 
 public abstract class StateMachineBundle implements ConfiguredBundle<PureFsmMysqlConfig> {
 
-    private StateMachineRepository repository;
+    private TransitionRepository repository;
     private DBI dbi;
 
     @Override
@@ -32,14 +32,14 @@ public abstract class StateMachineBundle implements ConfiguredBundle<PureFsmMysq
         DBIFactory dbiFactory = new DBIFactory();
 
         dbi = dbiFactory.build(environment, configuration.getPureFsmDatabase(), "purefsm-mysql");
-        repository = new MysqlStateMachineRepository(dbi);
+        repository = new MysqlTransitionRepository(dbi);
     }
 
     public DBI getDbi() {
         return dbi;
     }
 
-    public StateMachineRepository getStateMachineRepository() {
+    public TransitionRepository getStateMachineRepository() {
         return repository;
     }
 

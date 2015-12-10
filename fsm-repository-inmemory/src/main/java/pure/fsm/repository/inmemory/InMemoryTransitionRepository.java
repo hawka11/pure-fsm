@@ -3,7 +3,7 @@ package pure.fsm.repository.inmemory;
 import com.google.common.collect.ImmutableSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pure.fsm.core.StateMachineRepository;
+import pure.fsm.core.TransitionRepository;
 import pure.fsm.core.Transition;
 
 import java.util.List;
@@ -16,9 +16,9 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import static pure.fsm.core.Transition.initialTransition;
 
-public class InMemoryStateMachineRepository implements StateMachineRepository {
+public class InMemoryTransitionRepository implements TransitionRepository {
 
-    private final Logger LOG = LoggerFactory.getLogger(InMemoryStateMachineRepository.class);
+    private final Logger LOG = LoggerFactory.getLogger(InMemoryTransitionRepository.class);
 
     private final AtomicLong idGenerator = new AtomicLong(1000);
 

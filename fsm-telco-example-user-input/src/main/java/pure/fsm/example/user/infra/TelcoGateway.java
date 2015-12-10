@@ -2,7 +2,7 @@ package pure.fsm.example.user.infra;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pure.fsm.core.StateMachineRepository;
+import pure.fsm.core.TransitionRepository;
 import pure.fsm.example.user.domain.TelcoStateMachine;
 import pure.fsm.example.user.domain.event.RequestAcceptedEvent;
 
@@ -21,9 +21,9 @@ public class TelcoGateway {
     public TelcoStateMachine stateMachine;
 
     private final ScheduledExecutorService service;
-    private final StateMachineRepository repository;
+    private final TransitionRepository repository;
 
-    public TelcoGateway(StateMachineRepository repository) {
+    public TelcoGateway(TransitionRepository repository) {
         this.repository = repository;
         service = Executors.newSingleThreadScheduledExecutor();
     }

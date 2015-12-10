@@ -3,7 +3,7 @@ package pure.fsm.end2end.test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.EventTicker;
-import pure.fsm.core.StateMachineRepository;
+import pure.fsm.core.TransitionRepository;
 import pure.fsm.core.Transition;
 import pure.fsm.core.cleanup.CleanUpFinalisedStateMachines;
 import pure.fsm.end2end.TelcoStateMachine;
@@ -25,11 +25,11 @@ public class StateMachineOperations {
     public static final int KEEP_AROUND_B4_REMOVING = 1000;
 
     public final TelcoStateMachine stateMachine = new TelcoStateMachine(new AllPinsRechargedAcceptedGuard());
-    public final StateMachineRepository repository;
+    public final TransitionRepository repository;
     public final EventTicker timeoutEventTicker;
     public final CleanUpFinalisedStateMachines cleaner;
 
-    public StateMachineOperations(StateMachineRepository repository) {
+    public StateMachineOperations(TransitionRepository repository) {
         this.repository = repository;
         this.cleaner = new CleanUpFinalisedStateMachines(repository, newArrayList(), 1, SECONDS, KEEP_AROUND_B4_REMOVING, MILLIS);
         this.timeoutEventTicker = new EventTicker(repository, 1, SECONDS, t -> stateMachine.handleEvent(t, new TimeoutTickEvent()));

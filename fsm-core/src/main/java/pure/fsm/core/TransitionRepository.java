@@ -5,7 +5,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-public interface StateMachineRepository {
+public interface TransitionRepository {
 
     Transition get(String stateMachineId);
 

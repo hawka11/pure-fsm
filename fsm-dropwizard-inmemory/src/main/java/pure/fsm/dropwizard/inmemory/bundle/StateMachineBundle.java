@@ -7,7 +7,7 @@ import pure.fsm.core.EventTicker;
 import pure.fsm.core.Transition;
 import pure.fsm.core.cleanup.CleanUpFinalisedStateMachines;
 import pure.fsm.core.cleanup.OnCleanupListener;
-import pure.fsm.repository.inmemory.InMemoryStateMachineRepository;
+import pure.fsm.repository.inmemory.InMemoryTransitionRepository;
 
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
@@ -16,7 +16,7 @@ import java.util.function.Function;
 
 public abstract class StateMachineBundle implements Bundle {
 
-    private InMemoryStateMachineRepository repository;
+    private InMemoryTransitionRepository repository;
 
     @Override
     public void initialize(Bootstrap<?> bootstrap) {
@@ -24,7 +24,7 @@ public abstract class StateMachineBundle implements Bundle {
 
     @Override
     public void run(Environment environment) {
-        repository = new InMemoryStateMachineRepository();
+        repository = new InMemoryTransitionRepository();
     }
 
     public EventTicker getTimeoutTicker(long howOften, TimeUnit timeUnit, Function<Transition, Transition> f) {

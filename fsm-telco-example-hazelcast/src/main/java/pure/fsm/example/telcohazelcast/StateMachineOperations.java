@@ -3,11 +3,11 @@ package pure.fsm.example.telcohazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pure.fsm.core.StateMachineRepository;
+import pure.fsm.core.TransitionRepository;
 import pure.fsm.core.Transition;
 import pure.fsm.java.test.fixture.event.TelcoEvent;
 import pure.fsm.example.telcohazelcast.guard.AllPinsRechargedAcceptedGuard;
-import pure.fsm.repository.hazelcast.HazelcastStateMachineRepository;
+import pure.fsm.repository.hazelcast.HazelcastTransitionRepository;
 import pure.fsm.repository.hazelcast.resource.DistributedResourceFactory;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -21,7 +21,7 @@ public class StateMachineOperations {
     private final static Logger LOG = LoggerFactory.getLogger(StateMachineOperations.class);
 
     public final HazelcastInstance hazelcastInstance;
-    public final StateMachineRepository repository;
+    public final TransitionRepository repository;
     public final DistributedResourceFactory distributedResourceFactory;
     public final HzTelcoStateMachine stateMachine;
 
@@ -32,7 +32,7 @@ public class StateMachineOperations {
     public StateMachineOperations() {
         hazelcastInstance = createClientHz();
         distributedResourceFactory = new DistributedResourceFactory(hazelcastInstance);
-        repository = new HazelcastStateMachineRepository(hazelcastInstance);
+        repository = new HazelcastTransitionRepository(hazelcastInstance);
         stateMachine = new HzTelcoStateMachine(new AllPinsRechargedAcceptedGuard(), distributedResourceFactory);
     }
 

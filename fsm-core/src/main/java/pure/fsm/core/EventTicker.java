@@ -18,12 +18,12 @@ public class EventTicker {
     private final static Logger LOG = LoggerFactory.getLogger(EventTicker.class);
 
     private final ScheduledExecutorService scheduledExecutorService;
-    private final StateMachineRepository repository;
+    private final TransitionRepository repository;
     private final long scheduleFrequency;
     private final TimeUnit timeUnit;
     private final Function<Transition, Transition> f;
 
-    public EventTicker(StateMachineRepository repository,
+    public EventTicker(TransitionRepository repository,
                        long scheduleFrequency,
                        TimeUnit timeUnit,
                        Function<Transition, Transition> f) {

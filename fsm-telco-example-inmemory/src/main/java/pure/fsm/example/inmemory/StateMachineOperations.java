@@ -3,13 +3,13 @@ package pure.fsm.example.inmemory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.EventTicker;
-import pure.fsm.core.StateMachineRepository;
+import pure.fsm.core.TransitionRepository;
 import pure.fsm.core.Transition;
 import pure.fsm.core.cleanup.CleanUpFinalisedStateMachines;
 import pure.fsm.java.test.fixture.event.TelcoEvent;
 import pure.fsm.java.test.fixture.event.TimeoutTickEvent;
 import pure.fsm.java.test.fixture.guard.AllPinsRechargedAcceptedGuard;
-import pure.fsm.repository.inmemory.InMemoryStateMachineRepository;
+import pure.fsm.repository.inmemory.InMemoryTransitionRepository;
 
 import java.time.temporal.ChronoUnit;
 
@@ -24,7 +24,7 @@ class StateMachineOperations {
 
     private final static Logger LOG = LoggerFactory.getLogger(StateMachineOperations.class);
 
-    final public StateMachineRepository repository = new InMemoryStateMachineRepository();
+    final public TransitionRepository repository = new InMemoryTransitionRepository();
 
     final public CleanUpFinalisedStateMachines cleaner = new CleanUpFinalisedStateMachines(repository, newArrayList(), 5, SECONDS, 5, ChronoUnit.SECONDS);
 

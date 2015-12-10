@@ -5,8 +5,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import pure.fsm.core.StateMachineRepository;
-import pure.fsm.core.StateMachineRepository.Lock;
+import pure.fsm.core.TransitionRepository;
+import pure.fsm.core.TransitionRepository.Lock;
 import pure.fsm.core.Transition;
 import pure.fsm.core.fixture.TestEvent.RechargeEvent;
 
@@ -30,7 +30,7 @@ import static pure.fsm.core.fixture.TestState.RECHARGE_REQUESTED_STATE;
 public class CleanUpFinalisedStateMachinesTest {
 
     @Mock
-    private StateMachineRepository repository;
+    private TransitionRepository repository;
 
     @Mock
     private Lock lock;

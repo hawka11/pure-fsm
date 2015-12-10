@@ -1,7 +1,7 @@
 package pure.fsm.end2end.test;
 
 import org.junit.Test;
-import pure.fsm.core.StateMachineRepository;
+import pure.fsm.core.TransitionRepository;
 import pure.fsm.java.test.fixture.event.RechargeAcceptedEvent;
 import pure.fsm.java.test.fixture.event.RequestRechargeEvent;
 
@@ -18,7 +18,7 @@ import static pure.fsm.end2end.test.TelcoStateAssertions.assertRechargeRequested
 
 public class TelcoRechargeRequestAcceptedAllPinsTest extends BaseEnd2EndTest {
 
-    public TelcoRechargeRequestAcceptedAllPinsTest(Supplier<StateMachineRepository> repository) {
+    public TelcoRechargeRequestAcceptedAllPinsTest(Supplier<TransitionRepository> repository) {
         super(repository);
     }
 

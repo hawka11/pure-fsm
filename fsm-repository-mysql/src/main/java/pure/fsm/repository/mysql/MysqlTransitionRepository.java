@@ -5,7 +5,7 @@ import org.skife.jdbi.v2.Handle;
 import org.skife.jdbi.v2.exceptions.TransactionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pure.fsm.core.StateMachineRepository;
+import pure.fsm.core.TransitionRepository;
 import pure.fsm.core.Transition;
 
 import java.util.List;
@@ -15,13 +15,13 @@ import java.util.concurrent.TimeUnit;
 
 import static pure.fsm.core.Transition.initialTransition;
 
-public class MysqlStateMachineRepository implements StateMachineRepository {
+public class MysqlTransitionRepository implements TransitionRepository {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MysqlStateMachineRepository.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MysqlTransitionRepository.class);
 
     private final DBI jdbi;
 
-    public MysqlStateMachineRepository(DBI jdbi) {
+    public MysqlTransitionRepository(DBI jdbi) {
         this.jdbi = jdbi;
     }
 

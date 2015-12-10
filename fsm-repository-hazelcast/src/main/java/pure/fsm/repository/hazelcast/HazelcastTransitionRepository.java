@@ -5,7 +5,7 @@ import com.hazelcast.core.IAtomicLong;
 import com.hazelcast.core.IMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pure.fsm.core.StateMachineRepository;
+import pure.fsm.core.TransitionRepository;
 import pure.fsm.core.Transition;
 
 import java.util.List;
@@ -16,13 +16,13 @@ import java.util.concurrent.TimeUnit;
 import static com.google.common.collect.ImmutableSet.copyOf;
 import static pure.fsm.core.Transition.initialTransition;
 
-public class HazelcastStateMachineRepository implements StateMachineRepository {
+public class HazelcastTransitionRepository implements TransitionRepository {
 
-    private final Logger LOG = LoggerFactory.getLogger(HazelcastStateMachineRepository.class);
+    private final Logger LOG = LoggerFactory.getLogger(HazelcastTransitionRepository.class);
 
     private final HazelcastInstance hazelcastInstance;
 
-    public HazelcastStateMachineRepository(HazelcastInstance hazelcastInstance) {
+    public HazelcastTransitionRepository(HazelcastInstance hazelcastInstance) {
         this.hazelcastInstance = hazelcastInstance;
     }
 

@@ -1,12 +1,10 @@
 package pure.fsm.end2end.test;
 
 import org.junit.Test;
-import pure.fsm.core.StateMachineRepository;
+import pure.fsm.core.TransitionRepository;
 import pure.fsm.java.test.fixture.event.RequestRechargeEvent;
-import pure.fsm.java.test.fixture.state.BaseTelcoState;
 
 import java.math.BigDecimal;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import static com.google.common.collect.Sets.newHashSet;
@@ -22,7 +20,7 @@ import static pure.fsm.java.test.fixture.state.BaseTelcoState.TIMEOUT_SECS;
 
 public class TelcoRechargeTimeoutAndCleanupTest extends BaseEnd2EndTest {
 
-    public TelcoRechargeTimeoutAndCleanupTest(Supplier<StateMachineRepository> repository) {
+    public TelcoRechargeTimeoutAndCleanupTest(Supplier<TransitionRepository> repository) {
         super(repository);
     }
 
