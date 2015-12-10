@@ -72,19 +72,23 @@ public class Transition {
 
     @JsonIgnore
     public Object getState() {
-        final String state = this.state;
-        return toInstance(state);
+        return createInstance(this.state);
     }
 
-    private Object toInstance(String thing) {
+    //assumes no-arg default constructor
+    private Object createInstance(String className) {
         try {
-            final Class<?> klass = Class.forName(thing);
-            final Constructor<?> constructor = klass.getDeclaredConstructors()[0];
-            constructor.setAccessible(true);
-            return constructor.newInstance();
+            final Class<?> klass = Class.forName(className);
+            final Constructor<?> c = klass.getDeclaredConstructors()[0];
+            return setAccessable(c).newInstance();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private Constructor<?> setAccessable(Constructor<?> constructor) {
+        constructor.setAccessible(true);
+        return constructor;
     }
 
     public LocalDateTime getTransitioned() {
