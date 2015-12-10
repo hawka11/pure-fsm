@@ -16,3 +16,5 @@ include 'fsm-dropwizard-inmemory'
 include 'fsm-dropwizard-hazelcast'
 include 'fsm-dropwizard-mysql'
 
+include 'fsm-telco-example-kotlin'
+

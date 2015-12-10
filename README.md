@@ -28,5 +28,21 @@ Basic concepts that exist are:
    that you wish to maintain a lock for the lifetime of a single state machine.
    By default, they are unlocked in the 'onEnter' call of a final state.
 
-Initial Example: https://github.com/hawka11/PureFSM/blob/master/fsm-telco-example-inmemory/src/main/java/pure/fsm/example/inmemory/MainSuccessful.java
+Kotlin Example
+========
+
+Recharging a mobile phone via telco company
+
+###Available States
+
+public sealed class TelcoState {
+    object InitialState : TelcoState()
+    object RechargeRequestedState : TelcoState()
+    object RechargeConfirmedFinalState : TelcoState(), FinalState
+    object TimeoutFinalState : TelcoState(), FinalState
+    object ErrorFinalState : TelcoState(), FinalState
+}
+
+
+Initial Java Example: https://github.com/hawka11/PureFSM/blob/master/fsm-telco-example-inmemory/src/main/java/pure/fsm/example/inmemory/MainSuccessful.java
 

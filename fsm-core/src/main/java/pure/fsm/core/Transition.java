@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Constructor;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -77,7 +78,10 @@ public class Transition {
 
     private Object toInstance(String thing) {
         try {
-            return Class.forName(thing).newInstance();
+            final Class<?> klass = Class.forName(thing);
+            final Constructor<?> constructor = klass.getDeclaredConstructors()[0];
+            constructor.setAccessible(true);
+            return constructor.newInstance();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
