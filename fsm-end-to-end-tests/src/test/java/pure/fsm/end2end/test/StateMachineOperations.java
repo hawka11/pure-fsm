@@ -15,7 +15,6 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static pure.fsm.core.WithinLock.tryWithLock;
-import static pure.fsm.core.context.InitialContext.initialContext;
 import static pure.fsm.java.test.fixture.TelcoRechargeContext.initialTelcoRecharge;
 import static pure.fsm.java.test.fixture.state.InitialState.INITIAL_STATE;
 
@@ -33,10 +32,7 @@ public class StateMachineOperations {
     public StateMachineOperations(StateMachineRepository repository) {
         this.repository = repository;
         this.cleaner = new CleanUpFinalisedStateMachines(repository, newArrayList(), 1, SECONDS, KEEP_AROUND_B4_REMOVING, MILLIS);
-        timeoutEventTicker = new EventTicker(repository, 1, SECONDS, last -> {
-            final String id = initialContext(last.getContext()).stateMachineId;
-            return tryWithLock(id, repository, transition -> stateMachine.handleEvent(transition, new TimeoutTickEvent()));
-        });
+        this.timeoutEventTicker = new EventTicker(repository, 1, SECONDS, t -> stateMachine.handleEvent(t, new TimeoutTickEvent()));
     }
 
     public Transition getStateMachine(String stateMachineId) {

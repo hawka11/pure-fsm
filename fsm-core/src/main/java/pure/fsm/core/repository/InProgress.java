@@ -12,12 +12,12 @@ import static pure.fsm.core.context.InitialContext.initialContext;
 public class InProgress {
 
     public static Set<String> inProgressIds(StateMachineRepository repository) {
-        return inProgress(repository).stream()
+        return inProgressTransitions(repository).stream()
                 .map(last -> initialContext(last.getContext()).stateMachineId)
                 .collect(toSet());
     }
 
-    public static Set<Transition> inProgress(StateMachineRepository repository) {
+    public static Set<Transition> inProgressTransitions(StateMachineRepository repository) {
         return repository.getIds().stream()
                 .map(repository::get)
                 .filter(last -> !FinalState.class.isAssignableFrom(last.getState().getClass()))

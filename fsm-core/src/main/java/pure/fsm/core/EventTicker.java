@@ -11,7 +11,7 @@ import java.util.function.Function;
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 import static pure.fsm.core.WithinLock.tryWithLock;
 import static pure.fsm.core.context.InitialContext.initialContext;
-import static pure.fsm.core.repository.InProgress.inProgress;
+import static pure.fsm.core.repository.InProgress.inProgressTransitions;
 
 public class EventTicker {
 
@@ -48,8 +48,8 @@ public class EventTicker {
         LOG.info("About to send out tick events.");
 
         try {
-            inProgress(repository).stream().forEach(last -> {
-                final String stateMachineId = initialContext(last.getContext()).stateMachineId;
+            inProgressTransitions(repository).stream().forEach(t -> {
+                final String stateMachineId = initialContext(t.getContext()).stateMachineId;
                 tryWithLock(stateMachineId, repository, f);
             });
         } catch (Exception e) {
