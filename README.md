@@ -11,7 +11,7 @@ The main problem that it is trying to solve is to handle technical process flows
 
 Main objectives:
 
- - Pure Java
+ - Pure Java / Kotlin
  - Stateless States / Events / State Machine, all except state machine transition / context
  - State machine context is serializable to support distributed state machine processing (i.e. horizontally scalable)
  - A single state machine can only process a single event at a time
