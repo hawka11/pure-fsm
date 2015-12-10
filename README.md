@@ -68,7 +68,7 @@ class TelcoStateMachine : StateMachine<TelcoEvent>() {
 
         `when`(InitialState, { last, event ->
             when (event) {
-                is RechargeEvent -> go(RechargeRequestedState, event, last.context)
+                is RechargeEvent -> /*process, then*/ go(RechargeRequestedState, event, last.context)
                 is TimeoutTick -> checkTimeout(last)
                 else -> defaultHandle(last, event)
             }
@@ -91,9 +91,9 @@ class TelcoStateMachine : StateMachine<TelcoEvent>() {
 }
 ```
 
-Java Example
+Initial Java Example
 =======
-Initial: https://github.com/hawka11/PureFSM/blob/master/fsm-telco-example-inmemory/src/main/java/pure/fsm/example/inmemory/MainSuccessful.java
+https://github.com/hawka11/PureFSM/blob/master/fsm-telco-example-inmemory/src/main/java/pure/fsm/example/inmemory/MainSuccessful.java
 
 RoadMap
 ======
