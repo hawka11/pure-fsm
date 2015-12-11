@@ -18,6 +18,6 @@ public class TelcoStateMachine extends StateMachine<TelcoEvent> {
 
         when(WAITING_FOR_CONFIRMATION_STATE, (last, event) -> WAITING_FOR_CONFIRMATION_STATE.init(resourceFactory).handle(last, event));
 
-        onTransition(Object.class, FinalState.class, t -> unlockContexts(t.getContext()));
+        onTransition(Object.class, FinalState.class, (t, event) -> unlockContexts(t.getContext()));
     }
 }

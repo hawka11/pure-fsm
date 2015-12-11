@@ -29,7 +29,7 @@ public class StateMachineTest {
     @Before
     public void beforeEach() {
         onTransitionStack = newArrayList();
-        stateMachine = new TestStateMachine(onTransitionStack::add);
+        stateMachine = new TestStateMachine((t, event) -> onTransitionStack.add(t));
         initialTransition = initialTransition("111", INITIAL_STATE, newArrayList(new TestInitialContext("data")));
     }
 

@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
-import java.util.function.Consumer;
 
 import static com.google.common.collect.Maps.newHashMap;
 import static pure.fsm.core.FinalState.ERROR_FINAL_STATE;
@@ -16,7 +15,7 @@ public abstract class StateMachine<E> {
     private final static Logger LOG = LoggerFactory.getLogger(StateMachine.class);
 
     private final Map<Class<?>, HandleEvent<E>> defByState = newHashMap();
-    private final Map<Class<?>, Map<Class<?>, Consumer<Transition>>> defByTransition = newHashMap();
+    private final Map<Class<?>, Map<Class<?>, OnTransition<E>>> defByTransition = newHashMap();
 
     @SuppressWarnings("unchecked")
     public Transition handleEvent(Transition last, E event) {
@@ -46,17 +45,17 @@ public abstract class StateMachine<E> {
 
         next = next.setPrevious(last);
 
-        invokeOnTransitionListeners(last, next);
+        invokeOnTransitionListeners(last, next, event);
 
         return next;
     }
 
-    private void invokeOnTransitionListeners(Transition last, Transition next) {
+    private void invokeOnTransitionListeners(Transition last, Transition next, E event) {
         defByTransition.entrySet().stream().forEach(it -> {
             if (it.getKey().isAssignableFrom(last.getState().getClass())) {
                 it.getValue().entrySet().stream().forEach(ij -> {
                     if (ij.getKey().isAssignableFrom(next.getState().getClass())) {
-                        ij.getValue().accept(next);
+                        ij.getValue().onTransition(next, event);
                     }
                 });
             }
@@ -81,18 +80,18 @@ public abstract class StateMachine<E> {
     }
 
     protected void when(Object state, HandleEvent<E> handleEvent) {
-        defByState.put(state.getClass(), handleEvent);
+        when(state.getClass(), handleEvent);
     }
 
     protected void when(Class<?> state, HandleEvent<E> handleEvent) {
         defByState.put(state, handleEvent);
     }
 
-    protected void onTransition(Object state, Object next, Consumer<Transition> f) {
+    protected void onTransition(Object state, Object next, OnTransition<E> f) {
         onTransition(state.getClass(), next.getClass(), f);
     }
 
-    protected void onTransition(Class<?> state, Class<?> next, Consumer<Transition> f) {
+    protected void onTransition(Class<?> state, Class<?> next, OnTransition<E> f) {
         if (!defByTransition.containsKey(state)) defByTransition.put(state, newHashMap());
         defByTransition.get(state).put(next, f);
     }
@@ -116,5 +115,10 @@ public abstract class StateMachine<E> {
     @FunctionalInterface
     public interface HandleEvent<E> {
         Transition handle(Transition last, E event);
+    }
+
+    @FunctionalInterface
+    public interface OnTransition<E> {
+        void onTransition(Transition next, E event);
     }
 }

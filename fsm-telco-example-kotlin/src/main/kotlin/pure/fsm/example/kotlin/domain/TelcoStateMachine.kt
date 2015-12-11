@@ -1,5 +1,6 @@
 package pure.fsm.example.kotlin.domain
 
+import pure.fsm.core.FinalState
 import pure.fsm.core.StateMachine
 import pure.fsm.core.Transition
 import pure.fsm.example.kotlin.domain.TelcoEvent.*
@@ -26,6 +27,10 @@ class TelcoStateMachine : StateMachine<TelcoEvent>() {
                 is TimeoutTick -> checkTimeout(last)
                 else -> defaultHandle(last, event)
             }
+        })
+
+        onTransition(TelcoState::class.java, FinalState::class.java, { t, event ->
+            println("hey, we got to final state")
         })
     }
 

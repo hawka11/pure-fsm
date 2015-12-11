@@ -2,11 +2,8 @@ package pure.fsm.core.fixture;
 
 import pure.fsm.core.FinalState;
 import pure.fsm.core.StateMachine;
-import pure.fsm.core.Transition;
 import pure.fsm.core.fixture.TestEvent.RechargeAcceptedEvent;
 import pure.fsm.core.fixture.TestEvent.RechargeEvent;
-
-import java.util.function.Consumer;
 
 import static pure.fsm.core.fixture.TestState.INITIAL_STATE;
 import static pure.fsm.core.fixture.TestState.RECHARGE_ACCEPTED_FINAL_STATE;
@@ -14,7 +11,7 @@ import static pure.fsm.core.fixture.TestState.RECHARGE_REQUESTED_STATE;
 
 public class TestStateMachine extends StateMachine<TestEvent> {
 
-    public TestStateMachine(Consumer<Transition> onTransition) {
+    public TestStateMachine(OnTransition<TestEvent> onTransition) {
 
         when(INITIAL_STATE, (last, event) -> {
             if (RechargeEvent.class.equals(event.getClass())) {
