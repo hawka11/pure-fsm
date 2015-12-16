@@ -79,6 +79,9 @@ public abstract class StateMachine<E> {
         return error(event, last.getContext());
     }
 
+    protected void onReceive(Object state, HandleEvent<E> handleEvent) {
+        when(state.getClass(), handleEvent);
+    }
     protected void when(Object state, HandleEvent<E> handleEvent) {
         when(state.getClass(), handleEvent);
     }

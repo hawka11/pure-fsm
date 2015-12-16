@@ -13,7 +13,7 @@ class TelcoStateMachine : StateMachine<TelcoEvent>() {
 
     init {
 
-        `when`(InitialState, { last, event ->
+        onReceive(InitialState, { last, event ->
             when (event) {
                 is RechargeEvent -> go(RechargeRequestedState, event, last.context)
                 is TimeoutTick -> checkTimeout(last)
@@ -21,7 +21,7 @@ class TelcoStateMachine : StateMachine<TelcoEvent>() {
             }
         })
 
-        `when`(RechargeRequestedState, { last, event ->
+        onReceive(RechargeRequestedState, { last, event ->
             when (event) {
                 is RechargeConfirmEvent -> go(RechargeConfirmedFinalState, event, last.context)
                 is TimeoutTick -> checkTimeout(last)
