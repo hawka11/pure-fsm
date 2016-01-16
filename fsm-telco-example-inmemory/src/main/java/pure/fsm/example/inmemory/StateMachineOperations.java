@@ -3,8 +3,8 @@ package pure.fsm.example.inmemory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pure.fsm.core.EventTicker;
-import pure.fsm.core.TransitionRepository;
 import pure.fsm.core.Transition;
+import pure.fsm.core.TransitionRepository;
 import pure.fsm.core.cleanup.CleanUpFinalisedStateMachines;
 import pure.fsm.java.test.fixture.event.TelcoEvent;
 import pure.fsm.java.test.fixture.event.TimeoutTickEvent;
@@ -15,10 +15,11 @@ import java.time.temporal.ChronoUnit;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static pure.fsm.core.EventTicker.defaultAlwaysTicker;
 import static pure.fsm.core.WithinLock.tryWithLock;
 import static pure.fsm.core.context.InitialContext.initialContext;
-import static pure.fsm.java.test.fixture.state.InitialState.INITIAL_STATE;
 import static pure.fsm.java.test.fixture.TelcoRechargeContext.initialTelcoRecharge;
+import static pure.fsm.java.test.fixture.state.InitialState.INITIAL_STATE;
 
 class StateMachineOperations {
 
@@ -30,7 +31,7 @@ class StateMachineOperations {
 
     final public TelcoStateMachine stateMachine = new TelcoStateMachine(new AllPinsRechargedAcceptedGuard());
 
-    final public EventTicker timeoutEventTicker = new EventTicker(repository, 1, SECONDS, last -> {
+    final public EventTicker timeoutEventTicker = defaultAlwaysTicker(repository, 1, SECONDS, last -> {
         final String id = initialContext(last.getContext()).stateMachineId;
         return tryWithLock(id, repository, transition -> stateMachine.handleEvent(transition, new TimeoutTickEvent()));
     });

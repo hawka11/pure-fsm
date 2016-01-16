@@ -13,6 +13,7 @@ import java.time.temporal.ChronoUnit;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static pure.fsm.core.EventTicker.defaultAlwaysTicker;
 import static pure.fsm.core.cleanup.ContextHistoryFormatter.HISTORY_FORMATTER;
 
 public class FsmApplication extends Application<FsmConfiguration> {
@@ -38,7 +39,8 @@ public class FsmApplication extends Application<FsmConfiguration> {
         telcoGateway.stateMachine = stateMachine;
 
         stateMachineBundle.createCleaner(newArrayList(HISTORY_FORMATTER), 30, SECONDS, 5, ChronoUnit.SECONDS).startScheduler();
-        stateMachineBundle.createEventTicker(30, SECONDS, transition ->
+
+        defaultAlwaysTicker(stateMachineBundle.getRepository(), 30, SECONDS, transition ->
                 stateMachine.handleEvent(transition, new TimeoutTickEvent())).start();
 
         UserActionResource resource = new UserActionResource(

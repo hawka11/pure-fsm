@@ -21,18 +21,40 @@ public class EventTicker {
     private final TransitionRepository repository;
     private final long scheduleFrequency;
     private final TimeUnit timeUnit;
+    private final Function<Transition, Boolean> shouldSend;
     private final Function<Transition, Transition> f;
 
-    public EventTicker(TransitionRepository repository,
+    public EventTicker(ScheduledExecutorService scheduledExecutorService,
+                       TransitionRepository repository,
                        long scheduleFrequency,
                        TimeUnit timeUnit,
+                       Function<Transition, Boolean> shouldSend,
                        Function<Transition, Transition> f) {
+        this.scheduledExecutorService = scheduledExecutorService;
         this.repository = repository;
         this.scheduleFrequency = scheduleFrequency;
         this.timeUnit = timeUnit;
+        this.shouldSend = shouldSend;
         this.f = f;
+    }
 
-        scheduledExecutorService = newSingleThreadScheduledExecutor(new BasicThreadFactory.Builder().namingPattern("pure-fsm-ticker").build());
+    public static EventTicker defaultTicker(TransitionRepository repository,
+                                            long scheduleFrequency,
+                                            TimeUnit timeUnit,
+                                            Function<Transition, Boolean> shouldSend,
+                                            Function<Transition, Transition> f) {
+
+        final ScheduledExecutorService executor = newSingleThreadScheduledExecutor(new BasicThreadFactory.Builder().namingPattern("pure-fsm-ticker").build());
+
+        return new EventTicker(executor, repository, scheduleFrequency, timeUnit, shouldSend, f);
+    }
+
+    public static EventTicker defaultAlwaysTicker(TransitionRepository repository,
+                                                  long scheduleFrequency,
+                                                  TimeUnit timeUnit,
+                                                  Function<Transition, Transition> f) {
+
+        return defaultTicker(repository, scheduleFrequency, timeUnit, t -> true, f);
     }
 
     public void start() {
@@ -48,12 +70,14 @@ public class EventTicker {
         LOG.info("About to send out tick events.");
 
         try {
-            inProgressTransitions(repository).stream().forEach(t -> {
-                final String stateMachineId = initialContext(t.getContext()).stateMachineId;
-                tryWithLock(stateMachineId, repository, f);
-            });
+            inProgressTransitions(repository).stream()
+                    .filter(shouldSend::apply)
+                    .forEach(t -> {
+                        final String stateMachineId = initialContext(t.getContext()).stateMachineId;
+                        tryWithLock(stateMachineId, repository, f);
+                    });
         } catch (Exception e) {
-            LOG.warn("Something went bad", e);
+            LOG.warn("Something went bad on timeout tick", e);
         }
     }
 }

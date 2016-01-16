@@ -5,11 +5,11 @@
     - six==1.4.1
     - docker-py==1.1.0
 
-- name: Init Boot2docker VM
-  command: "boot2docker {{ item }}"
-  with_items:
-    - start
-    - shellinit
+#- name: Init Docker Machine VM
+#  command: "docker-machine {{ item }}"
+#  with_items:
+#    - start
+#    - env
 
 #- name: Remove Pure FSM Mysql existing container
 #  docker:
@@ -21,15 +21,16 @@
 
 - name: Create Pure FSM Mysql container
   environment:
-        DOCKER_HOST: tcp://192.168.59.103:2376
-        DOCKER_CERT_PATH: /Users/keithh/.boot2docker/certs/boot2docker-vm
-        DOCKER_TLS_VERIFY: 1
+    DOCKER_TLS_VERIFY: "1"
+    DOCKER_HOST: "tcp://192.168.99.100:2376"
+    DOCKER_CERT_PATH: "/Users/keithh/.docker/machine/machines/default"
+    DOCKER_MACHINE_NAME: "default"
   docker:
     name: pure-mysql
     image: mysql
     state: started
     use_tls: encrypt
-    tls_hostname: boot2docker
+    #tls_hostname: boot2docker
     ports:
         - "3306:3306"
     env:

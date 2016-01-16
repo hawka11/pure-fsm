@@ -5,8 +5,6 @@ import io.dropwizard.jdbi.DBIFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.skife.jdbi.v2.DBI;
-import pure.fsm.core.EventTicker;
-import pure.fsm.core.Transition;
 import pure.fsm.core.TransitionRepository;
 import pure.fsm.core.cleanup.CleanUpFinalisedStateMachines;
 import pure.fsm.core.cleanup.OnCleanupListener;
@@ -15,7 +13,6 @@ import pure.fsm.repository.mysql.MysqlTransitionRepository;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 
 public abstract class StateMachineBundle implements ConfiguredBundle<PureFsmMysqlConfig> {
 
@@ -39,18 +36,14 @@ public abstract class StateMachineBundle implements ConfiguredBundle<PureFsmMysq
         return dbi;
     }
 
-    public TransitionRepository getStateMachineRepository() {
+    public TransitionRepository getRepository() {
         return repository;
-    }
-
-    public EventTicker createEventTicker(long howOften, TimeUnit timeUnit, Function<Transition, Transition> f) {
-        return new EventTicker(repository, howOften, timeUnit, f);
     }
 
     public CleanUpFinalisedStateMachines createCleaner(Collection<OnCleanupListener> cleanupListeners,
                                                        long scheduleFrequency, TimeUnit scheduleTimeUnit,
                                                        long keepFinalised, ChronoUnit keepFinalisedTimeUnit) {
 
-        return new CleanUpFinalisedStateMachines(getStateMachineRepository(), cleanupListeners, scheduleFrequency, scheduleTimeUnit, keepFinalised, keepFinalisedTimeUnit);
+        return new CleanUpFinalisedStateMachines(getRepository(), cleanupListeners, scheduleFrequency, scheduleTimeUnit, keepFinalised, keepFinalisedTimeUnit);
     }
 }

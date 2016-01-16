@@ -2,7 +2,6 @@ package pure.fsm.example.kotlin
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import pure.fsm.core.EventTicker
 import pure.fsm.core.WithinLock.tryWithLock
 import pure.fsm.core.cleanup.CleanUpFinalisedStateMachines
 import pure.fsm.example.kotlin.domain.TIMEOUT_SECS
@@ -10,6 +9,7 @@ import pure.fsm.example.kotlin.domain.TelcoEvent.RechargeEvent
 import pure.fsm.example.kotlin.domain.TelcoEvent.TimeoutTick
 import pure.fsm.example.kotlin.domain.TelcoState.*
 import pure.fsm.example.kotlin.domain.TelcoStateMachine
+import pure.fsm.example.kotlin.domain.TimeoutTicker
 import pure.fsm.repository.inmemory.InMemoryTransitionRepository
 import java.math.BigDecimal
 import java.time.temporal.ChronoUnit
@@ -22,7 +22,7 @@ class TimeoutAndCleanupTest {
 
     private val repository = InMemoryTransitionRepository()
     private val stateMachine = TelcoStateMachine()
-    private val timeoutTicker = EventTicker(repository, 1, SECONDS, { t -> stateMachine.handleEvent(t, TimeoutTick) })
+    private val timeoutTicker = TimeoutTicker(repository, 1, SECONDS, { t -> stateMachine.handleEvent(t, TimeoutTick) })
     private val cleaner = CleanUpFinalisedStateMachines(repository, listOf(), 1, TimeUnit.SECONDS, KEEP_FINALIZED_SEC, ChronoUnit.SECONDS)
 
     private fun latest(id: String) = repository.get(id)
