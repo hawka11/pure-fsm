@@ -71,17 +71,19 @@ public abstract class StateMachine<E> {
             LOG.info("ignoring event {}", event);
             return stay(last.getState(), event, last.getContext());
         } else {
-            return unhandledError(last, event);
+            return unhandledNonFinal(last, event);
         }
     }
 
-    protected Transition unhandledError(Transition last, E event) {
+    protected Transition unhandledNonFinal(Transition last, E event) {
+        //default behaviour is to transition to error state
         return error(event, last.getContext());
     }
 
     protected void onReceive(Object state, HandleEvent<E> handleEvent) {
         when(state.getClass(), handleEvent);
     }
+
     protected void when(Object state, HandleEvent<E> handleEvent) {
         when(state.getClass(), handleEvent);
     }
