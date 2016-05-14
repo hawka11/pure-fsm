@@ -2,14 +2,13 @@ package pure.fsm.example.kotlin
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import pure.fsm.core.EventTicker
 import pure.fsm.core.WithinLock.tryWithLock
-import pure.fsm.example.kotlin.domain.TelcoEvent.*
+import pure.fsm.example.kotlin.domain.TelcoEvent.RechargeConfirmEvent
+import pure.fsm.example.kotlin.domain.TelcoEvent.RechargeEvent
 import pure.fsm.example.kotlin.domain.TelcoState.*
 import pure.fsm.example.kotlin.domain.TelcoStateMachine
 import pure.fsm.repository.inmemory.InMemoryTransitionRepository
 import java.math.BigDecimal
-import java.util.concurrent.TimeUnit.SECONDS
 
 class SuccessfulTest {
 
