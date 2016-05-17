@@ -33,9 +33,8 @@ module.exports = function(state = initialState, action) {
         }
       };
 
-      debugger;
-
       let nextState = Object.assign({transition: transition}, state);
+
       return nextState;
     } break;
     default: {

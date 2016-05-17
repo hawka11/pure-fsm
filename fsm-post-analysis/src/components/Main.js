@@ -5,7 +5,7 @@ import React, {
   Component,
   PropTypes
 } from 'react';
-import ATestC from './purefsm/test/AtestComponent';
+import SingleTransition from './SingleTransition';
 
 let yeomanImage = require('../images/yeoman.png');
 
@@ -20,7 +20,7 @@ class AppComponent extends React.Component {
       e.preventDefault();
 
       const { LoadFsm } = this.props.actions;
-      LoadFsm('fromcomponentactionparam', 777);
+      LoadFsm();
     }
 
     render() {
@@ -34,7 +34,7 @@ class AppComponent extends React.Component {
             <div className="notice">Please edit <code>src/components/Main.js</code> to get started! keith</div>
             <div>{ transition.event }</div>
             <input type="button" value="+" onClick={this.handleAddChildClick} />
-            <ATestC />
+            <SingleTransition />
           </div>
         );
       }
