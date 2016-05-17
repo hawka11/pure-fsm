@@ -1,0 +1,7 @@
+{
+  "generator-react-webpack": {
+    "appName": "fsmPostAnalysis",
+    "style": "scss",
+    "postcss": true
+  }
+}
