@@ -12,4 +12,4 @@ before_install:
   - sudo pip install ansible
   
 install:
-  - ansible-playbook -v $TRAVIS_BUILD_DIR/PureFSM/fsm-repository-mysql/src/main/environment/main.yml
+  - ansible-playbook -v ./fsm-repository-mysql/src/main/environment/main.yml
