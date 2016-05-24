@@ -1,4 +1,17 @@
 language: java
+sudo: required
+
 jdk:
   - oraclejdk8
+  
+services:
+  - docker
+  
+before_install:
+  - sudo apt-get install software-properties-common
+  - sudo apt-add-repository ppa:ansible/ansible
+  - sudo apt-get update
+  - sudo apt-get install ansible
+  - ansible-playbook ./fsm-repository-mysql/src/main/environment/main.yml
+  
 script: ./gradlew clean build
