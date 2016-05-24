@@ -8,8 +8,8 @@ services:
   - docker
   
 before_install:
-  - pip install --upgrade pip
-  - pip install ansible
+  - sudo pip install --upgrade pip
+  - sudo pip install ansible
   
 install:
   - ansible-playbook -v $TRAVIS_BUILD_DIR/PureFSM/fsm-repository-mysql/src/main/environment/main.yml
