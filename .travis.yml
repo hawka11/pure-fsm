@@ -13,4 +13,4 @@ before_install:
   - sudo apt-get update
   - sudo apt-get -y install ansible
   
-script: ansible-playbook -v $TRAVIS_BUILD_DIR/PureFSM/fsm-repository-mysql/src/main/environment/main.yml
+install: ansible-playbook -v $TRAVIS_BUILD_DIR/PureFSM/fsm-repository-mysql/src/main/environment/main.yml
