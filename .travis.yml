@@ -9,7 +9,7 @@ services:
   
 before_install:
   - sudo apt-get -y install software-properties-common
-  - sudo apt-add-repository -y ppa:ansible/ansible
+  - sudo apt-add-repository -y ppa:ansible/ansible-1.9
   - sudo apt-get update
   - sudo apt-get -y install ansible
   
