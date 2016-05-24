@@ -8,6 +8,7 @@ services:
   - docker
   
 before_install:
+  - pip install --upgrade pip
   - pip install ansible
   
 install:
