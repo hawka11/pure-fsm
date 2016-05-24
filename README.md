@@ -1,6 +1,8 @@
 PureFSM
 =========
 
+https://travis-ci.org/hawka11/PureFSM.svg?branch=master
+
 Pure as in pure Java / Kotlin, no xml or gui to configure.
 
 There are more advanced FSM / BPM frameworks out there but sometimes they can be seen as too heavyweight for certain applications.
