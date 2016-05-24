@@ -8,9 +8,7 @@ services:
   - docker
   
 before_install:
-  - sudo apt-get -y install software-properties-common
-  - sudo apt-add-repository -y ppa:ansible/ansible-1.9
-  - sudo apt-get update
-  - sudo apt-get -y install ansible
+  - pip install ansible
   
-install: ansible-playbook -v $TRAVIS_BUILD_DIR/PureFSM/fsm-repository-mysql/src/main/environment/main.yml
+install:
+  - ansible-playbook -v $TRAVIS_BUILD_DIR/PureFSM/fsm-repository-mysql/src/main/environment/main.yml
