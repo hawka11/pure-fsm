@@ -11,11 +11,11 @@ module.exports = function(state = initialState, action) {
 
       let transition = {
         transitioned: '20170517050000',
-        state: "RechargeRequested",
-        event: "RequestRecharge",
+        state: 'RechargeRequested',
+        event: 'RequestRecharge',
         previous: {
               transitioned: '20170517040000',
-              state: "InitialState",
+              state: 'InitialState',
               event: null,
               previous: null,
               context: {
@@ -33,10 +33,20 @@ module.exports = function(state = initialState, action) {
         }
       };
 
-      let nextState = Object.assign({transition: transition}, state);
+      let transitions = [];
+      while(transition.previous != null) {
+        transitions.push(transition);
+        transition = transition.previous;
+      }
+
+      if(transition != null) {
+        transitions.push(transition);
+      }
+
+      let nextState = Object.assign({transitions: transitions.reverse()}, state);
 
       return nextState;
-    } break;
+    }
     default: {
       return state;
     }

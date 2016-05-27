@@ -1,3 +1,15 @@
+
 .single-transition-component {
-  border: 1px dashed #f00;
+
+   width: 400px;
+   height: 200px;
+   float: left;
+   position: relative;
+   border: 1px solid red;
+
+   span {
+     position: relative;
+     padding: 2px;
+     margin: 15px 5px 15px 5px;
+   }
 }

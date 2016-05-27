@@ -1,0 +1,20 @@
+/* Base Application Styles */
+body {
+  color: #fff;
+  background: #222;
+}
+
+.transitions-holder {
+
+    border: 1px solid blue;
+    width: 500px;
+    height: 220px;
+     margin: 0 25% 0 25%;
+     overflow-x: scroll;
+     overflow-y: hidden;
+
+   .transitions-scroll {
+       width: 2000px;
+       height: 200px;
+   }
+}
