@@ -5,11 +5,11 @@ pure-fsm
 
 Pure as in pure Java / Kotlin, no xml or gui to configure.
 
+The intention of this project is a simple & lightweight finite state machine (FSM).
+
 There are more advanced FSM / BPM frameworks out there but sometimes they can be seen as too heavyweight for certain applications.
 
-The intention of this project is a lightweight FSM, with influences from AKKA FSM.
-
-The main problem that it is trying to solve is to handle technical process flows between one or more systems.
+The main problems that i've attempted to solve with this library is handling technical process flows between one or more systems.
 
 Main objectives:
 
@@ -112,4 +112,5 @@ https://github.com/hawka11/PureFSM/blob/master/fsm-telco-example-inmemory/src/ma
 
 RoadMap
 ======
- - Improve state machine 'onUnhandled', 'onTransition' available callback methods
+ - gui to help troubleshoot 'what happened' after the fact. i.e. inspect the immutable transition graph. {@see fsm-post-analysis}
+ - Improve state machine 'onUnhandled', 'onTransition', etc... available callback methods
