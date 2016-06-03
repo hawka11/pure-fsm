@@ -104,11 +104,11 @@ val next = tryWithLock(id, repository, { t -> stateMachine.handleEvent(t, Rechar
 
 Full Kotlin Test
 ========
-https://github.com/hawka11/PureFSM/blob/master/fsm-telco-example-kotlin/src/test/kotlin/pure/fsm/example/kotlin/SuccessfulTest.kt
+./fsm-telco-example-kotlin/src/test/kotlin/pure/fsm/example/kotlin/SuccessfulTest.kt
 
 Initial Java Example
 =======
-https://github.com/hawka11/PureFSM/blob/master/fsm-telco-example-inmemory/src/main/java/pure/fsm/example/inmemory/MainSuccessful.java
+https://github.com/hawka11/pure-fsm/blob/master/fsm-telco-example-inmemory/src/main/java/pure/fsm/example/inmemory/MainSuccessful.java
 
 RoadMap
 ======
