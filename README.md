@@ -1,4 +1,4 @@
-PureFSM
+pure-fsm
 =========
 
 [![Build Status](https://travis-ci.org/hawka11/PureFSM.svg?branch=master)](https://travis-ci.org/hawka11/PureFSM)
