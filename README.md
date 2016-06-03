@@ -104,13 +104,13 @@ val next = tryWithLock(id, repository, { t -> stateMachine.handleEvent(t, Rechar
 
 Full Kotlin Test
 ========
-./fsm-telco-example-kotlin/src/test/kotlin/pure/fsm/example/kotlin/SuccessfulTest.kt
+[SuccessfulTest.kt](./fsm-telco-example-kotlin/src/test/kotlin/pure/fsm/example/kotlin/SuccessfulTest.kt)
 
 Initial Java Example
 =======
-https://github.com/hawka11/pure-fsm/blob/master/fsm-telco-example-inmemory/src/main/java/pure/fsm/example/inmemory/MainSuccessful.java
+[MainSuccessful.java](./fsm-telco-example-inmemory/src/main/java/pure/fsm/example/inmemory/MainSuccessful.java)
 
 RoadMap
 ======
- - gui to help troubleshoot 'what happened' after the fact. i.e. inspect the immutable transition graph. {@see fsm-post-analysis}
+ - gui to help troubleshoot 'what happened' after the fact. i.e. inspect the immutable transition graph. [fsm-post-analysis](.fsm-post-analysis)
  - Improve state machine 'onUnhandled', 'onTransition', etc... available callback methods
