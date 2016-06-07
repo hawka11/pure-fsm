@@ -1,7 +1,7 @@
 pure-fsm
 =========
 
-[![Build Status](https://travis-ci.org/hawka11/PureFSM.svg?branch=master)](https://travis-ci.org/hawka11/PureFSM)
+[![Build Status](https://travis-ci.org/hawka11/pure-fsm.svg?branch=master)](https://travis-ci.org/hawka11/pure-fsm)
 
 Pure as in pure Java / Kotlin, no xml or gui to configure.
 
