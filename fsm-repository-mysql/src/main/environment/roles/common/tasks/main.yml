@@ -1,10 +1,12 @@
+- name: Install PIP
+  easy_install: name=pip state=latest
+
 - name: Install Docker-PY
   pip:
     name: "{{ item }}"
   with_items:
     - six==1.4.1
     - docker-py==1.1.0
-  sudo: yes
 
 - name: Create Pure FSM Mysql container
   docker:
