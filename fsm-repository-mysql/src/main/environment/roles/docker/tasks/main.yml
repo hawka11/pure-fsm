@@ -21,14 +21,3 @@
   with_items:
     - six
     - docker-py
-
-- name: create pure-fsm mysql container
-  docker_container:
-    name: pure-mysql
-    image: mysql
-    state: started
-    ports:
-        - "3306:3306"
-    env:
-      MYSQL_ROOT_PASSWORD: purefsm
-      MYSQL_DATABASE: purefsm

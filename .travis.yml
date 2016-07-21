@@ -15,4 +15,4 @@ before_install:
   - sudo pip install ansible
   
 install:
-  - ansible-playbook -v --inventory-file=./fsm-repository-mysql/src/main/environment/inv_travis ./fsm-repository-mysql/src/main/environment/main.yml
+  - ansible-playbook -v --inventory-file=./fsm-repository-mysql/src/main/environment/inv_travis ./fsm-repository-mysql/src/main/environment/site.yml
