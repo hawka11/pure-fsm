@@ -1,15 +1,29 @@
-- name: Install PIP
+- name: install pip
   easy_install: name=pip state=latest
 
-- name: Install Docker-PY
-  pip:
-    name: "{{ item }}"
-  with_items:
-    - six==1.4.1
-    - docker-py==1.1.0
+- name: update yum
+  yum: name=* state=latest
 
-- name: Create Pure FSM Mysql container
-  docker:
+- name: register docker yum repo
+  template: src=../templates/docker.repo.j2 dest=/etc/yum.repos.d/docker.repo
+
+- name: install docker
+  yum: name=docker-engine
+
+- name: start docker
+  command: service docker start
+
+- name: add user to docker group
+  command: usermod -aG docker vagrant
+
+- name: install docker-py
+  pip: name="{{ item }}"
+  with_items:
+    - six
+    - docker-py
+
+- name: create pure-fsm mysql container
+  docker_container:
     name: pure-mysql
     image: mysql
     state: started
@@ -18,5 +32,3 @@
     env:
       MYSQL_ROOT_PASSWORD: purefsm
       MYSQL_DATABASE: purefsm
-    volumes:
-      - /data
