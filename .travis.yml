@@ -10,13 +10,12 @@ env:
 jdk:
   - oraclejdk8
   
-services:
-  - docker
-  
 before_install:
+  - sudo apt-get install docker-engine
+
   - sudo pip install --upgrade pip
   - sudo pip install ansible
-  - sudo pip install docker-py==1.5.0
-  
+  - sudo pip install docker-py
+
 install:
   - ansible-playbook -v --inventory-file=./fsm-repository-mysql/src/main/environment/inv_travis ./fsm-repository-mysql/src/main/environment/site.yml
