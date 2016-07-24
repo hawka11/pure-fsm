@@ -16,7 +16,7 @@ services:
 before_install:
   - sudo pip install --upgrade pip
   - sudo pip install ansible
-  - sudo pip install docker-py
+  - sudo pip install docker-py==1.7.2
   
 install:
   - ansible-playbook -v --inventory-file=./fsm-repository-mysql/src/main/environment/inv_travis ./fsm-repository-mysql/src/main/environment/site.yml
