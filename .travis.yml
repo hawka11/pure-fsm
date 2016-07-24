@@ -7,7 +7,10 @@ env:
 
 jdk:
   - oraclejdk8
-  
+
+services:
+  - docker
+
 before_install:
   - sudo pip install --upgrade pip
   - sudo pip install ansible
