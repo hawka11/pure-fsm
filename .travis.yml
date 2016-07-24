@@ -1,8 +1,6 @@
 language: java
 sudo: required
-
-os:
-  - linux
+dist: trusty
 
 env:
 - ANSIBLE_HOST_KEY_CHECKING=False
@@ -11,8 +9,6 @@ jdk:
   - oraclejdk8
   
 before_install:
-  - sudo apt-get install docker-engine
-
   - sudo pip install --upgrade pip
   - sudo pip install ansible
   - sudo pip install docker-py
