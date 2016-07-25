@@ -1,2 +1,5 @@
-[mysql]
+[docker]
+10.0.10.50
+
+[docker-pure-fsm-mysql]
 10.0.10.50

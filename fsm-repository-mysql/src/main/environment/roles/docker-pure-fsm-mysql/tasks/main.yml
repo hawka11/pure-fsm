@@ -2,7 +2,8 @@
 - name: create pure-fsm mysql container
   docker_container:
     api_version: "1.20"
-    name: pure-mysql
+    hostname: mysql-purefsm
+    name: mysql-purefsm
     image: mysql
     state: started
     ports:

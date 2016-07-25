@@ -1,8 +1,8 @@
 - name: install pip
   easy_install: name=pip state=latest
 
-- name: update yum
-  yum: name=* state=latest
+#- name: update yum
+#  yum: name=* state=latest
 
 - name: register docker yum repo
   template: src=../templates/docker.repo.j2 dest=/etc/yum.repos.d/docker.repo

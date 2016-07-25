@@ -1,5 +1,9 @@
-- hosts: mysql
+- hosts: docker
   become: true
   roles:
-   # - docker
+    - docker
+
+- hosts: docker-pure-fsm-mysql
+  become: true
+  roles:
     - docker-pure-fsm-mysql
