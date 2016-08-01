@@ -113,4 +113,5 @@ Initial Java Example
 RoadMap
 ======
  - gui to help troubleshoot 'what happened' after the fact. i.e. inspect the immutable transition graph. [fsm-post-analysis](./fsm-post-analysis)
+ - FSM DSL??
  - Improve state machine 'onUnhandled', 'onTransition', etc... available callback methods
