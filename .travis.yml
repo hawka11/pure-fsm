@@ -22,3 +22,5 @@ before_install:
 
 install:
   - ansible-playbook -v --inventory-file=./fsm-repository-mysql/src/main/environment/inv_travis ./fsm-repository-mysql/src/main/environment/site.yml
+
+script: ./gradlew clean build
