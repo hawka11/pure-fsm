@@ -5,7 +5,7 @@ pure-fsm
 
 Pure as in pure Java / Kotlin, no xml or gui to configure.
 
-The intention of this project is a simple & lightweight finite state machine (FSM).
+The intention of this project is a simple, lightweight yet distributed finite state machine (FSM).
 
 There are more advanced FSM / BPM frameworks out there but sometimes they can be seen as too heavyweight for certain applications.
 
